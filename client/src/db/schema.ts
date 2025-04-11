@@ -20,6 +20,7 @@ const roleTypes = ["ADMIN", "OWNER", "STAFF"] as const;
 // *******************************************
 // Models
 // *******************************************
+
 // User Model
 export const user = sqliteTable("user", {
   id: integer().primaryKey(),
@@ -27,15 +28,17 @@ export const user = sqliteTable("user", {
   username: text({ length: 50 }).notNull().unique(),
   passwordHash: text({ length: 256 }).notNull(),
   roleID: integer()
-    .references(() => role.id, { onDelete: "set null" })
+    .references(() => role.id, { onDelete: "restrict" })
     .notNull(),
+  isActive: integer({ mode: "boolean" })
+    .notNull()
+    .$default(() => false),
   createdAt: integer({ mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
   updatedAt: integer({ mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  isActive: integer({ mode: "boolean" }).notNull(),
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // User Role Model
@@ -55,29 +58,30 @@ export const role = sqliteTable(
 // Exchange Rate Model
 export const exchangeRate = sqliteTable("exchange_rate", {
   id: integer().primaryKey(),
-  userID: integer()
+  rate: real().notNull(), // TODO: round to 4 decimals in crud operations
+  updatedBy: integer()
     .references(() => user.id, { onDelete: "set null" })
     .notNull(),
-  rate: real().notNull(), // TODO: round to 4 decimals in crud operations
   updatedAt: integer({ mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Stock Model
 // NB: This should probaly be deleted manually when a product is marked as deleted?
 export const stock = sqliteTable("stock", {
   id: integer().primaryKey(),
-  userID: integer()
-    .references(() => user.id, { onDelete: "set null" })
-    .notNull(),
-  productID: integer("product_id")
+  productID: integer()
+    .unique()
     .references(() => product.id, { onDelete: "cascade" })
     .notNull(),
   quantity: integer().notNull(),
   lowStockThreshold: integer()
     .$default(() => 10)
     .notNull(),
+  timestamp: integer({ mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Product Model
@@ -93,8 +97,8 @@ export const product = sqliteTable(
       .notNull(),
     isDeleted: integer({ mode: "boolean" }).default(false),
     createdAt: integer({ mode: "timestamp" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [index("name_idx").on(table.name)]
 );
@@ -102,10 +106,10 @@ export const product = sqliteTable(
 // Sale Model
 export const sale = sqliteTable("sale", {
   id: integer().primaryKey(),
-  sellerId: integer()
+  sellerID: integer()
     .references(() => user.id, { onDelete: "set null" })
     .notNull(),
-  exchangeRateId: integer()
+  exchangeRateID: integer()
     .references(() => exchangeRate.id, { onDelete: "restrict" })
     .notNull(),
   usedLocalCurrency: integer({ mode: "boolean" }).notNull(),
@@ -113,64 +117,107 @@ export const sale = sqliteTable("sale", {
   amountPaid: real().notNull(), // TODO: round to 2 decimals in crud operations
   changeReceived: real().notNull(), // TODO: round to 2 decimals in crud operations
   createdAt: integer({ mode: "timestamp" })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Sale Item Model
 export const saleItem = sqliteTable("sale_item", {
   id: integer().primaryKey(),
-  saleId: integer()
+  saleID: integer()
     .references(() => sale.id, { onDelete: "cascade" })
     .notNull(),
-  productId: integer()
-    .references(() => product.id, { onDelete: "restrict" })
+  productID: integer()
+    .references(() => product.id, { onDelete: "restrict" }) // TODO: Need to look into whether it should be nullified
     .notNull(),
   quantity: integer().notNull(),
   unitPrice: real().notNull(),
-  createdAt: integer({ mode: "timestamp" }).notNull(),
+  createdAt: integer({ mode: "timestamp" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // *******************************************
 // Relationships
 // *******************************************
+
+// User Stock Join Table
 export const userStock = sqliteTable("user_stock", {
-  userId: integer()
+  userID: integer()
     .references(() => user.id, { onDelete: "set null" })
     .notNull(),
-  stockId: integer()
+  stockID: integer()
     .references(() => stock.id, { onDelete: "cascade" })
     .notNull(),
   quantity: integer().notNull(),
 });
 
+// User relations
 export const userRelations = relations(user, ({ one, many }) => ({
   role: one(role, {
     fields: [user.roleID],
     references: [role.id],
   }),
 
-  sales: many(sale),
+  processedSales: many(sale),
   stocksUpdates: many(userStock),
+  exchangeRateUpdates: many(exchangeRate),
 }));
 
+// Role relations
 export const roleRelations = relations(role, ({ many }) => ({
-  users: many(user),
+  assignedUsers: many(user),
 }));
 
-export const saleRelations = relations(sale, ({ one }) => ({
+// Sale relations
+export const saleRelations = relations(sale, ({ one, many }) => ({
   seller: one(user, {
-    fields: [sale.sellerId],
+    fields: [sale.sellerID],
     references: [user.id],
+  }),
+
+  saleItems: many(saleItem),
+  exchangeRateUsed: one(exchangeRate, {
+    fields: [sale.exchangeRateID],
+    references: [exchangeRate.id],
   }),
 }));
 
-// export const productRelations = null
-// export const stockRelations = relations(stock, ({ one, many }) => {
-// })
-// export const exchangeRateRelations = null
-// export const saleItemRelations = null
+// Sale Item relations
+export const saleItemRelations = relations(saleItem, ({ one }) => ({
+  sale: one(sale, {
+    fields: [saleItem.saleID],
+    references: [sale.id],
+  }),
 
-// TODO: One to Many Sale and Sale Item Relations
-// TODO: One to Many Product and Sale Item Relations
-// TODO: Many to Many User and Stock Relations
+  product: one(product, {
+    fields: [saleItem.productID],
+    references: [product.id],
+  }),
+}));
+
+// Exchange rate relations
+export const exchangeRateRelations = relations(
+  exchangeRate,
+  ({ one, many }) => ({
+    user: one(user, {
+      fields: [exchangeRate.updatedBy],
+      references: [user.id],
+    }),
+
+    sales: many(sale),
+  })
+);
+
+// Product relations
+export const productRelations = relations(product, ({ many }) => ({
+  saleItems: many(saleItem),
+}));
+
+// Stock relations
+export const stockRelations = relations(stock, ({ one }) => ({
+  stockProduct: one(product, {
+    fields: [stock.productID],
+    references: [product.id],
+  }),
+}));
