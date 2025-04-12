@@ -1,31 +1,36 @@
 import { IGenericRepository } from ".";
+import { db } from "../db";
+import { roleTable } from "../schema";
 import { NewRole, Role, UpdateRole } from "../schema/types";
+import { eq } from "drizzle-orm";
 
 export class RoleRepository
   implements IGenericRepository<Role, NewRole, UpdateRole>
 {
-  create(entity: NewRole): Promise<Role> {
-    // TODO: Create role
-    throw new Error("Method not implemented.");
+  async create(entity: NewRole): Promise<Role> {
+    return db.insert(roleTable).values(entity);
   }
 
-  getAll(): Promise<Role[]> {
-    // TODO: Get all roles
-    throw new Error("Method not implemented.");
+  async getAll(limit: number = 10, offset: number = 0): Promise<Role[]> {
+    return db.select().from(roleTable).limit(limit).offset(offset).all();
   }
 
-  getById(id: number): Promise<Role | null> {
-    // TODO: Get role by id
-    throw new Error("Method not implemented.");
+  async getById(id: number): Promise<Role | null> {
+    let role = db.select().from(roleTable).where(eq(roleTable.id, id)).get();
+    return role || null;
   }
 
-  update(id: number, entity: UpdateRole): Promise<Role | null> {
-    // TODO: Update role
-    throw new Error("Method not implemented.");
+  async update(id: number, entity: UpdateRole): Promise<Role | null> {
+    let [role] = await db
+      .update(roleTable)
+      .set(entity)
+      .where(eq(roleTable.id, id))
+      .returning();
+
+    return role || null;
   }
 
-  delete(id: number): Promise<void> {
-    // TODO: Delete role
-    throw new Error("Method not implemented.");
+  async delete(id: number): Promise<void> {
+    return db.delete(roleTable).where(eq(roleTable.id, id)).run();
   }
 }

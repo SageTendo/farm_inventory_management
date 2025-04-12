@@ -11,7 +11,7 @@ export interface IGenericRepository<Entity, NewEntity, UpdateEntity> {
    * Retrieves all entities from the database
    * @returns An array of entities
    */
-  getAll(): Promise<Entity[]>;
+  getAll(limit?: number, offset?: number): Promise<Entity[]>;
   /**
    * Retrieves an entity with the specified id from the database
    * @param id The id of the entity to retrieve
