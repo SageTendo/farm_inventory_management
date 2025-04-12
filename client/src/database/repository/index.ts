@@ -9,6 +9,8 @@ export interface IGenericRepository<Entity, NewEntity, UpdateEntity> {
   create(entity: NewEntity): Promise<Entity>;
   /**
    * Retrieves all entities from the database
+   * @param limit The maximum number of entities to retrieve (defaults to 10)
+   * @param offset The number of entities to skip before retrieving the first entity
    * @returns An array of entities
    */
   getAll(limit?: number, offset?: number): Promise<Entity[]>;
