@@ -1,30 +1,35 @@
-import { IGenericRepository } from ".";
-import { NewProduct, Product, UpdateProduct } from "../schema/types";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { BaseRepository, IGenericRepository } from ".";
+import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../schema/types";
 
 export class ProductRepository
-  implements IGenericRepository<Product, NewProduct, UpdateProduct>
+  extends BaseRepository<BetterSQLite3Database>
+  implements IGenericRepository<ProductDTO, NewProductDTO, UpdateProductDTO>
 {
-  create(entity: NewProduct): Promise<Product> {
+  async create(entity: NewProductDTO): Promise<ProductDTO> {
     // TODO: Create product
     throw new Error("Method not implemented.");
   }
 
-  getAll(): Promise<Product[]> {
+  async getAll(limit?: number, offset?: number): Promise<ProductDTO[]> {
     // TODO: Get all products
     throw new Error("Method not implemented.");
   }
 
-  getById(id: number): Promise<Product | null> {
+  async getById(id: number): Promise<ProductDTO | null> {
     // TODO: Get product by id
     throw new Error("Method not implemented.");
   }
 
-  update(id: number, entity: UpdateProduct): Promise<Product | null> {
+  async update(
+    id: number,
+    entity: UpdateProductDTO
+  ): Promise<ProductDTO | null> {
     // TODO: Update product
     throw new Error("Method not implemented.");
   }
 
-  delete(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     // TODO: Delete product
     throw new Error("Method not implemented.");
   }

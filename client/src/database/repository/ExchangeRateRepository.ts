@@ -1,30 +1,26 @@
 import { IGenericRepository } from ".";
-import { ExchangeRate, NewExchangeRate } from "../schema/types";
+import { ExchangeRateDTO, NewExchangeRateDTO } from "../schema/types";
 
 export class ExchangeRateRepository
-  implements IGenericRepository<ExchangeRate, NewExchangeRate, null>
+  implements IGenericRepository<ExchangeRateDTO, NewExchangeRateDTO, null>
 {
-  create(entity: NewExchangeRate): Promise<ExchangeRate> {
-    // TODO: Create exchange rate
+  async create(entity: NewExchangeRateDTO): Promise<ExchangeRateDTO> {
     throw new Error("Method not implemented.");
   }
 
-  getAll(): Promise<ExchangeRate[]> {
-    // TODO: Get all exchange rates
+  async getAll(limit?: number, offset?: number): Promise<ExchangeRateDTO[]> {
     throw new Error("Method not implemented.");
   }
 
-  getById(id: number): Promise<ExchangeRate | null> {
-    // TODO: Get exchange rate by id
+  async getById(id: number): Promise<ExchangeRateDTO | null> {
     throw new Error("Method not implemented.");
   }
 
-  update(id: number, entity: null): Promise<null> {
-    throw new Error("Exchange rate is immutable.");
+  async update(id: number, entity: null): Promise<ExchangeRateDTO | null> {
+    throw new Error("Exchange rate entry is immutable.");
   }
 
-  delete(id: number): Promise<void> {
-    // TODO: Delete exchange rate
+  async delete(id: number): Promise<void> {
     throw new Error("Method not implemented.");
   }
 }

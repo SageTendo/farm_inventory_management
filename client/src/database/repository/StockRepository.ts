@@ -1,31 +1,26 @@
 import { IGenericRepository } from ".";
-import { Stock, NewStock, UpdateStock } from "../schema/types";
+import { StockDTO, NewStockDTO, UpdateStockDTO } from "../schema/types";
 
 export class StockRepository
-  implements IGenericRepository<Stock, NewStock, UpdateStock>
+  implements IGenericRepository<StockDTO, NewStockDTO, UpdateStockDTO>
 {
-  create(entity: NewStock): Promise<Stock> {
-    // TODO: Create stock
+  async create(entity: NewStockDTO): Promise<StockDTO> {
     throw new Error("Method not implemented.");
   }
 
-  getAll(): Promise<Stock[]> {
-    // TODO: Get all stocks
+  async delete(id: number): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  getById(id: number): Promise<Stock | null> {
-    // TODO: Get stock by id
+  async getAll(limit?: number, offset?: number): Promise<StockDTO[]> {
     throw new Error("Method not implemented.");
   }
 
-  update(id: number, entity: UpdateStock): Promise<Stock | null> {
-    // TODO: Update stock
+  async getById(id: number): Promise<StockDTO | null> {
     throw new Error("Method not implemented.");
   }
 
-  delete(id: number): Promise<void> {
-    // TODO: Delete stock
+  async update(id: number, entity: UpdateStockDTO): Promise<StockDTO | null> {
     throw new Error("Method not implemented.");
   }
 }

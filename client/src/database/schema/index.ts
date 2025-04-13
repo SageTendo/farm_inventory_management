@@ -7,15 +7,13 @@ import {
   real,
   index,
 } from "drizzle-orm/sqlite-core";
+import { roleTypes } from "./constants";
 
 // *******************************************
 // How to create db and perform migrations
 // npx drizzle-kit push (create db)
 // npx drizzle-kit generate (migrations)
 // *******************************************
-
-// User Role Types Enum
-const roleTypes = ["ADMIN", "OWNER", "STAFF"] as const;
 
 // *******************************************
 // Models

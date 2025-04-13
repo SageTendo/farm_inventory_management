@@ -1,27 +1,46 @@
-import { IGenericRepository } from ".";
-import { NewUser, UpdateUser, User } from "../schema/types";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { IGenericRepository, BaseRepository } from ".";
+import { userTable } from "../schema";
+import { NewUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
+import { eq } from "drizzle-orm";
 
 export class UserRepository
-  implements IGenericRepository<User, NewUser, UpdateUser>
+  extends BaseRepository<BetterSQLite3Database>
+  implements IGenericRepository<UserDTO, NewUserDTO, UpdateUserDTO>
 {
-  create(entity: NewUser): Promise<User> {
-    // TODO: Create user
-    throw new Error("Method not implemented.");
+  async create(entity: NewUserDTO): Promise<UserDTO> {
+    return this.dbContext.insert(userTable).values(entity);
   }
-  getAll(): Promise<User[]> {
-    // TODO: Get all users
-    throw new Error("Method not implemented.");
+
+  async getAll(limit: number = 10, offset: number = 0): Promise<UserDTO[]> {
+    return this.dbContext
+      .select()
+      .from(userTable)
+      .limit(limit)
+      .offset(offset)
+      .all();
   }
-  getById(id: number): Promise<User | null> {
-    // TODO: Get user by id
-    throw new Error("Method not implemented.");
+
+  async getById(id: number): Promise<UserDTO | null> {
+    const user = this.dbContext
+      .select()
+      .from(userTable)
+      .where(eq(userTable.id, id))
+      .get();
+    return user || null;
   }
-  update(id: number, entity: UpdateUser): Promise<User | null> {
-    // TODO: Update user
-    throw new Error("Method not implemented.");
+
+  async update(id: number, entity: UpdateUserDTO): Promise<UserDTO | null> {
+    const [user] = await this.dbContext
+      .update(userTable)
+      .set(entity)
+      .where(eq(userTable.id, id))
+      .returning();
+
+    return user || null;
   }
-  delete(id: number): Promise<void> {
-    // TODO: Delete user
-    throw new Error("Method not implemented.");
+
+  async delete(id: number): Promise<void> {
+    return this.dbContext.delete(userTable).where(eq(userTable.id, id)).run();
   }
 }
