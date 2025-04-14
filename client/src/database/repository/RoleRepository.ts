@@ -1,14 +1,16 @@
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { BaseRepository, IGenericRepository } from ".";
+import { BaseRepository } from ".";
 import { roleTable } from "../schema";
 import { NewRoleDTO, RoleDTO, UpdateRoleDTO } from "../schema/types";
 import { eq } from "drizzle-orm";
+import { IRoleRepository } from "../interfaces/IRoleRepository";
+import { RoleType } from "../schema/constants";
 
 export class RoleRepository
   extends BaseRepository<BetterSQLite3Database>
-  implements IGenericRepository<RoleDTO, NewRoleDTO, UpdateRoleDTO>
+  implements IRoleRepository
 {
-  async create(entity: NewRoleDTO): Promise<RoleDTO> {
+  async createRole(entity: NewRoleDTO): Promise<RoleDTO> {
     const [role] = await this.dbContext
       .insert(roleTable)
       .values(entity)
@@ -16,7 +18,10 @@ export class RoleRepository
     return role;
   }
 
-  async getAll(limit: number = 10, offset: number = 0): Promise<RoleDTO[]> {
+  async getAllRoles(
+    limit: number = 10,
+    offset: number = 0
+  ): Promise<RoleDTO[]> {
     return this.dbContext
       .select()
       .from(roleTable)
@@ -25,7 +30,7 @@ export class RoleRepository
       .all();
   }
 
-  async getById(id: number): Promise<RoleDTO | null> {
+  async getRoleById(id: number): Promise<RoleDTO | null> {
     let role = this.dbContext
       .select()
       .from(roleTable)
@@ -34,7 +39,16 @@ export class RoleRepository
     return role || null;
   }
 
-  async update(id: number, entity: UpdateRoleDTO): Promise<RoleDTO | null> {
+  async getRoleByType(role_type: RoleType): Promise<RoleDTO | null> {
+    let role = this.dbContext
+      .select()
+      .from(roleTable)
+      .where(eq(roleTable.type, role_type))
+      .get();
+    return role || null;
+  }
+
+  async updateRole(id: number, entity: UpdateRoleDTO): Promise<RoleDTO | null> {
     let [role] = await this.dbContext
       .update(roleTable)
       .set(entity)
@@ -44,7 +58,7 @@ export class RoleRepository
     return role || null;
   }
 
-  async delete(id: number): Promise<void> {
+  async deleteRole(id: number): Promise<void> {
     return this.dbContext.delete(roleTable).where(eq(roleTable.id, id)).run();
   }
 }
