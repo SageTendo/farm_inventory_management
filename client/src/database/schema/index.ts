@@ -89,8 +89,8 @@ export const productTable = sqliteTable(
   {
     id: integer().primaryKey(),
     name: text({ length: 100 }).unique().notNull(),
-    buyPrice: real().notNull(), // TODO: round to 2 decimals in crud operations
-    sellPrice: real().notNull(), // TODO: round to 2 decimals in crud operations
+    buyPrice: integer().notNull(), // TODO: round to 2 decimals in crud operations
+    sellPrice: integer().notNull(), // TODO: round to 2 decimals in crud operations
     addedBy: integer()
       .references(() => userTable.id, { onDelete: "set null" })
       .notNull(),
@@ -112,9 +112,9 @@ export const saleTable = sqliteTable("sale", {
     .references(() => exchangeRateTable.id, { onDelete: "restrict" })
     .notNull(),
   usedLocalCurrency: integer({ mode: "boolean" }).notNull(),
-  totalAmount: real().notNull(), // TODO: round to 2 decimals in crud operations
-  amountPaid: real().notNull(), // TODO: round to 2 decimals in crud operations
-  changeReceived: real().notNull(), // TODO: round to 2 decimals in crud operations
+  totalAmount: integer().notNull(), // TODO: round to 2 decimals in crud operations
+  amountPaid: integer().notNull(), // TODO: round to 2 decimals in crud operations
+  changeReceived: integer().notNull(), // TODO: round to 2 decimals in crud operations
   createdAt: integer({ mode: "timestamp" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -130,7 +130,7 @@ export const saleItemTable = sqliteTable("sale_item", {
     .references(() => productTable.id, { onDelete: "restrict" }) // TODO: Need to look into whether it should be nullified
     .notNull(),
   quantity: integer().notNull(),
-  unitPrice: real().notNull(),
+  unitPrice: integer().notNull(),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
