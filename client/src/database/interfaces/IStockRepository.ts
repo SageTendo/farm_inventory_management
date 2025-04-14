@@ -23,7 +23,7 @@ export interface IStockRepository {
    * @param id The ID of the stock entry to retrieve
    * @returns A promise that resolves to the stock entry if found, otherwise null
    */
-  getStockById(id: number): Promise<StockDTO>;
+  getStockById(id: number): Promise<StockDTO | null>;
 
   /**
    * Updates a stock entry by ID
