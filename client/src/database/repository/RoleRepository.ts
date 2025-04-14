@@ -31,7 +31,7 @@ export class RoleRepository
   }
 
   async getRoleById(id: number): Promise<RoleDTO | null> {
-    let role = this.dbContext
+    const role = this.dbContext
       .select()
       .from(roleTable)
       .where(eq(roleTable.id, id))
@@ -40,7 +40,7 @@ export class RoleRepository
   }
 
   async getRoleByType(role_type: RoleType): Promise<RoleDTO | null> {
-    let role = this.dbContext
+    const role = this.dbContext
       .select()
       .from(roleTable)
       .where(eq(roleTable.type, role_type))
@@ -49,7 +49,7 @@ export class RoleRepository
   }
 
   async updateRole(id: number, entity: UpdateRoleDTO): Promise<RoleDTO | null> {
-    let [role] = await this.dbContext
+    const [role] = await this.dbContext
       .update(roleTable)
       .set(entity)
       .where(eq(roleTable.id, id))
