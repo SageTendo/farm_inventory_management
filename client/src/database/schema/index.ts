@@ -94,7 +94,7 @@ export const productTable = sqliteTable(
     addedBy: integer()
       .references(() => userTable.id, { onDelete: "set null" })
       .notNull(),
-    isDeleted: integer({ mode: "boolean" }).default(false),
+    isDeleted: integer({ mode: "boolean" }).default(false).notNull(),
     createdAt: integer({ mode: "timestamp" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),

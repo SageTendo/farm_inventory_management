@@ -16,7 +16,7 @@ export interface IProductRepository {
    * @param productID The ID of the product to retrieve
    * @returns A promise that resolves to the product entity if found
    */
-  getProduct(productID: number): Promise<ProductDTO>;
+  getProductById(productID: number): Promise<ProductDTO | null>;
 
   /**
    * Retrieves multiple products
@@ -24,14 +24,17 @@ export interface IProductRepository {
    * @param offset The number of products to skip before retrieving (optional)
    * @returns A promise that resolves to an array of product entities
    */
-  getProducts(limit?: number, offset?: number): Promise<ProductDTO[]>;
+  getAllProducts(limit?: number, offset?: number): Promise<ProductDTO[]>;
 
   /**
    * Updates an existing product
    * @param product The updated product data
    * @returns A promise that resolves to the updated product entity
    */
-  updateProduct(product: UpdateProductDTO): Promise<ProductDTO>;
+  updateProduct(
+    id: number,
+    product: UpdateProductDTO
+  ): Promise<ProductDTO | null>;
 
   /**
    * Deletes a product by its ID

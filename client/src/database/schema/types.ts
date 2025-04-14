@@ -81,7 +81,7 @@ export type ProductDTO = {
   sellPrice: number;
   addedBy: number;
   isDeleted: boolean;
-  createdAt: number;
+  createdAt: Date;
 };
 export type NewProductDTO = Omit<ProductDTO, "id" | "isDeleted" | "createdAt">;
 export type UpdateProductDTO = Partial<

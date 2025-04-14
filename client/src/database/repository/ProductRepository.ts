@@ -2,11 +2,7 @@ import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { productTable } from "../schema";
-import {
-  NewProductDTO,
-  ProductDTO,
-  UpdateProductDTO,
-} from "../schema/types";
+import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../schema/types";
 import { IProductRepository } from "../interfaces/IProductRepository";
 
 /**
@@ -34,7 +30,7 @@ export class ProductRepository
    * @param productID The ID of the product to retrieve
    * @returns The product if found, or null
    */
-  async getProduct(productID: number): Promise<ProductDTO> {
+  async getProductById(productID: number): Promise<ProductDTO | null> {
     const product = this.dbContext
       .select()
       .from(productTable)
@@ -49,7 +45,7 @@ export class ProductRepository
    * @param offset Number of products to skip (default 0)
    * @returns Array of products
    */
-  async getProducts(
+  async getAllProducts(
     limit: number = 10,
     offset: number = 0
   ): Promise<ProductDTO[]> {
@@ -66,11 +62,14 @@ export class ProductRepository
    * @param product The updated product data (must include ID)
    * @returns The updated product if found, otherwise null
    */
-  async updateProduct(product: UpdateProductDTO): Promise<ProductDTO | null> {
+  async updateProduct(
+    id: number,
+    product: UpdateProductDTO
+  ): Promise<ProductDTO | null> {
     const [updated] = await this.dbContext
       .update(productTable)
       .set(product)
-      .where(eq(productTable.id, product.id))
+      .where(eq(productTable.id, id))
       .returning();
     return updated || null;
   }
@@ -80,7 +79,7 @@ export class ProductRepository
    * @param productID The ID of the product to delete
    */
   async deleteProduct(productID: number): Promise<void> {
-    await this.dbContext
+    return await this.dbContext
       .delete(productTable)
       .where(eq(productTable.id, productID))
       .run();
