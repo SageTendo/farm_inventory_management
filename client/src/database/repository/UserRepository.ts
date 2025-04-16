@@ -1,7 +1,12 @@
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { BaseRepository } from ".";
 import { userTable } from "../schema";
-import { NewUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
+import {
+  AuthUserDTO,
+  NewUserDTO,
+  UpdateUserDTO,
+  UserDTO,
+} from "../schema/types";
 import { eq } from "drizzle-orm";
 import { IUserRepository } from "../interfaces/IUserRepository";
 
@@ -39,6 +44,21 @@ export class UserRepository
       .select()
       .from(userTable)
       .where(eq(userTable.username, username))
+      .get();
+    return user || null;
+  }
+
+  async getUserByUsernameAndPasswordHash(
+    username: string,
+    passwordHash: string
+  ): Promise<AuthUserDTO | null> {
+    const user = this.dbContext
+      .select()
+      .from(userTable)
+      .where(
+        eq(userTable.username, username) &&
+          eq(userTable.passwordHash, passwordHash)
+      )
       .get();
     return user || null;
   }

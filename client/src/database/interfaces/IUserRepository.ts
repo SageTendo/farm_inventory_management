@@ -1,4 +1,9 @@
-import { NewUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
+import {
+  AuthUserDTO,
+  NewUserDTO,
+  UpdateUserDTO,
+  UserDTO,
+} from "../schema/types";
 
 /**
  * Interface for user repository
@@ -25,6 +30,11 @@ export interface IUserRepository {
    * @returns A promise that resolves to the user entity if found, otherwise null
    */
   getUserByUsername(username: string): Promise<UserDTO | null>;
+
+  getUserByUsernameAndPasswordHash(
+    username: string,
+    passwordHash: string
+  ): Promise<AuthUserDTO | null>;
 
   /**
    * Retrieves a user by their id
