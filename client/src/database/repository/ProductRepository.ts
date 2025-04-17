@@ -47,7 +47,7 @@ export class ProductRepository
    */
   async getAllProducts(
     limit: number = 10,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<ProductDTO[]> {
     return this.dbContext
       .select()
@@ -64,7 +64,7 @@ export class ProductRepository
    */
   async updateProduct(
     id: number,
-    product: UpdateProductDTO
+    product: UpdateProductDTO,
   ): Promise<ProductDTO | null> {
     const [updated] = await this.dbContext
       .update(productTable)
@@ -79,7 +79,7 @@ export class ProductRepository
    * @param productID The ID of the product to delete
    */
   async deleteProduct(productID: number): Promise<void> {
-    return await this.dbContext
+    return this.dbContext
       .delete(productTable)
       .where(eq(productTable.id, productID))
       .run();

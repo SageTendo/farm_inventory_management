@@ -13,7 +13,7 @@ export class StockRepository
   implements IStockRepository
 {
   /**
-   * Inserts a new stock entry into the datebase
+   * Inserts a new stock entry into the database
    * @param data The stock data to insert
    * @returns The created stock entry
    */
@@ -33,7 +33,7 @@ export class StockRepository
    */
   async getAllStocks(
     limit: number = 10,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<StockDTO[]> {
     return this.dbContext
       .select()

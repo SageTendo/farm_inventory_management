@@ -28,6 +28,7 @@ export interface IProductRepository {
 
   /**
    * Updates an existing product
+   * @param id The ID of the product to update
    * @param product The updated product data
    * @returns A promise that resolves to the updated product entity
    */
