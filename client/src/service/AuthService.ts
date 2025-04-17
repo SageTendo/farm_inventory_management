@@ -99,8 +99,4 @@ export class AuthService implements IAuthService {
     const userRole = await this.roleRepository.getRoleById(user.roleID);
     return userRole ? requiredRoles.includes(userRole.type) : false;
   }
-
-  async logout(): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
 }

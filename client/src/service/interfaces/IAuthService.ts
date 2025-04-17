@@ -27,10 +27,4 @@ export interface IAuthService {
    * @returns {Promise<boolean>} A promise that resolves to true if the user has the required role, false otherwise
    */
   hasRequiredRole(userID: number, requiredRoles: string[]): Promise<boolean>;
-
-  /**
-   * Handle user logout request
-   * @returns {Promise<void>} A promise that resolves when the user is logged out
-   */
-  logout(): Promise<void>;
 }
