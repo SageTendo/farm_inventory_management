@@ -1,78 +1,106 @@
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import { IUserRepository } from "../database/interfaces/IUserRepository";
-import { UserLoginResponseDTO } from "../database/schema/types";
+import { AuthResponseDTO, NewUserDTO } from "../database/schema/types";
 
 import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
+import { RoleType } from "../database/schema/constants.ts";
 
 export class AuthService implements IAuthService {
   protected userRepository: IUserRepository;
   protected roleRepository: IRoleRepository;
+  private readonly SALT = 10;
 
   constructor(
     userRepository: IUserRepository,
-    roleRepository: IRoleRepository
+    roleRepository: IRoleRepository,
   ) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
   }
 
-  async login(
-    username: string,
-    password: string
-  ): Promise<UserLoginResponseDTO> {
-    const passwordHash = await bcrypt.hash(password, 10);
-    let user = await this.userRepository.getUserByUsernameAndPasswordHash(
-      username,
-      passwordHash
-    );
-    if (user === null) {
-      throw new Error("User not found");
+  async register(
+    registeringUserId: number,
+    newUser: NewUserDTO,
+  ): Promise<AuthResponseDTO> {
+    if (!(await this.hasRequiredRole(registeringUserId, ["ADMIN"]))) {
+      return {
+        success: false,
+        message: "You do not have permission to register users",
+      };
     }
 
-    await this.userRepository.updateUser(user.id, {
-      isActive: true,
+    const existingUser = await this.userRepository.getUserByUsername(
+      newUser.username,
+    );
+    if (existingUser) {
+      return {
+        success: false,
+        message: "User already exists",
+      };
+    }
+
+    const user = await this.userRepository.createUser({
+      fullname: newUser.fullname,
+      username: newUser.username,
+      passwordHash: await bcrypt.hash(newUser.password, this.SALT),
+      roleID: newUser.roleID,
     });
+    if (!user) {
+      return {
+        success: false,
+        message: "Failed to register user",
+      };
+    }
+
+    return {
+      success: true,
+      message: "User registered successfully",
+    };
+  }
+
+  async login(username: string, password: string): Promise<AuthResponseDTO> {
+    const user = await this.userRepository.getUserByUsername(username);
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      return {
+        success: false,
+        message: "Invalid username or password",
+      };
+    }
+
+    const role = await this.roleRepository.getRoleById(user.roleID);
+    if (role === null) {
+      return {
+        success: false,
+        message: "Role not found for user",
+      };
+    }
 
     return {
       success: true,
       message: "Login successful",
-      user: {
+      authData: {
         id: user.id,
-        fullname: user.fullname,
         username: user.username,
-        roleID: user.roleID,
-        isActive: true,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        role: role.type,
       },
     };
   }
 
   async hasRequiredRole(
     userID: number,
-    requiredRoles: string[]
+    requiredRoles: RoleType[],
   ): Promise<boolean> {
-    if (requiredRoles.length === 0) {
-      return true;
-    }
+    if (requiredRoles.length === 0) return true;
 
     const user = await this.userRepository.getUserById(userID);
-    if (user === null) {
-      return false;
-    }
+    if (!user) return false;
 
     const userRole = await this.roleRepository.getRoleById(user.roleID);
-    if (userRole === null) {
-      return false;
-    }
-
-    return requiredRoles.includes(userRole.type);
+    return userRole ? requiredRoles.includes(userRole.type) : false;
   }
 
-  async logout(id: number): Promise<void> {
-    await this.userRepository.updateUser(id, {
-      isActive: false,
-    });
+  async logout(): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 }

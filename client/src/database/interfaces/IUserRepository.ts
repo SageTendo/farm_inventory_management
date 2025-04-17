@@ -1,9 +1,4 @@
-import {
-  AuthUserDTO,
-  NewUserDTO,
-  UpdateUserDTO,
-  UserDTO,
-} from "../schema/types";
+import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
 
 /**
  * Interface for user repository
@@ -14,7 +9,7 @@ export interface IUserRepository {
    * @param {NewUserDTO} entity A new user to be inserted into the database
    * @returns {Promise<UserDTO>} A promise that resolves to the created user entity
    */
-  createUser(entity: NewUserDTO): Promise<UserDTO>;
+  createUser(entity: CreateUserDTO): Promise<UserDTO>;
 
   /**
    * Retrieves all users from the database
@@ -30,11 +25,6 @@ export interface IUserRepository {
    * @returns A promise that resolves to the user entity if found, otherwise null
    */
   getUserByUsername(username: string): Promise<UserDTO | null>;
-
-  getUserByUsernameAndPasswordHash(
-    username: string,
-    passwordHash: string
-  ): Promise<AuthUserDTO | null>;
 
   /**
    * Retrieves a user by their id

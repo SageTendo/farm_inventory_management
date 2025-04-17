@@ -7,7 +7,7 @@
 // NewMyRecordDTO: This represents the data of a new user being created
 //              in the database.
 // UpdateMyRecordDTO: This represents the data of a user being updated
-// MyRecordDTO:    This represents a user retrived from the database
+// MyRecordDTO:    This represents a user retrieved from the database
 //
 //
 // The use of the "Omit" type is to remove sensitive information
@@ -30,39 +30,51 @@ export interface RoleDTO {
   id: number;
   type: RoleType;
 }
+
 export type NewRoleDTO = Omit<RoleDTO, "id">;
 export type UpdateRoleDTO = Omit<RoleDTO, "id">;
 
 // User DTO
+// This is the data that is returned from the repository layer
 export interface UserDTO {
   id: number;
   fullname: string;
   username: string;
+  passwordHash: string;
   roleID: number;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
+
+// This is the data that is sent to the service layer
 export interface NewUserDTO {
   fullname: string;
   username: string;
-  passwordHash: string;
+  password: string; // Plaintext, gets hashed in AuthService
   roleID: number;
 }
+
+// This is the data that is sent to the repository layer
+export interface CreateUserDTO {
+  fullname: string;
+  username: string;
+  passwordHash: string; // already hashed
+  roleID: number;
+}
+
+// This is the data that is sent to the repository layer
 export type UpdateUserDTO = Partial<Omit<UserDTO, "id" | "createdAt">>;
 
 // User Auth DTO
-export interface UserLoginDTO {
-  username: string;
-  password: string;
-}
-export interface AuthUserDTO extends UserDTO {
-  passwordHash: string;
-}
-export interface UserLoginResponseDTO {
+export interface AuthResponseDTO {
   success: boolean;
   message: string;
-  user?: UserDTO;
+  authData?: {
+    id: number;
+    username: string;
+    role: RoleType;
+  };
 }
 
 // Stock DTO
@@ -73,6 +85,7 @@ export interface StockDTO {
   lowStockThreshold: number;
   timestamp: Date;
 }
+
 export type NewStockDTO = Omit<StockDTO, "id">;
 export type UpdateStockDTO = Partial<
   Omit<StockDTO, "id" | "productID" | "timestamp">
@@ -84,6 +97,7 @@ export interface UserStock {
   stockID: number;
   quantity: number;
 }
+
 export type NewUserStockDTO = Omit<UserStock, "id">;
 export type UpdateUserStockDTO = Omit<UserStock, "id" | "userID" | "stockID">;
 
@@ -97,6 +111,7 @@ export interface ProductDTO {
   isDeleted: boolean;
   createdAt: Date;
 }
+
 export type NewProductDTO = Omit<ProductDTO, "id" | "isDeleted" | "createdAt">;
 export type UpdateProductDTO = Partial<
   Omit<ProductDTO, "id" | "addedBy" | "createdAt">
@@ -113,6 +128,7 @@ export interface SaleDTO {
   changeReceived: number;
   createdAt: number;
 }
+
 export type NewSaleDTO = Omit<SaleDTO, "id" | "createdAt">;
 
 // SaleItem DTO
@@ -124,6 +140,7 @@ export interface SaleItemDTO {
   unitPrice: number;
   createdAt: number;
 }
+
 export type NewSaleItemDTO = Omit<SaleItemDTO, "id" | "createdAt">;
 
 // Exchange Rate DTO
@@ -133,4 +150,5 @@ export interface ExchangeRateDTO {
   updatedBy: number;
   updatedAt: number;
 }
+
 export type NewExchangeRateDTO = Omit<ExchangeRateDTO, "id" | "updatedAt">;
