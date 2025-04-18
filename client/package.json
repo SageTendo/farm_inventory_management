@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db_init": "npx tsx ./scripts/dbSetup.ts",
+    "db_push": "npx drizzle-kit push",
+    "db_generate": "npx drizzle-kit generate",
+    "db_migrate": "npx drizzle-kit migrate",
+    "db_delete": "npx tsx ./scripts/dbSetup.ts DELETE"
   },
   "dependencies": {
     "better-sqlite3": "^11.9.1",
@@ -24,6 +29,7 @@
     "@typescript-eslint/parser": "^7.1.1",
     "@vitejs/plugin-react": "^4.2.1",
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.5.0",
     "drizzle-kit": "^0.30.6",
     "electron": "^30.0.1",
     "electron-builder": "^24.13.3",
