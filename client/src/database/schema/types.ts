@@ -46,6 +46,8 @@ export interface UserDTO {
   createdAt: string;
   updatedAt: string;
 }
+// This is the data that is returned from the service layer
+export type UserResponseDTO = Omit<UserDTO, "passwordHash">;
 
 // This is the data that is sent to the service layer
 export interface NewUserDTO {
