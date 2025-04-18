@@ -12,7 +12,8 @@
     "db_push": "npx drizzle-kit push",
     "db_generate": "npx drizzle-kit generate",
     "db_migrate": "npx drizzle-kit migrate",
-    "db_delete": "npx tsx ./scripts/dbSetup.ts DELETE"
+    "db_delete": "npx tsx ./scripts/dbSetup.ts DELETE",
+    "db_nuke": "npx tsx ./scripts/dbSetup.ts DELETE && rm -rf src/database/migrations"
   },
   "dependencies": {
     "better-sqlite3": "^11.9.1",
