@@ -1,7 +1,9 @@
+import { config } from "dotenv";
 import { exec } from "child_process";
-import { configDotenv } from "dotenv";
 import * as fs from "node:fs";
 import { promisify } from "util";
+
+config();
 
 const RED = "\x1b[31m";
 const GREEN = "\x1b[32m";
@@ -80,10 +82,11 @@ async function generate_migrations(): Promise<execResponse> {
 }
 
 function delete_db_files() {
+  const dbFilesRegex = new RegExp("(.*).db(.*)");
   console.log(`${BLUE}Deleting database...${RESET}`);
   const databaseDir = "src/" + process.env.DATABASE_PATH;
   for (const file of fs.readdirSync(databaseDir)) {
-    if (file.match(RegExp("(.*).db(.*)"))) {
+    if (file.match(dbFilesRegex)) {
       fs.unlinkSync(databaseDir + "/" + file);
       console.log(`${BLUE}✅ ${file} deleted${RESET}`);
     }
@@ -133,5 +136,4 @@ async function main() {
   }
 }
 
-configDotenv({ path: "src/.env" });
 main();

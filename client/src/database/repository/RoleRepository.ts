@@ -1,7 +1,7 @@
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { BaseRepository } from ".";
 import { roleTable } from "../schema";
-import { NewRoleDTO, RoleDTO, UpdateRoleDTO } from "../schema/types";
+import { NewRoleDTO, RoleDTO } from "../schema/types";
 import { eq } from "drizzle-orm";
 import { IRoleRepository } from "../interfaces/IRoleRepository";
 import { RoleType } from "../schema/constants";
@@ -20,7 +20,7 @@ export class RoleRepository
 
   async getAllRoles(
     limit: number = 10,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<RoleDTO[]> {
     return this.dbContext
       .select()
@@ -48,17 +48,7 @@ export class RoleRepository
     return role || null;
   }
 
-  async updateRole(id: number, entity: UpdateRoleDTO): Promise<RoleDTO | null> {
-    const [role] = await this.dbContext
-      .update(roleTable)
-      .set(entity)
-      .where(eq(roleTable.id, id))
-      .returning();
-
-    return role || null;
-  }
-
   async deleteRole(id: number): Promise<void> {
-    return this.dbContext.delete(roleTable).where(eq(roleTable.id, id)).run();
+    this.dbContext.delete(roleTable).where(eq(roleTable.id, id)).run();
   }
 }

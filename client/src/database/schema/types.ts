@@ -32,7 +32,6 @@ export interface RoleDTO {
 }
 
 export type NewRoleDTO = Omit<RoleDTO, "id">;
-export type UpdateRoleDTO = Omit<RoleDTO, "id">;
 
 // User DTO
 // This is the data that is returned from the repository layer

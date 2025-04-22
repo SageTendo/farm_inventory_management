@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/better-sqlite3";
 
-export const db = drizzle(process.env.DATABASE_URL);
+export const db = drizzle(process.env.DATABASE_URL as string);
 
 db.run("PRAGMA journal_mode = WAL;");
 db.run("PRAGMA foreign_keys = ON;");
