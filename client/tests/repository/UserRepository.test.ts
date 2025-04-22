@@ -1,23 +1,22 @@
 // users.test.ts
 import Database from "better-sqlite3";
-import { BetterSQLite3Database, drizzle } from "drizzle-orm/better-sqlite3";
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { roleTable, userTable } from "../../src/database/schema";
 import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
 import { UserRepository } from "../../src/database/repository/UserRepository";
 import { RoleRepository } from "../../src/database/repository/RoleRepository";
 import { roleTypes } from "../../src/database/schema/constants";
+import { setupDb } from "../testSetup";
 
-const client = new Database(":memory:");
+let client = new Database(":memory:");
 let db: BetterSQLite3Database<Record<string, never>>;
 let roleRepository: RoleRepository;
 let userRepository: UserRepository;
 
 beforeAll(async () => {
-  db = drizzle(client);
-  migrate(db, {
-    migrationsFolder: "./src/database/migrations",
-  });
+  const setup = setupDb();
+  client = setup.client;
+  db = setup.db;
 
   roleRepository = new RoleRepository(db);
   userRepository = new UserRepository(db);
