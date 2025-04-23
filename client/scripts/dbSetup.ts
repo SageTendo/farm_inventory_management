@@ -1,11 +1,7 @@
-import { config } from "dotenv";
 import { exec } from "child_process";
 import * as fs from "node:fs";
 import { promisify } from "util";
-import dotenvExpand from "dotenv-expand";
-
-const env = config();
-dotenvExpand.expand(env);
+import { env } from "../src/config";
 
 const RED = "\x1b[31m";
 const GREEN = "\x1b[32m";
@@ -22,7 +18,7 @@ interface execResponse {
 
 async function create_db(): Promise<execResponse> {
   console.log(`${GREEN}📦 Creating database...${RESET}`);
-  if (fs.existsSync(process.env.DB_FILE as string)) {
+  if (fs.existsSync(env.DB_FILE as string)) {
     return {
       success: true,
       message: `${YELLOW}⚠️  Database already exists! Skipping creation...${RESET}`,
@@ -30,9 +26,7 @@ async function create_db(): Promise<execResponse> {
   }
 
   try {
-    const { stdout, stderr } = await execAsync(
-      `npx tsx ${process.env.DB_PATH}/db.ts`,
-    );
+    const { stdout, stderr } = await execAsync(`npx tsx ${env.DB_PATH}/db.ts`);
     const message = stderr
       ? `${YELLOW}⚠️ ${stderr}${RESET}`
       : `${GREEN}${stdout}${RESET}`;
@@ -84,7 +78,7 @@ async function generate_migrations(): Promise<execResponse> {
 function delete_db_files() {
   const dbFilesRegex = new RegExp("(.*).db(.*)");
   console.log(`${BLUE}Deleting database...${RESET}`);
-  const databaseDir = process.env.DB_PATH as string;
+  const databaseDir = env.DB_PATH as string;
   for (const file of fs.readdirSync(databaseDir)) {
     if (file.match(dbFilesRegex)) {
       fs.unlinkSync(databaseDir + "/" + file);
@@ -94,7 +88,7 @@ function delete_db_files() {
 }
 
 async function main() {
-  if (!process.env.DB_FILE) {
+  if (!env.DB_FILE) {
     console.error(`${RED}DB_FILE environment variable is not set${RESET}`);
     return;
   }
