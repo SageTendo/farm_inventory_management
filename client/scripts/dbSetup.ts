@@ -2,8 +2,10 @@ import { config } from "dotenv";
 import { exec } from "child_process";
 import * as fs from "node:fs";
 import { promisify } from "util";
+import dotenvExpand from "dotenv-expand";
 
-config();
+const env = config();
+dotenvExpand.expand(env);
 
 const RED = "\x1b[31m";
 const GREEN = "\x1b[32m";
@@ -18,9 +20,9 @@ interface execResponse {
   message: string;
 }
 
-async function create_db(path: string): Promise<execResponse> {
+async function create_db(): Promise<execResponse> {
   console.log(`${GREEN}📦 Creating database...${RESET}`);
-  if (fs.existsSync(path)) {
+  if (fs.existsSync(process.env.DB_FILE as string)) {
     return {
       success: true,
       message: `${YELLOW}⚠️  Database already exists! Skipping creation...${RESET}`,
@@ -28,7 +30,9 @@ async function create_db(path: string): Promise<execResponse> {
   }
 
   try {
-    const { stdout, stderr } = await execAsync(`cd src && npx tsx ${path}`);
+    const { stdout, stderr } = await execAsync(
+      `npx tsx ${process.env.DB_PATH}/db.ts`,
+    );
     const message = stderr
       ? `${YELLOW}⚠️ ${stderr}${RESET}`
       : `${GREEN}${stdout}${RESET}`;
@@ -44,9 +48,7 @@ async function create_db(path: string): Promise<execResponse> {
 async function push_db_schema(): Promise<execResponse> {
   console.log(`${GREEN}📦 Pushing database schema...${RESET}`);
   try {
-    const { stdout, stderr } = await execAsync(
-      "cd src && npx drizzle-kit push",
-    );
+    const { stdout, stderr } = await execAsync("npx drizzle-kit push");
 
     const message = stderr
       ? `${YELLOW}⚠️ ${stderr}${RESET}`
@@ -64,9 +66,7 @@ async function push_db_schema(): Promise<execResponse> {
 async function generate_migrations(): Promise<execResponse> {
   console.log(`${GREEN}🧬 Generating migrations...${RESET}`);
   try {
-    const { stdout, stderr } = await execAsync(
-      "cd src && npx drizzle-kit generate",
-    );
+    const { stdout, stderr } = await execAsync("npx drizzle-kit generate");
 
     const message = stderr
       ? `${YELLOW}⚠️ ${stderr}${RESET}`
@@ -84,7 +84,7 @@ async function generate_migrations(): Promise<execResponse> {
 function delete_db_files() {
   const dbFilesRegex = new RegExp("(.*).db(.*)");
   console.log(`${BLUE}Deleting database...${RESET}`);
-  const databaseDir = "src/" + process.env.DATABASE_PATH;
+  const databaseDir = process.env.DB_PATH as string;
   for (const file of fs.readdirSync(databaseDir)) {
     if (file.match(dbFilesRegex)) {
       fs.unlinkSync(databaseDir + "/" + file);
@@ -94,11 +94,10 @@ function delete_db_files() {
 }
 
 async function main() {
-  if (!process.env.DATABASE_URL) {
-    console.error(`${RED}DATABASE_URL environment variable is not set${RESET}`);
+  if (!process.env.DB_FILE) {
+    console.error(`${RED}DB_FILE environment variable is not set${RESET}`);
     return;
   }
-  const databaseDir = process.env.DATABASE_PATH + "/db.ts";
 
   // Delete all database files
   if (process.argv.length > 2 && process.argv[2] === "DELETE") {
@@ -106,7 +105,7 @@ async function main() {
     return;
   }
 
-  const dbCreated = await create_db(databaseDir);
+  const dbCreated = await create_db();
   if (!dbCreated.success) {
     console.error(dbCreated.message);
     console.error(`${RED}Failed to create database${RESET}`);
