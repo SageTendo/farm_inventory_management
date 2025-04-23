@@ -1,6 +1,10 @@
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import { IUserRepository } from "../database/interfaces/IUserRepository";
-import { AuthResponseDTO, NewUserDTO } from "../database/schema/types";
+import {
+  AuthResponseDTO,
+  NewUserDTO,
+  UserResponseDTO,
+} from "../database/schema/types";
 
 import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
@@ -98,5 +102,50 @@ export class AuthService implements IAuthService {
 
     const userRole = await this.roleRepository.getRoleById(user.roleID);
     return userRole ? requiredRoles.includes(userRole.type) : false;
+  }
+
+  async updateRole(
+    adminID: number,
+    userId: number,
+    roleID: number,
+  ): Promise<UserResponseDTO | null> {
+    const hasRequiredRole = await this.hasRequiredRole(adminID, ["ADMIN"]);
+    console.log(hasRequiredRole);
+    if (!hasRequiredRole) {
+      throw new Error("You do not have permission to update user roles");
+    }
+
+    const existingUser = await this.userRepository.getUserById(userId);
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const role = await this.roleRepository.getRoleById(roleID);
+    if (!role) {
+      throw new Error("Invalid role ID");
+    }
+    return await this.userRepository.updateUser(userId, { roleID });
+  }
+
+  async updatePassword(
+    adminID: number,
+    userId: number,
+    password: string,
+  ): Promise<UserResponseDTO | null> {
+    if (!(await this.hasRequiredRole(adminID, ["ADMIN"]))) {
+      throw new Error("You do not have permission to update user passwords");
+    }
+
+    const existingUser = await this.userRepository.getUserById(userId);
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    if (!password.trim()) {
+      throw new Error("Password cannot be empty");
+    }
+
+    const passwordHash = await bcrypt.hash(password, this.SALT);
+    return await this.userRepository.updateUser(userId, { passwordHash });
   }
 }

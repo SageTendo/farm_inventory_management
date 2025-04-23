@@ -1,5 +1,5 @@
 import { RoleType } from "../schema/constants";
-import { NewRoleDTO, UpdateRoleDTO, RoleDTO } from "../schema/types";
+import { NewRoleDTO, RoleDTO } from "../schema/types";
 
 /**
  * Interface for role repository
@@ -33,14 +33,6 @@ export interface IRoleRepository {
    * @returns {Promise<RoleDTO | null>} A promise that resolves to the role entity if found, otherwise null
    */
   getRoleByType(type: RoleType): Promise<RoleDTO | null>;
-
-  /**
-   * Updates a role by its ID
-   * @param {number} id The ID of the role to update
-   * @param {UpdateRoleDTO} entity The updated role data
-   * @returns {Promise<RoleDTO | null>} A promise that resolves to the updated role entity if found, otherwise null
-   */
-  updateRole(id: number, entity: UpdateRoleDTO): Promise<RoleDTO | null>;
 
   /**
    * Deletes a role by its ID

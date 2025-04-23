@@ -57,6 +57,6 @@ export class UserRepository
   }
 
   async deleteUser(id: number): Promise<void> {
-    return this.dbContext.delete(userTable).where(eq(userTable.id, id)).run();
+    this.dbContext.delete(userTable).where(eq(userTable.id, id)).run();
   }
 }
