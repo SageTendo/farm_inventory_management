@@ -16,7 +16,7 @@ function Sidebar() {
       <div className="sidebar">
         <div className="sidebar-container">
           <div className="sidebar-brand">
-            <FontAwesomeIcon icon={faCogs} className="nav-icon" />
+            <FontAwesomeIcon icon={faChartLine} className="nav-icon logo" />
             <h1>IMS</h1>
           </div>
           <nav className="sidebar-nav">
