@@ -1,12 +1,18 @@
 import { IUserService } from "./interfaces/IUserService.ts";
 import { UpdateUserDTO, UserResponseDTO } from "../database/schema/types.ts";
 import { IUserRepository } from "../database/interfaces/IUserRepository.ts";
+import { IRoleRepository } from "../database/interfaces/IRoleRepository.ts";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;
+  protected roleRepository: IRoleRepository;
 
-  constructor(userRepository: IUserRepository) {
+  constructor(
+    userRepository: IUserRepository,
+    roleRepository: IRoleRepository,
+  ) {
     this.userRepository = userRepository;
+    this.roleRepository = roleRepository;
   }
 
   async getAllUsers(
@@ -28,6 +34,15 @@ export class UserService implements IUserService {
     id: number,
     entity: UpdateUserDTO,
   ): Promise<UserResponseDTO | null> {
+    if (entity.roleID) {
+      entity.roleID = undefined;
+    }
+
+    if (entity.passwordHash) {
+      entity.passwordHash = undefined;
+    }
+
+    entity.updatedAt = new Date().toISOString();
     return await this.userRepository.updateUser(id, entity);
   }
 
