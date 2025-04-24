@@ -31,7 +31,7 @@ function Sidebar() {
           <FontAwesomeIcon icon={faBars} className="nav-icon"/>
         </button>
       </div>
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav hidden">
         <NavLink to="/dashboard" className="navlink">
           <FontAwesomeIcon icon={faBoxes} className="nav-icon"/>
           <span className="nav-title">Dashboard</span>
