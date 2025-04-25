@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {Button, Container} from "react-bootstrap";
-import ProductsTable from "./ProductsTable.tsx";
+import {TableComponent} from "../data/Table";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 export function Products() {
   const [query, setQuery] = useState("");
 
-  const dummy = [
+  const dummy: Record<string, any>[] = [
     {
       id: 1,
       name: "Product 1",
@@ -108,7 +108,7 @@ export function Products() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button className="btn btn-danger" onClick={handleSearch}>
+        <button className="btn btn-secondary" onClick={handleSearch}>
           Search
         </button>
       </div>
@@ -117,28 +117,34 @@ export function Products() {
         <Link className="justify-content-end btn-success mb-3"
               to="/products/new"
         >
-          <Button variant="success">
+          <Button variant="primary" className="rounded-3">
             <FontAwesomeIcon icon={faPlus} className="nav-icon"/>
             <span className="mx-2">Add Product</span>
           </Button>
         </Link>
       </div>
 
-      <ProductsTable data={data}/>
+      <TableComponent
+        entity="products"
+        labels={["#", "Name", "Buy Price", "Sell Price", "Quantity"]}
+        keys={["id", "name", "buyPrice", "sellPrice", "quantity"]}
+        data={data}
+        actionable={true}
+      />
 
       {/* TODO: Pagination */}
-      <ul className="pagination justify-content-center">
-        <li className="page-item">
-          <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">1</a>
-        </li>
-        <li className="page-item">
-          <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">2</a>
-        </li>
-        <li className="page-item">
-          <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">3</a>
-        </li>
-        {/* More items */}
-      </ul>
+      {/*<ul className="pagination justify-content-center">*/}
+      {/*  <li className="page-item">*/}
+      {/*    <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">1</a>*/}
+      {/*  </li>*/}
+      {/*  <li className="page-item">*/}
+      {/*    <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">2</a>*/}
+      {/*  </li>*/}
+      {/*  <li className="page-item">*/}
+      {/*    <a className="page-link rounded-pill mx-1 text-dark bg-dark-subtle" href="#">3</a>*/}
+      {/*  </li>*/}
+      {/*  /!* More items *!/*/}
+      {/*</ul>*/}
     </Container>
   )
     ;

@@ -4,6 +4,8 @@ import LoginComponent from "./ui/components/user/Login";
 import {Products} from "./ui/components/product/Products.tsx";
 import {Route, Routes} from "react-router-dom";
 import {Layout} from "./ui/components/Layout.tsx";
+import {NewProduct} from "./ui/components/product/NewProduct.tsx";
+import {ManageProduct} from "./ui/components/product/ManageProduct.tsx";
 
 
 function App() {
@@ -18,8 +20,8 @@ function App() {
           {/* Product Management */}
           <>
             <Route path="/products" element={<Products/>}/>
-            <Route path="products/new" element={<div>New Product</div>}/>
-            <Route path="products/:id/manage" element={<div>Manage Product</div>}/>
+            <Route path="products/new" element={<NewProduct/>}/>
+            <Route path="products/:id/manage" element={<ManageProduct/>}/>
           </>
 
           {/* Inventory Management */}
