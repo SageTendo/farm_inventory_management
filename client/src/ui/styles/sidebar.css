@@ -59,7 +59,7 @@
 .navlink:hover,
 .navlink.active {
     color: white;
-    background-color: rgb(185, 94, 94);
+    background-color: rgba(13, 109, 251, 0.53);
     text-decoration: none;
     cursor: pointer;
 }
