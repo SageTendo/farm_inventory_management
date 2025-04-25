@@ -1,11 +1,13 @@
 import "./App.css";
-import Dashboard from "./ui/components/Dashboard";
-import LoginComponent from "./ui/components/user/Login";
-import {Products} from "./ui/components/product/Products.tsx";
+import Dashboard from "./ui/views/Dashboard";
+import LoginComponent from "./ui/views/auth/Login";
+import {Products} from "./ui/views/product/Products.tsx";
 import {Route, Routes} from "react-router-dom";
 import {Layout} from "./ui/components/Layout.tsx";
-import {NewProduct} from "./ui/components/product/NewProduct.tsx";
-import {ManageProduct} from "./ui/components/product/ManageProduct.tsx";
+import {NewProduct} from "./ui/views/product/NewProduct.tsx";
+import {ManageProduct} from "./ui/views/product/ManageProduct.tsx";
+import {Users} from "./ui/views/user/Users.tsx";
+import {NewUser} from "./ui/views/user/NewUser.tsx";
 
 
 function App() {
@@ -30,8 +32,8 @@ function App() {
 
           {/* User Management */}
           <>
-            <Route path="/users" element={<div>Users</div>}/>
-            <Route path="/users/new" element={<div>New User</div>}/>
+            <Route path="/users" element={<Users/>}/>
+            <Route path="/users/new" element={<NewUser/>}/>
             <Route path="/users/:id/manage" element={<div>Manage User</div>}/>
           </>
 
