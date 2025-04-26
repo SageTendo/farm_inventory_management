@@ -91,7 +91,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        border-bottom: 1px solid rgb(185, 94, 94);
+        border-bottom: 1px solid rgba(13, 109, 251, 0.53);
     }
 
     .sidebar-toggle {
@@ -113,7 +113,7 @@
     }
 
     .sidebar-toggle:hover {
-        color: rgb(185, 94, 94);
+        color: rgb(32, 122, 255);
     }
 
     .sidebar-nav.hidden {

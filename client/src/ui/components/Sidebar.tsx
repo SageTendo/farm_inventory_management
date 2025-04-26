@@ -5,12 +5,17 @@ import {
   faWarehouse,
   faChartLine,
   faUsers,
-  faCogs,
   faBars,
   faSignOutAlt,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import {NavLink} from "react-router-dom";
 import "../styles/sidebar.css";
+
+function doLogout() {
+  console.log("Logging out...");
+  //   TODO: Handle logout logic here
+}
 
 function Sidebar() {
   return (
@@ -26,8 +31,7 @@ function Sidebar() {
                   if (sidebar) {
                     sidebar.className = sidebar.className === 'sidebar-nav' ? 'sidebar-nav hidden' : 'sidebar-nav';
                   }
-                }}
-        >
+                }}>
           <FontAwesomeIcon icon={faBars} className="nav-icon"/>
         </button>
       </div>
@@ -53,13 +57,15 @@ function Sidebar() {
           <span className="nav-title">Users</span>
         </NavLink>
         <NavLink to="/settings" className="navlink">
-          <FontAwesomeIcon icon={faCogs} className="nav-icon"/>
-          <span className="nav-title">Settings</span>
+          <FontAwesomeIcon icon={faUser} className="nav-icon"/>
+          <span className="nav-title">Profile</span>
         </NavLink>
-        <NavLink to="/logout" className="navlink">
-          <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon"/>
-          <span className="nav-title">Logout</span>
-        </NavLink>
+        <div className="navlink w-100 d-flex">
+          <button onClick={doLogout} className="text-reset bg-transparent border-0 ">
+            <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon"/>
+            <span className="nav-title">Logout</span>
+          </button>
+        </div>
       </nav>
     </div>
   );
