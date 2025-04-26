@@ -58,7 +58,7 @@ function Sidebar() {
         </NavLink>
         <NavLink to="/settings" className="navlink">
           <FontAwesomeIcon icon={faUser} className="nav-icon"/>
-          <span className="nav-title">Profile</span>
+          <span className="nav-title">Settings</span>
         </NavLink>
         <div className="navlink w-100 d-flex">
           <button onClick={doLogout} className="text-reset bg-transparent border-0 ">
