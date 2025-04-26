@@ -92,8 +92,8 @@ export function Products() {
     console.log(query)
   };
 
-  const labels = ["Name", "Buy Price", "Sell Price", "Quantity"];
-  const keys = ["name", "buyPrice", "sellPrice", "quantity"];
+  const labels = ["#", "Name", "Buy Price", "Sell Price", "Quantity"];
+  const keys = ["id", "name", "buyPrice", "sellPrice", "quantity"];
 
   return (
     <ListPage

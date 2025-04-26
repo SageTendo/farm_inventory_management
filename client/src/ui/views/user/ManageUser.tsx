@@ -82,7 +82,7 @@ export function ManageUser() {
               <div className="d-flex flex-row justify-content-between align-items-center">
                 {/* Added Date */}
                 <Form.Group controlId="formProductAddedDate" className="w-50 me-3">
-                  <Form.Label>Added At: </Form.Label>
+                  <Form.Label>Created At: </Form.Label>
                   <Form.Control type="text" readOnly
                                 className="bg-dark text-white"
                                 disabled
