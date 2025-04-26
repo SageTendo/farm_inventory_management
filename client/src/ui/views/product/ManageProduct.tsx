@@ -39,7 +39,7 @@ export function ManageProduct() {
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Card
           className="p-4 shadow-lg bg-dark text-light w-100"
-          style={{maxWidth: "500px", borderRadius: "20px"}}
+          style={{maxWidth: "700px", borderRadius: "20px"}}
         >
           <div className="d-flex mb-5">
             <Link to="/products" className="text-decoration-none text-reset me-5">
@@ -124,7 +124,7 @@ export function ManageProduct() {
             </Form.Group>
 
             {/* Immutable Information */}
-            <div className="d-flex flex-column align-items-start">
+            <div className="d-flex flex-column">
               <div className="d-flex flex-row justify-content-between align-items-center">
                 {/* Added Date */}
                 <Form.Group controlId="formProductAddedDate" className="w-50 me-3">
