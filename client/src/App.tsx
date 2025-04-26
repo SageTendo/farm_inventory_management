@@ -8,6 +8,7 @@ import {NewProduct} from "./ui/views/product/NewProduct.tsx";
 import {ManageProduct} from "./ui/views/product/ManageProduct.tsx";
 import {Users} from "./ui/views/user/Users.tsx";
 import {NewUser} from "./ui/views/user/NewUser.tsx";
+import {ManageUser} from "./ui/views/user/ManageUser.tsx";
 
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
           <>
             <Route path="/users" element={<Users/>}/>
             <Route path="/users/new" element={<NewUser/>}/>
-            <Route path="/users/:id/manage" element={<div>Manage User</div>}/>
+            <Route path="/users/:id/manage" element={<ManageUser/>}/>
           </>
 
           <Route path="/settings" element={<div>Settings</div>}/>
