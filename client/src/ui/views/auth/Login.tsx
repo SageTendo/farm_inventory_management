@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Container, Form, Button, Card, Row, Col, Alert} from 'react-bootstrap';
+import {Container, Form, Button, Card, Alert} from 'react-bootstrap';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');

@@ -1,6 +1,6 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-  faBoxes,
+  faHome,
   faBoxesStacked,
   faWarehouse,
   faChartLine,
@@ -37,7 +37,7 @@ function Sidebar() {
       </div>
       <nav className="sidebar-nav hidden">
         <NavLink to="/dashboard" className="navlink">
-          <FontAwesomeIcon icon={faBoxes} className="nav-icon"/>
+          <FontAwesomeIcon icon={faHome} className="nav-icon"/>
           <span className="nav-title">Dashboard</span>
         </NavLink>
         <NavLink to="/products" className="navlink">
@@ -63,7 +63,7 @@ function Sidebar() {
         <div className="navlink w-100 d-flex">
           <button onClick={doLogout} className="text-reset bg-transparent border-0 ">
             <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon"/>
-            <span className="nav-title">Logout</span>
+            <span className="nav-title fw-bold">Logout</span>
           </button>
         </div>
       </nav>
