@@ -13,16 +13,33 @@ interface Props {
   actionable?: boolean
 }
 
+enum SortOrder {
+  NONE = "",
+  ASC = "asc",
+  DESC = "desc",
+}
+
 export function TableComponent(props: Props) {
   const [sortKey, setSortKey] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NONE);
 
   function handleSort(key: string) {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
+    if (sortKey !== key) {
       setSortKey(key);
-      setSortOrder("asc");
+      setSortOrder(SortOrder.ASC);
+    } else {
+      switch (sortOrder) {
+        case SortOrder.NONE:
+          setSortOrder(SortOrder.ASC);
+          return;
+        case SortOrder.ASC:
+          setSortOrder(SortOrder.DESC);
+          return;
+        case SortOrder.DESC:
+          setSortOrder(SortOrder.NONE);
+          setSortKey(SortOrder.NONE);
+          return;
+      }
     }
   }
 
@@ -35,10 +52,10 @@ export function TableComponent(props: Props) {
     if (aValue === undefined || bValue === undefined) return 0;
 
     if (typeof aValue === "number" && typeof bValue === "number") {
-      return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+      return sortOrder === SortOrder.ASC ? aValue - bValue : bValue - aValue;
     }
 
-    return sortOrder === "asc"
+    return sortOrder === SortOrder.ASC
       ? String(aValue).localeCompare(String(bValue))
       : String(bValue).localeCompare(String(aValue));
   });
@@ -62,7 +79,7 @@ export function TableComponent(props: Props) {
               >
                 {label}
                 <span className="ms-1 text-white" style={{fontSize: "0.8rem"}}>
-                    {isSorted ? (sortOrder === "asc" ?
+                    {isSorted ? (sortOrder === SortOrder.ASC ?
                         <FontAwesomeIcon icon={faSortUp}/> :
                         <FontAwesomeIcon icon={faSortDown}/>) :
                       <FontAwesomeIcon icon={faSort}/>}
