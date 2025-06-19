@@ -1,8 +1,8 @@
-import {useState} from "react";
-import {Button, Table} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faSort, faSortDown, faSortUp} from "@fortawesome/free-solid-svg-icons";
-import {Link} from "react-router-dom";
+import { useState } from "react";
+import { Button, Table } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faSort, faSortDown, faSortUp } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 import "../styles/tableComponent.css"; // we'll add a small CSS file for hover effects
 
 interface Props {
@@ -37,7 +37,7 @@ export function TableComponent(props: Props) {
           return;
         case SortOrder.DESC:
           setSortOrder(SortOrder.NONE);
-          setSortKey(SortOrder.NONE);
+          setSortKey(null);
           return;
       }
     }
@@ -66,58 +66,58 @@ export function TableComponent(props: Props) {
 
         {/* HEADER */}
         <thead>
-        <tr>
-          {props.labels.map((label, index) => {
-            const key = props.keys[index];
-            const isSorted = sortKey === key;
+          <tr>
+            {props.labels.map((label, index) => {
+              const key = props.keys[index];
+              const isSorted = sortKey === key;
 
-            return (
-              <th
-                key={index}
-                className="sortable-header"
-                onClick={() => handleSort(key)}
-              >
-                {label}
-                <span className="ms-1 text-white" style={{fontSize: "0.8rem"}}>
+              return (
+                <th
+                  key={index}
+                  className="sortable-header"
+                  onClick={() => handleSort(key)}
+                >
+                  {label}
+                  <span className="ms-1 text-white" style={{ fontSize: "0.8rem" }}>
                     {isSorted ? (sortOrder === SortOrder.ASC ?
-                        <FontAwesomeIcon icon={faSortUp}/> :
-                        <FontAwesomeIcon icon={faSortDown}/>) :
-                      <FontAwesomeIcon icon={faSort}/>}
+                      <FontAwesomeIcon icon={faSortUp} /> :
+                      <FontAwesomeIcon icon={faSortDown} />) :
+                      <FontAwesomeIcon icon={faSort} />}
                   </span>
-              </th>
-            );
-          })}
-          {!props.actionable ? null : <th/>}
-        </tr>
+                </th>
+              );
+            })}
+            {!props.actionable ? null : <th />}
+          </tr>
         </thead>
 
         {/* BODY */}
         <tbody>
-        {sortedData.map((item, index) => (
-          <tr key={item.id || index}>
-            {props.keys.map((key, keyIndex) => (
-              <td key={keyIndex}>{item[key]}</td>
-            ))}
+          {sortedData.map((item, index) => (
+            <tr key={item.id || index}>
+              {props.keys.map((key, keyIndex) => (
+                <td key={keyIndex}>{item[key]}</td>
+              ))}
 
-            {!props.actionable ? null : (
-              <td className="d-flex justify-content-evenly">
-                <Link
-                  className="text-reset text-decoration-none"
-                  to={`/${props.entity}/${item.id}/manage`}
-                >
-                  <Button
-                    className="rounded-pill"
-                    variant="outline-warning"
-                    size="sm"
+              {!props.actionable ? null : (
+                <td className="d-flex justify-content-evenly">
+                  <Link
+                    className="text-reset text-decoration-none"
+                    to={`/${props.entity}/${item.id}/manage`}
                   >
-                    <FontAwesomeIcon icon={faEdit}/>
-                    <span className="ms-2">Manage</span>
-                  </Button>
-                </Link>
-              </td>
-            )}
-          </tr>
-        ))}
+                    <Button
+                      className="rounded-pill"
+                      variant="outline-warning"
+                      size="sm"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                      <span className="ms-2">Manage</span>
+                    </Button>
+                  </Link>
+                </td>
+              )}
+            </tr>
+          ))}
         </tbody>
       </Table>
     </div>
