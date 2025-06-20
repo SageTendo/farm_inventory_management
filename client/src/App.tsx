@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/electron-vite.animate.svg'
-import './App.css'
+import "./App.css";
+import Dashboard from "./ui/views/Dashboard";
+import LoginComponent from "./ui/views/auth/Login";
+import {Products} from "./ui/views/product/Products.tsx";
+import {Route, Routes} from "react-router-dom";
+import {Layout} from "./ui/components/Layout.tsx";
+import {NewProduct} from "./ui/views/product/NewProduct.tsx";
+import {ManageProduct} from "./ui/views/product/ManageProduct.tsx";
+import {Users} from "./ui/views/user/Users.tsx";
+import {NewUser} from "./ui/views/user/NewUser.tsx";
+import {ManageUser} from "./ui/views/user/ManageUser.tsx";
+import {SettingsPage} from "./ui/views/user/SettingsPage.tsx";
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://electron-vite.github.io" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <Routes>
+        {/*<Route path="/register" element={<div>Register</div>}/>*/}
+        <Route path="/login" element={<LoginComponent/>}/>
+        <Route path="/" element={<Layout/>}>
+          <Route path="/dashboard" element={<Dashboard/>}/>
+
+          {/* Product Management */}
+          <>
+            <Route path="/products" element={<Products/>}/>
+            <Route path="products/new" element={<NewProduct/>}/>
+            <Route path="products/:id/manage" element={<ManageProduct/>}/>
+          </>
+
+          {/* Inventory Management */}
+          <Route path="/stock" element={<div>Stock</div>}/>
+          <Route path="/sales" element={<div>Sales</div>}/>
+
+          {/* User Management */}
+          <>
+            <Route path="/users" element={<Users/>}/>
+            <Route path="/users/new" element={<NewUser/>}/>
+            <Route path="/users/:id/manage" element={<ManageUser/>}/>
+          </>
+
+          <Route path="/settings" element={<SettingsPage/>}/>
+          <Route path="/logout" element={<div>Logout</div>}/>
+        </Route>
+
+        <Route path="*" element={<div>404</div>}/>
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;

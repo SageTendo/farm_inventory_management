@@ -17,11 +17,17 @@
     "db_nuke": "npx tsx ./scripts/dbSetup.ts DELETE && rm -rf src/database/migrations"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "better-sqlite3": "^11.9.1",
+    "bootstrap": "^5.3.5",
     "dotenv-expand": "^12.0.2",
     "drizzle-orm": "^0.41.0",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^7.5.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
