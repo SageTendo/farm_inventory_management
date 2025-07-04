@@ -10,12 +10,14 @@ import { SettingsPage } from "../ui/views/user/SettingsPage.tsx";
 import LoginComponent from "../ui/views/auth/Login";
 import { Layout } from "../ui/components/Layout.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import { POS } from "../ui/views/pos/POS.tsx";
 
 // Using const assertion to make these strings readonly types
 export const paths = {
   root: "/",
   login: "/login",
   dashboard: "/dashboard",
+  pos: "/pos",
   products: "/products",
   newProduct: "/products/new",
   manageProduct: "/products/:id/manage",
@@ -39,6 +41,7 @@ const protectedRoutes: RouteObject[] = [
         children: [
           { index: true, element: <Navigate to={paths.dashboard} replace /> },
           { path: paths.dashboard, element: <Dashboard /> },
+          { path: paths.pos, element: <POS /> },
           { path: paths.products, element: <Products /> },
           { path: paths.newProduct, element: <NewProduct /> },
           { path: paths.manageProduct, element: <ManageProduct /> },

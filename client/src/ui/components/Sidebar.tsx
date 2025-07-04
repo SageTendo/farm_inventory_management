@@ -8,6 +8,7 @@ import {
   faBars,
   faSignOutAlt,
   faUser,
+  faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import "../styles/sidebar.css";
@@ -31,17 +32,23 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
         <span className="logo-text">IMS</span>
       </div>
       <div className="sidebar-divider">
-        <button className="sidebar-toggle"
+        <button
+          className="sidebar-toggle"
           onClick={() => {
-            setSidebarHidden(!isSidebarHidden)
-          }}>
+            setSidebarHidden(!isSidebarHidden);
+          }}
+        >
           <FontAwesomeIcon icon={faBars} className="nav-icon" />
         </button>
       </div>
-      <nav className={`sidebar-nav ${isSidebarHidden ? 'hidden' : ''}`}>
+      <nav className={`sidebar-nav ${isSidebarHidden ? "hidden" : ""}`}>
         <NavLink to="/dashboard" className="navlink">
           <FontAwesomeIcon icon={faHome} className="nav-icon" />
           <span className="nav-title">Dashboard</span>
+        </NavLink>
+        <NavLink to="/pos" className="navlink">
+          <FontAwesomeIcon icon={faStore} className="nav-icon" />
+          <span className="nav-title">Shop</span>
         </NavLink>
         <NavLink to="/products" className="navlink">
           <FontAwesomeIcon icon={faBoxesStacked} className="nav-icon" />
@@ -64,7 +71,10 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
           <span className="nav-title">Settings</span>
         </NavLink>
         <div className="navlink w-100 d-flex">
-          <button onClick={doLogout} className="text-reset bg-transparent border-0 ">
+          <button
+            onClick={doLogout}
+            className="text-reset bg-transparent border-0 "
+          >
             <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
             <span className="nav-title fw-bold">Logout</span>
           </button>
