@@ -10,7 +10,7 @@ import { SettingsPage } from "../ui/views/user/SettingsPage.tsx";
 import LoginComponent from "../ui/views/auth/Login";
 import { Layout } from "../ui/components/Layout.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
-import { POS } from "../ui/views/pos/POS.tsx";
+import { Shop } from "../ui/views/pos/Shop.tsx";
 
 // Using const assertion to make these strings readonly types
 export const paths = {
@@ -41,7 +41,7 @@ const protectedRoutes: RouteObject[] = [
         children: [
           { index: true, element: <Navigate to={paths.dashboard} replace /> },
           { path: paths.dashboard, element: <Dashboard /> },
-          { path: paths.pos, element: <POS /> },
+          { path: paths.pos, element: <Shop /> },
           { path: paths.products, element: <Products /> },
           { path: paths.newProduct, element: <NewProduct /> },
           { path: paths.manageProduct, element: <ManageProduct /> },
@@ -74,12 +74,16 @@ const routes: RouteObject[] = [
     element: (
       <div className="d-flex flex-column align-items-center justify-content-center h-100">
         <h1 className="text-danger">404: Page Not Found</h1>
-        <p className="text-muted">The page you are looking for does not exist.</p>
-        <Link to="/" className="btn btn-primary">Go to Home</Link>
+        <p className="text-muted">
+          The page you are looking for does not exist.
+        </p>
+        <Link to="/" className="btn btn-primary">
+          Go to Home
+        </Link>
       </div>
-    )
-  }
-]
+    ),
+  },
+];
 
 export { protectedRoutes, publicRoutes };
-export default routes; 
+export default routes;

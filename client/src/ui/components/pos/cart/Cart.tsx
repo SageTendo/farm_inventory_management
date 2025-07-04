@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CartItem } from "./CartItem.tsx";
-import { Item } from "../../../views/pos/POS.tsx";
+import { Item } from "../../../views/pos/Shop.tsx";
 
 interface CartProps {
   cart: Item[];

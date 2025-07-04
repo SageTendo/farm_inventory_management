@@ -1,7 +1,7 @@
 import { Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Item } from "../../../views/pos/POS.tsx";
+import { Item } from "../../../views/pos/Shop.tsx";
 
 interface CartItemProps {
   item: Item;
