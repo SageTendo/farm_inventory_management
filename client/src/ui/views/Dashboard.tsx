@@ -1,15 +1,15 @@
-import {SummaryCard} from "../components/SummaryCard";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHome, faPlus} from "@fortawesome/free-solid-svg-icons";
-import {Button, Card, Col, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import { SummaryCard } from "../components/SummaryCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   return (
     <>
       <div className="d-flex flex-column justify-content-center px-3">
         <h1 className="mb-4 fw-bold">
-          <FontAwesomeIcon icon={faHome} className="nav-icon"/>
+          <FontAwesomeIcon icon={faHome} className="nav-icon" />
           Dashboard
         </h1>
 
@@ -50,7 +50,7 @@ function Dashboard() {
               <Card.Text className="fs-3 fw-bold text-center">
                 <Link to="/products/new" className="text-decoration-none text-reset">
                   <Button variant="success" className="rounded-3">
-                    <FontAwesomeIcon icon={faPlus} className="nav-icon"/>
+                    <FontAwesomeIcon icon={faPlus} className="nav-icon" />
                     <span className="nav-title fw-bolder">Add Product</span>
                   </Button>
                 </Link>
@@ -76,7 +76,7 @@ function Dashboard() {
         {/*      </Card.Text>*/}
         {/*    </Card.Body>*/}
         {/*  </Card>*/}
-        {/*</div>*/}
+        {/*</div> */}
 
         {/* Add New User widget */}
         <div className="my-4">
@@ -88,7 +88,7 @@ function Dashboard() {
               <Card.Text className="fs-3 fw-bold text-center">
                 <Link to="/users/new" className="text-decoration-none text-reset">
                   <Button variant="success" className="rounded-3">
-                    <FontAwesomeIcon icon={faPlus} className="nav-icon"/>
+                    <FontAwesomeIcon icon={faPlus} className="nav-icon" />
                     <span className="nav-title fw-bolder">Add User</span>
                   </Button>
                 </Link>
