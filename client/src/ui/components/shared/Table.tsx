@@ -22,7 +22,13 @@ enum SortOrder {
   DESC = "desc",
 }
 
-export function Table({ entity, labels, keys, data, actionable = false }: Props) {
+export function Table({
+  entity,
+  labels,
+  keys,
+  data,
+  actionable = false,
+}: Props) {
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NONE);
 
@@ -32,7 +38,11 @@ export function Table({ entity, labels, keys, data, actionable = false }: Props)
       setSortOrder(SortOrder.ASC);
     } else {
       setSortOrder((prev) =>
-        prev === SortOrder.ASC ? SortOrder.DESC : prev === SortOrder.DESC ? SortOrder.NONE : SortOrder.ASC
+        prev === SortOrder.ASC
+          ? SortOrder.DESC
+          : prev === SortOrder.DESC
+            ? SortOrder.NONE
+            : SortOrder.ASC,
       );
       if (sortOrder === SortOrder.DESC) setSortKey(null);
     }
@@ -40,7 +50,8 @@ export function Table({ entity, labels, keys, data, actionable = false }: Props)
 
   const sortedData = [...data].sort((a, b) => {
     if (!sortKey) return 0;
-    const aVal = a[sortKey], bVal = b[sortKey];
+    const aVal = a[sortKey],
+      bVal = b[sortKey];
     if (aVal === undefined || bVal === undefined) return 0;
 
     if (typeof aVal === "number" && typeof bVal === "number")
@@ -63,7 +74,8 @@ export function Table({ entity, labels, keys, data, actionable = false }: Props)
               return (
                 <th
                   key={key}
-                  className="px-4 py-3 cursor-pointer select-none hover:bg-gray-700 transition sticky top-0 bg-gray-800 z-20"
+                  className={`px-4 py-3 cursor-pointer select-none ${isSorted ? "text-yellow-500" : ""} 
+                  hover:bg-gray-700 hover:text-yellow-500 transition sticky top-0 bg-gray-800 z-20`}
                   onClick={() => handleSort(key)}
                 >
                   <div className="flex items-center justify-between">

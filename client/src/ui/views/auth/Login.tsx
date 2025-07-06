@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import {
-  SCREEN_SIZE,
-  useDetectScreenType,
-} from "../../../hooks/useDetectScreenType.ts";
 import { useAuth } from "../../../hooks/useAuth.ts";
 import { Navigate } from "react-router-dom";
 
@@ -23,8 +19,6 @@ const LoginPage = () => {
     console.log({ username, password });
     setErrorMsg("");
   };
-
-  const isMobile = useDetectScreenType(SCREEN_SIZE.SMALL);
 
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;

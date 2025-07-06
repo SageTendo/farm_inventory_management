@@ -37,13 +37,13 @@ export function ManageProduct() {
   };
 
   return (
-    <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-900">
+    <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
       {/* Sticky Header */}
       <div className="sticky top-0 z-40 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
         <Link to="/products">
           <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm sm:text-base">
             <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Back</span>
+            <span>Products</span>
           </button>
         </Link>
         <h1 className="text-xl md:text-3xl font-bold">Manage Product</h1>
@@ -99,7 +99,9 @@ export function ManageProduct() {
           {/* Immutable Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Added At:</label>
+              <label className="block text-sm text-gray-400 mb-1">
+                Added At:
+              </label>
               <input
                 type="text"
                 readOnly
@@ -108,7 +110,9 @@ export function ManageProduct() {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Updated At:</label>
+              <label className="block text-sm text-gray-400 mb-1">
+                Updated At:
+              </label>
               <input
                 type="text"
                 readOnly
@@ -117,7 +121,9 @@ export function ManageProduct() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm text-gray-400 mb-1">Added By:</label>
+              <label className="block text-sm text-gray-400 mb-1">
+                Added By:
+              </label>
               <input
                 type="text"
                 readOnly

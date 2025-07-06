@@ -1,4 +1,4 @@
-import { SummaryCard } from "../components/SummaryCard";
+import { SummaryCard } from "../components/shared/SummaryCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";

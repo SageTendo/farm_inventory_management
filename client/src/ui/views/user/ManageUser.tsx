@@ -23,7 +23,7 @@ export function ManageUser() {
         <Link to="/users">
           <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm sm:text-base">
             <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Back</span>
+            <span>Users</span>
           </button>
         </Link>
         <h1 className="text-xl md:text-3xl font-bold">Manage User</h1>
@@ -93,7 +93,9 @@ export function ManageUser() {
           {/* Immutable Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm mb-1 text-gray-400">Created At:</label>
+              <label className="block text-sm mb-1 text-gray-400">
+                Created At:
+              </label>
               <input
                 type="text"
                 readOnly
@@ -102,7 +104,9 @@ export function ManageUser() {
               />
             </div>
             <div>
-              <label className="block text-sm mb-1 text-gray-400">Updated At:</label>
+              <label className="block text-sm mb-1 text-gray-400">
+                Updated At:
+              </label>
               <input
                 type="text"
                 readOnly
@@ -111,7 +115,9 @@ export function ManageUser() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm mb-1 text-gray-400">Added By:</label>
+              <label className="block text-sm mb-1 text-gray-400">
+                Added By:
+              </label>
               <input
                 type="text"
                 readOnly
