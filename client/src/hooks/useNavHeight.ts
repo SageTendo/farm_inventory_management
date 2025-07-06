@@ -1,7 +1,7 @@
 import { SCREEN_SIZE, useDetectScreenType } from "./useDetectScreenType.ts";
 import { useEffect, useState } from "react";
 
-const NAV_HEIGHT_PX = 80;
+const NAV_HEIGHT_PX = 55;
 
 export const useNavHeight = () => {
   const isMobile = useDetectScreenType(SCREEN_SIZE.SMALL);

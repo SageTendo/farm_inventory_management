@@ -11,12 +11,10 @@ import {
   faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
-import "../styles/sidebar.css";
-import { Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 
 function doLogout() {
   console.log("Logging out...");
-  //   TODO: Handle logout logic here
 }
 
 interface SidebarProps {
@@ -24,63 +22,130 @@ interface SidebarProps {
   setSidebarHidden: Dispatch<SetStateAction<boolean>>;
 }
 
+const navItems = [
+  { to: "/dashboard", icon: faHome, label: "Dashboard" },
+  { to: "/pos", icon: faStore, label: "Shop" },
+  { to: "/products", icon: faBoxesStacked, label: "Products" },
+  { to: "/stock", icon: faWarehouse, label: "Stock" },
+  { to: "/sales", icon: faChartLine, label: "Sales" },
+  { to: "/users", icon: faUsers, label: "Users" },
+  { to: "/settings", icon: faUser, label: "Settings" },
+];
+
 function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div className={`sidebar ${isSidebarHidden ? "hidden" : ""}`}>
-      <div className="sidebar-brand">
-        <FontAwesomeIcon icon={faChartLine} className="nav-icon logo" />
-        <span className="logo-text">IMS</span>
-      </div>
-      <div className="sidebar-divider">
-        <button
-          className="sidebar-toggle"
-          onClick={() => {
-            setSidebarHidden(!isSidebarHidden);
-          }}
-        >
-          <FontAwesomeIcon icon={faBars} className="nav-icon" />
-        </button>
-      </div>
-      <nav className={`sidebar-nav ${isSidebarHidden ? "hidden" : ""}`}>
-        <NavLink to="/dashboard" className="navlink">
-          <FontAwesomeIcon icon={faHome} className="nav-icon" />
-          <span className="nav-title">Dashboard</span>
-        </NavLink>
-        <NavLink to="/pos" className="navlink">
-          <FontAwesomeIcon icon={faStore} className="nav-icon" />
-          <span className="nav-title">Shop</span>
-        </NavLink>
-        <NavLink to="/products" className="navlink">
-          <FontAwesomeIcon icon={faBoxesStacked} className="nav-icon" />
-          <span className="nav-title">Products</span>
-        </NavLink>
-        <NavLink to="/stock" className="navlink">
-          <FontAwesomeIcon icon={faWarehouse} className="nav-icon" />
-          <span className="nav-title">Stock</span>
-        </NavLink>
-        <NavLink to="/sales" className="navlink">
-          <FontAwesomeIcon icon={faChartLine} className="nav-icon" />
-          <span className="nav-title">Sales</span>
-        </NavLink>
-        <NavLink to="/users" className="navlink">
-          <FontAwesomeIcon icon={faUsers} className="nav-icon" />
-          <span className="nav-title">Users</span>
-        </NavLink>
-        <NavLink to="/settings" className="navlink">
-          <FontAwesomeIcon icon={faUser} className="nav-icon" />
-          <span className="nav-title">Settings</span>
-        </NavLink>
-        <div className="navlink w-100 d-flex">
+    <>
+      {/* Desktop Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-screen bg-gray-900  text-white overflow-hidden z-50 transition-all duration-300
+          hidden md:flex flex-col
+          ${isSidebarHidden ? "w-20" : "w-40"}`}
+      >
+        {/* Brand */}
+        <div className="flex items-center gap-4 px-4 pt-8 pb-6">
+          <FontAwesomeIcon icon={faChartLine} className="text-4xl" />
+          {!isSidebarHidden && (
+            <span className="text-2xl font-bold whitespace-nowrap">IMS</span>
+          )}
+        </div>
+
+        {/* Divider + Toggle */}
+        <div className="flex items-center justify-end border-t border-blue-500/50 px-2 py-3">
           <button
-            onClick={doLogout}
-            className="text-reset bg-transparent border-0 "
+            onClick={() => setSidebarHidden(!isSidebarHidden)}
+            className="w-12 h-12 flex items-center justify-center text-white hover:text-blue-400 transition"
           >
-            <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
-            <span className="nav-title fw-bold">Logout</span>
+            <FontAwesomeIcon icon={faBars} className="text-2xl" />
           </button>
         </div>
-      </nav>
-    </div>
+
+        {/* Navigation */}
+        <nav className="flex flex-col mt-4 flex-grow overflow-auto">
+          {navItems.map(({ to, icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center w-full px-4 py-3 text-sm no-underline font-bold text-white transition duration-300 hover:bg-blue-600 ${
+                  isActive ? "bg-blue-600" : ""
+                }`
+              }
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <FontAwesomeIcon icon={icon} className="text-base mr-4" />
+              {!isSidebarHidden && (
+                <span className="whitespace-nowrap">{label}</span>
+              )}
+            </NavLink>
+          ))}
+
+          <button
+            onClick={doLogout}
+            className="flex items-center w-full px-4 py-3 mb-2.5 text-sm font-bold text-white transition duration-300 hover:bg-red-600 mt-auto"
+          >
+            <FontAwesomeIcon icon={faSignOutAlt} className="text-base mr-4" />
+            {!isSidebarHidden && (
+              <span className="whitespace-nowrap">Logout</span>
+            )}
+          </button>
+        </nav>
+      </aside>
+
+      {/* Mobile Top Nav */}
+      <header className="fixed top-0 left-0 right-0 bg-gray-900 text-white flex items-center justify-between px-4 h-14 z-50 md:hidden">
+        {/* Brand */}
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon icon={faChartLine} className="text-2xl" />
+          <span className="font-bold text-lg">IMS</span>
+        </div>
+
+        {/* Hamburger toggle */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="text-white focus:outline-none"
+          aria-label="Toggle menu"
+        >
+          <FontAwesomeIcon icon={faBars} className="text-2xl" />
+        </button>
+      </header>
+
+      {/* Mobile menu dropdown */}
+      {mobileMenuOpen && (
+        <nav
+          className="fixed top-14 left-0 right-0 bg-gray-900 text-white flex flex-col border-t
+        border-blue-500 z-40 md:hidden h-screen"
+        >
+          {navItems.map(({ to, icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center px-4 py-3 text-base font-bold no-underline text-white transition duration-300 hover:bg-blue-600 ${
+                  isActive ? "bg-blue-600" : ""
+                }`
+              }
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <FontAwesomeIcon icon={icon} className="mr-4" />
+              {label}
+            </NavLink>
+          ))}
+
+          <button
+            onClick={() => {
+              doLogout();
+              setMobileMenuOpen(false);
+            }}
+            className="flex items-center px-4 py-3 text-base font-bold text-white transition duration-300 hover:bg-red-600"
+          >
+            <FontAwesomeIcon icon={faSignOutAlt} className="mr-4" />
+            Logout
+          </button>
+        </nav>
+      )}
+    </>
   );
 }
 

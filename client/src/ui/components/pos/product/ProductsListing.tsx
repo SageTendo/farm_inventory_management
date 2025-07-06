@@ -1,4 +1,3 @@
-import { Col, Row } from "react-bootstrap";
 import { Product } from "../../../../mock/pos_data.ts";
 import { ProductCard } from "./ProductCard.tsx";
 
@@ -12,17 +11,21 @@ export const ProductsListing = ({
   addToCart,
 }: ProductListingProps) => {
   return (
-    <div className="overflow-x-hidden pe-1 flex-grow-1">
-      <div className="flex-grow-1 d-flex flex-column">
-        <div className="overflow-hidden pe-1 flex-grow-1">
-          <Row className="row-cols-1 row-cols-md-1 row-cols-sm-1 row-cols-lg-2 row-cols-xl-3 g-4">
-            {products.map((product) => (
-              <Col key={product.id}>
-                <ProductCard product={product} addToCart={addToCart} />
-              </Col>
-            ))}
-          </Row>
-        </div>
+    <div className="overflow-x-hidden flex-grow">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {products.length === 0 && (
+          <div className="col-span-3 flex justify-center items-center">
+            <p className="text-2xl font-bold text-gray-500">
+              No products found
+            </p>
+          </div>
+        )}
+
+        {products.map((product) => (
+          <div key={product.id} className="w-full">
+            <ProductCard product={product} addToCart={addToCart} />
+          </div>
+        ))}
       </div>
     </div>
   );

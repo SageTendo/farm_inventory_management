@@ -72,13 +72,13 @@ const routes: RouteObject[] = [
   {
     path: "*",
     element: (
-      <div className="d-flex flex-column align-items-center justify-content-center h-100">
-        <h1 className="text-danger">404: Page Not Found</h1>
-        <p className="text-muted">
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-red-600">404: Page Not Found</h1>
+        <p className="text-gray-600">
           The page you are looking for does not exist.
         </p>
         <Link to="/" className="btn btn-primary">
-          Go to Home
+          Return Home
         </Link>
       </div>
     ),

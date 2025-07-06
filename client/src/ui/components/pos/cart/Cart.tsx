@@ -1,14 +1,14 @@
-import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { CartItem } from "./CartItem.tsx";
-import { Item } from "../../../views/pos/Shop.tsx";
+import { CartItem } from "./CartItem";
+import { Item } from "../../../views/pos/Shop";
 
 interface CartProps {
   cart: Item[];
   changeQuantity: (id: number, delta: number) => void;
   removeItem: (id: number) => void;
   clearCart: () => void;
+  onClose?: () => void; // Optional, used only in mobile modal
 }
 
 export const Cart = ({
@@ -16,20 +16,35 @@ export const Cart = ({
   changeQuantity,
   removeItem,
   clearCart,
+  onClose,
 }: CartProps) => {
   const total = cart.reduce(
     (acc, item) => acc + item.sellPrice * item.quantity,
     0,
   );
-  const totalZIG = cart.reduce(
-    (acc, item) => acc + item.sellPrice * item.quantity * 20,
-    0,
-  );
+  const totalZIG = total * 20;
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <>
-      <div className="overflow-x-hidden flex-grow-1 mb-2 px-1">
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-3 mt-3 px-2">
+        <h2 className="font-bold text-white text-3xl">Cart</h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="text-white font-bold px-3 py-1 border border-white rounded hover:bg-white hover:text-gray-900 transition"
+          >
+            Close
+          </button>
+        )}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-700 mb-1"></div>
+
+      {/* Scrollable cart items */}
+      <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-1 mb-3 mt-3">
         {cart.map((item) => (
           <CartItem
             key={item.id}
@@ -41,29 +56,32 @@ export const Cart = ({
       </div>
 
       {/* Sticky Footer */}
-      <div className="sticky-bottom bg-dark pt-3 border-top">
-        <div className="d-flex justify-content-between mb-2 text-light">
-          <span className="fw-bold">Items: {totalItems}</span>
-          <div className="d-flex flex-column">
-            <span className="fw-bold">USD: {total.toFixed(2)}</span>
-            <span className="fw-bold">ZIG: {totalZIG.toFixed(2)}</span>
+      <div className="bg-gray-900 text-white text-md font-bold pt-3 border-t border-gray-700 px-2">
+        <div className="flex justify-between mb-3">
+          <span>Items: {totalItems}</span>
+          <div className="text-right">
+            <div>USD: {total.toFixed(2)}</div>
+            <div>ZIG: {totalZIG.toFixed(2)}</div>
           </div>
         </div>
-        <div className="d-flex gap-2">
-          <Button variant="outline-danger" className="w-50" onClick={clearCart}>
-            <FontAwesomeIcon icon={faTrash} className="me-2" />
+
+        <div className="flex gap-3">
+          <button
+            className="w-1/2 py-2 px-4 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
+            onClick={clearCart}
+          >
+            <FontAwesomeIcon icon={faTrash} className="mr-2" />
             Clear
-          </Button>
-          <Button
-            variant="success"
-            className="w-50"
+          </button>
+          <button
+            className="w-1/2 py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
             onClick={() => alert("Checkout not implemented.")}
           >
-            <FontAwesomeIcon icon={faCreditCard} className="me-2" />
+            <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
             Checkout
-          </Button>
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };

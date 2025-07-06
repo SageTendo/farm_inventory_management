@@ -2,14 +2,13 @@ import { faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Product, products } from "../../../mock/pos_data";
 import { useEffect, useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
-import { ProductsListing } from "../../components/pos/product/ProductsListing.tsx";
-import { Cart } from "../../components/pos/cart/Cart.tsx";
+import { ProductsListing } from "../../components/pos/product/ProductsListing";
+import { Cart } from "../../components/pos/cart/Cart";
 import {
   SCREEN_SIZE,
   useDetectScreenType,
-} from "../../../hooks/useDetectScreenType.ts";
-import { useNavHeight } from "../../../hooks/useNavHeight.ts";
+} from "../../../hooks/useDetectScreenType";
+import { useNavHeight } from "../../../hooks/useNavHeight";
 
 export interface Item extends Product {
   quantity: number;
@@ -27,7 +26,7 @@ export function Shop() {
   );
 
   function addToCart(product: Product) {
-    const existingItem = cart.find((item: Product) => item.id === product.id);
+    const existingItem = cart.find((item) => item.id === product.id);
     if (existingItem) {
       changeQuantity(product.id, 1);
     } else {
@@ -51,7 +50,6 @@ export function Shop() {
     setCart((prev) => prev.filter((item) => item.id !== productId));
   }
 
-  // Auto close cart on mobile when cart is empty or when switching to desktop
   useEffect(() => {
     if (!isMobile || cart.length === 0) {
       setIsCartOpen(false);
@@ -59,32 +57,33 @@ export function Shop() {
   }, [isMobile, cart.length]);
 
   return (
-    <div className="d-flex flex-column px-3 h-100 position-relative">
-      <h1 className="mb-4 fw-bold d-flex align-items-center gap-3">
-        <FontAwesomeIcon icon={faStore} />
-        <span className="fs-2">Shop</span>
+    <div className="flex flex-col h-screen overflow-hidden pb-10">
+      {/* Header */}
+      <h1 className="mb-4 text-4xl font-bold flex items-center gap-3 text-gray-800">
+        <FontAwesomeIcon icon={faStore} className="text-primary" />
+        Shop
       </h1>
 
-      {/* Search */}
-      <InputGroup className="mb-4 shadow-sm rounded-3">
-        <Form.Control
+      {/* Search Bar */}
+      <div className="flex mb-4 shadow-sm rounded-lg overflow-hidden">
+        <input
           type="text"
           placeholder="Search for products..."
-          className="form-control border-0 rounded-start-3"
+          className="flex-grow px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <Button variant="primary" className="rounded-end-3">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
           <FontAwesomeIcon icon={faSearch} />
-        </Button>
-      </InputGroup>
+        </button>
+      </div>
 
-      {/* Main Layout */}
-      <div className="d-flex flex-column flex-md-row gap-4 overflow-hidden flex-grow-1">
-        {/* Product Section */}
+      {/* Main layout: product list + cart */}
+      <div className="flex flex-1 gap-4 overflow-hidden">
+        {/* Product List */}
         {!isCartOpen && (
-          <div className="flex-grow-1 d-flex flex-column">
-            <h2 className="fw-bold mb-3 text-dart">Products</h2>
+          <div className="flex flex-col flex-1 overflow-y-auto pr-1">
+            <h2 className="font-bold mb-3 text-2xl text-gray-800">Products</h2>
             <ProductsListing
               products={filteredProducts}
               addToCart={addToCart}
@@ -92,16 +91,9 @@ export function Shop() {
           </div>
         )}
 
-        {/* Cart Section Desktop Only */}
+        {/* Desktop Cart */}
         {!isMobile && cart.length > 0 && (
-          <div
-            className="d-flex flex-column flex-grow-1 bg-dark px-3 py-3 rounded-3 shadow-sm"
-            style={{
-              minWidth: "360px",
-              maxWidth: "600px",
-            }}
-          >
-            <h2 className="fw-bold mb-3 text-light">Cart</h2>
+          <div className="w-full max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
             <Cart
               cart={cart}
               changeQuantity={changeQuantity}
@@ -111,54 +103,35 @@ export function Shop() {
           </div>
         )}
 
-        {/* Floating Cart Button – Mobile only */}
+        {/* Mobile Floating Cart Button */}
         {isMobile && cart.length > 0 && !isCartOpen && (
-          <Button
+          <button
             onClick={() => setIsCartOpen(true)}
-            variant="success"
-            className="position-fixed bottom-0 end-0 m-3 rounded-circle shadow d-flex align-items-center justify-content-center"
-            style={{ width: "64px", height: "64px", zIndex: 1040 }}
+            className="fixed bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg z-50"
           >
             <FontAwesomeIcon icon={faStore} size="lg" />
-            <span
-              className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              style={{ fontSize: "0.75rem" }}
-            >
+            <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
               {cart.length}
             </span>
-          </Button>
+          </button>
         )}
 
         {/* Mobile Cart Modal */}
         {isMobile && isCartOpen && cart.length > 0 && (
           <div
-            className="position-fixed start-0 w-100 bg-dark text-light d-flex flex-column z-3"
+            className="fixed inset-0 z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
             style={{
               top: navHeight,
               height: `calc(100vh - ${navHeight}px)`,
             }}
           >
-            {/* Modal Header */}
-            <div className="d-flex justify-content-between align-items-center p-3 border-bottom border-secondary">
-              <h2 className="fw-bold m-0">Cart</h2>
-              <Button
-                variant="outline-light"
-                onClick={() => setIsCartOpen(false)}
-                className="fw-bold"
-              >
-                Close
-              </Button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="flex-grow-1 px-3 pt-3 overflow-y-scroll">
-              <Cart
-                cart={cart}
-                changeQuantity={changeQuantity}
-                removeItem={removeItem}
-                clearCart={() => setCart([])}
-              />
-            </div>
+            <Cart
+              cart={cart}
+              changeQuantity={changeQuantity}
+              removeItem={removeItem}
+              clearCart={() => setCart([])}
+              onClose={() => setIsCartOpen(false)}
+            />
           </div>
         )}
       </div>

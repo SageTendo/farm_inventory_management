@@ -1,10 +1,16 @@
-import React, {useState} from 'react';
-import {Container, Form, Button, Card, Alert} from 'react-bootstrap';
+import React, { useState } from "react";
+import { Form, Button, Card, Alert } from "react-bootstrap";
+import {
+  SCREEN_SIZE,
+  useDetectScreenType,
+} from "../../../hooks/useDetectScreenType.ts";
+import { useAuth } from "../../../hooks/useAuth.ts";
+import { Navigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,14 +21,23 @@ const LoginPage = () => {
     }
 
     // TODO: Handle login logic here
-    console.log({username, password});
-    setErrorMsg('');
+    console.log({ username, password });
+    setErrorMsg("");
   };
 
+  const isMobile = useDetectScreenType(SCREEN_SIZE.SMALL);
+
+  const isAuthenticated = useAuth();
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-    <Container className="d-flex justify-content-center align-items-center"
-               style={{minHeight: '100vh', minWidth: '100vw', backgroundColor: '#e5e5e5'}}>
-      <Card className="p-4 shadow-sm rounded-4" style={{width: '500px'}}>
+    <div className="flex justify-center items-center h-screen w-screen bg-gray-100">
+      <Card
+        className="p-4 shadow-sm rounded-4"
+        style={{ width: isMobile ? "300px" : "500px" }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">🔐 Login</h2>
           {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
@@ -47,13 +62,13 @@ const LoginPage = () => {
               />
             </Form.Group>
 
-            <Button type="submit" variant="primary" className="w-100 mt-2">
+            <Button type="submit" variant="primary" className="w-full mt-2">
               Login
             </Button>
           </Form>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
-import { Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Item } from "../../../views/pos/Shop.tsx";
+import { Item } from "../../../views/pos/Shop";
 
 interface CartItemProps {
   item: Item;
@@ -15,41 +14,42 @@ export const CartItem = ({
   removeItem,
 }: CartItemProps) => {
   return (
-    <Card
-      key={item.id}
-      className="bg-dark border-1 border-white text-light rounded-2 mb-3"
-    >
-      <div className="card-body d-flex justify-content-between align-items-center">
-        <div>
-          <h6 className="mb-1 fw-bold">{item.name}</h6>
-          <small className="d-block">Price: ${item.sellPrice}</small>
-          <small className="d-block">Quantity: {item.quantity}</small>
-        </div>
-        <div className="d-flex align-items-center gap-2">
-          <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => changeQuantity(item.id, -1)}
-            disabled={item.quantity <= 1}
-          >
-            <FontAwesomeIcon icon={faMinus} />
-          </Button>
-          <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => changeQuantity(item.id, 1)}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </Button>
-          <Button
-            variant="outline-danger"
-            size="sm"
-            onClick={() => removeItem(item.id)}
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </Button>
-        </div>
+    <div className="bg-gray-800 border border-gray-600 text-white rounded-lg p-2 flex justify-between items-center shadow-sm">
+      {/* Item info */}
+      <div>
+        <h6 className="text-lg font-bold mb-1">{item.name}</h6>
+        <div className="text-sm text-gray-300">Price: ${item.sellPrice}</div>
+        <div className="text-sm text-gray-300">Quantity: {item.quantity}</div>
       </div>
-    </Card>
+
+      {/* Action buttons */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => changeQuantity(item.id, -1)}
+          disabled={item.quantity <= 1}
+          className={`p-2 rounded border ${
+            item.quantity <= 1
+              ? "border-gray-500 text-gray-500 cursor-not-allowed"
+              : "border-white text-white hover:bg-white hover:text-black"
+          } transition text-sm`}
+        >
+          <FontAwesomeIcon icon={faMinus} />
+        </button>
+
+        <button
+          onClick={() => changeQuantity(item.id, 1)}
+          className="p-2 rounded border border-white text-white hover:bg-white hover:text-black transition text-sm"
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+
+        <button
+          onClick={() => removeItem(item.id)}
+          className="p-2 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition text-sm"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
+      </div>
+    </div>
   );
 };
