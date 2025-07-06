@@ -1,65 +1,64 @@
-import { Card, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Product } from "../../../../mock/pos_data.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 interface ProductCardProps {
   product: Product;
   addToCart: (product: Product) => void;
 }
 
-const HIGH_STOCK_COLOR = "bg-success";
-const LOW_STOCK_COLOR = "bg-warning text-dark";
-const NO_STOCK_COLOR = "bg-danger";
-
 export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const tooltipMessage =
     product.stock > 30
       ? "High stock"
       : product.stock > 0
         ? "Low stock"
         : "Out of stock";
+
   const stockColor =
     product.stock > 30
-      ? HIGH_STOCK_COLOR
+      ? "bg-green-600 text-white"
       : product.stock > 0
-        ? LOW_STOCK_COLOR
-        : NO_STOCK_COLOR;
+        ? "bg-yellow-400 text-black"
+        : "bg-red-600 text-white";
 
   return (
-    <Card className="h-100 shadow bg-dark text-light border-0 rounded-3">
-      <div className="card-body d-flex flex-column">
-        <h5 className="card-title fw-bolder mb-2">{product.name}</h5>
+    <div className="bg-gray-900 text-white rounded-xl shadow-md p-3.5 h-full flex flex-col relative group">
+      <h5 className="text-1xl font-extrabold mb-2">{product.name}</h5>
 
-        <div className="d-flex flex-column mb-2">
-          <span className="fw-light fs-6">USD: {product.sellPrice}</span>
-          <span className="fw-light fs-6">
-            ZIG: {(product.sellPrice * 20).toFixed(2)}
-          </span>
-        </div>
-
-        <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip>{tooltipMessage}</Tooltip>}
-        >
-          <span
-            className={`badge ${stockColor} rounded-0 mb-3 fw-semibold fs-6`}
-          >
-            Stock:
-            {product.stock}
-          </span>
-        </OverlayTrigger>
-
-        <div className="mt-auto">
-          <button
-            className="btn btn-outline-light w-100 rounded-3 d-flex align-items-center justify-content-center gap-2"
-            onClick={() => addToCart(product)}
-          >
-            <FontAwesomeIcon icon={faShoppingCart} />
-            Add to cart
-          </button>
+      <div className="mb-2 text-sm">
+        <div className="font-bold text-gray-200">USD: {product.sellPrice}</div>
+        <div className="font-bold text-gray-200">
+          ZIG: {(product.sellPrice * 20).toFixed(2)}
         </div>
       </div>
-    </Card>
+
+      {/* Stock badge + tooltip */}
+      <div
+        className={`inline-block w-24 px-2 py-1 text-sm font-semibold rounded rounded-2 ${stockColor} mb-3 relative cursor-help`}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        Stock: {product.stock}
+        {showTooltip && (
+          <div className="absolute bottom-full mb-2 w-max left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 shadow z-10">
+            {tooltipMessage}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-auto">
+        <button
+          onClick={() => addToCart(product)}
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white text-lg hover:bg-blue-950 hover:text-gray-900 font-semibold py-2 rounded-lg transition"
+        >
+          <FontAwesomeIcon icon={faShoppingCart} />
+          Add to cart
+        </button>
+      </div>
+    </div>
   );
 };

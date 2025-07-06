@@ -57,7 +57,7 @@ export function Shop() {
   }, [isMobile, cart.length]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden pb-10">
+    <div className="flex flex-col h-screen overflow-hidden pt-4">
       {/* Header */}
       <h1 className="mb-4 text-4xl font-bold flex items-center gap-3 text-gray-800">
         <FontAwesomeIcon icon={faStore} className="text-primary" />
@@ -65,11 +65,11 @@ export function Shop() {
       </h1>
 
       {/* Search Bar */}
-      <div className="flex mb-4 shadow-sm rounded-lg overflow-hidden">
+      <div className="flex w-full mb-4 shadow-sm rounded-lg overflow-hidden">
         <input
           type="text"
           placeholder="Search for products..."
-          className="flex-grow px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
+          className="flex-grow px-1 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -93,7 +93,7 @@ export function Shop() {
 
         {/* Desktop Cart */}
         {!isMobile && cart.length > 0 && (
-          <div className="w-full max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
+          <div className="w-full max-w-sm xl:max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
             <Cart
               cart={cart}
               changeQuantity={changeQuantity}
@@ -121,8 +121,7 @@ export function Shop() {
           <div
             className="fixed inset-0 z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
             style={{
-              top: navHeight,
-              height: `calc(100vh - ${navHeight}px)`,
+              top: navHeight
             }}
           >
             <Cart

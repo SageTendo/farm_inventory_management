@@ -1,37 +1,39 @@
 import React from "react";
-import {Card} from "react-bootstrap";
 
 interface SummaryCardProps {
   title?: string;
   className?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  bg?: string; // e.g. 'light', 'dark', 'primary', etc.
-  textColor?: string; // e.g. 'white', 'dark', 'muted', etc.
-  border?: string; // e.g. 'primary', 'success', etc.
+  bg?: string;        // Tailwind-compatible bg class, e.g. "bg-gray-900"
+  textColor?: string; // Tailwind-compatible text class, e.g. "text-white"
+  border?: string;    // Tailwind-compatible border class, e.g. "border-green-500"
 }
 
 export function SummaryCard({
-                              title,
-                              className = "w-100 h-100",
-                              children,
-                              footer,
-                              bg = "dark",
-                              textColor = "white",
-                              border,
-                            }: SummaryCardProps) {
+  title,
+  className = "w-full h-full",
+  children,
+  footer,
+  bg = "bg-gray-900",
+  textColor = "text-white",
+  border = "border border-gray-700",
+}: SummaryCardProps) {
   return (
-    <Card
-      className={className}
-      bg={bg}
-      text={textColor}
-      border={border}
+    <div
+      className={`rounded-xl shadow-md p-4 flex flex-col justify-between ${bg} ${textColor} ${border} ${className}`}
     >
-      {title && <Card.Header className="fw-bold border-1 fs-3 mb-3">{title}</Card.Header>}
-      <Card.Body className="d-flex align-items-center justify-content-end">
-        {children}
-      </Card.Body>
-      {footer && <Card.Footer>{footer}</Card.Footer>}
-    </Card>
+      {title && (
+        <div className="text-2xl font-extrabold mb-4 border-b border-white pb-2">
+          {title}
+        </div>
+      )}
+      <div className="flex items-center justify-end flex-grow">{children}</div>
+      {footer && (
+        <div className="mt-4 border-t border-gray-700 pt-2 text-sm">
+          {footer}
+        </div>
+      )}
+    </div>
   );
 }

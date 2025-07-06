@@ -5,27 +5,27 @@ import { Link } from "react-router-dom";
 
 function Dashboard() {
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col h-full overflow-hidden p-2">
       <h1 className="mb-6 text-4xl font-bold flex items-center gap-2">
         <FontAwesomeIcon icon={faHome} className="text-primary" />
         Dashboard
       </h1>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 overflow-y-auto flex-1 pr-1">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-          <SummaryCard title="Total products" bg="primary">
+          <SummaryCard title="Total products" bg="bg-blue-950">
             <p className="text-4xl font-bold text-right">100</p>
           </SummaryCard>
 
-          <SummaryCard title="Total sales" bg="success">
+          <SummaryCard title="Total sales" bg="bg-green-800">
             <p className="text-4xl font-bold text-right">100</p>
           </SummaryCard>
 
-          <SummaryCard title="Low stock products" bg="warning">
+          <SummaryCard title="Low stock products" bg="bg-amber-600">
             <p className="text-4xl font-bold text-right">100</p>
           </SummaryCard>
 
-          <SummaryCard title="Out of stock products" bg="danger">
+          <SummaryCard title="Out of stock products" bg="bg-red-700">
             <p className="text-4xl font-bold text-right">100</p>
           </SummaryCard>
         </div>

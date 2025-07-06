@@ -7,7 +7,7 @@ export function Layout() {
   const sidebarWidth = isSidebarHidden ? "md:w-24" : "md:w-44";
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-200">
       {/* Sidebar: Top navbar on mobile, sidebar on desktop */}
       <div
         className={`flex-shrink-0 w-full h-14 md:h-full ${sidebarWidth} transition-all duration-300`}
@@ -21,7 +21,7 @@ export function Layout() {
       {/* Main content: no scroll here */}
       <div className="flex-1 relative">
         {/* Spacer for mobile navbar */}
-        <div className="px-4 md:pt-0 pt-4 h-full">
+        <div className="px-4 h-screen">
           <Outlet />
         </div>
       </div>
