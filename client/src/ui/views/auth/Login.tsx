@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
 import {
   SCREEN_SIZE,
   useDetectScreenType,
@@ -27,47 +26,57 @@ const LoginPage = () => {
 
   const isMobile = useDetectScreenType(SCREEN_SIZE.SMALL);
 
-  const isAuthenticated = useAuth();
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="flex justify-center items-center h-screen w-screen bg-gray-100">
-      <Card
-        className="p-4 shadow-sm rounded-4"
-        style={{ width: isMobile ? "300px" : "500px" }}
-      >
-        <Card.Body>
-          <h2 className="text-center mb-4">🔐 Login</h2>
-          {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
-          <Form onSubmit={handleLogin}>
-            <Form.Group controlId="formUsername" className="mb-3">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </Form.Group>
+    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 px-4">
+      <div className="bg-white rounded-2xl shadow-md w-full max-w-sm sm:max-w-md p-6">
+        <h2 className="text-center text-2xl font-bold mb-4">🔐 Login</h2>
 
-            <Form.Group controlId="formPassword" className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
+        {errorMsg && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+            {errorMsg}
+          </div>
+        )}
 
-            <Button type="submit" variant="primary" className="w-full mt-2">
-              Login
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block font-medium mb-1">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block font-medium mb-1">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

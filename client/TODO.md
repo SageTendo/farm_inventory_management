@@ -2,4 +2,5 @@
 - Fix scrolling issue on mobile
 - Fix table width on mobile
 - Fix centering issues on components in views
-- Fix all views & components
+- Fix all views & components [ManageX.tsx, Table]
+- Fix padding

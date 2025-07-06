@@ -57,7 +57,7 @@ export function Shop() {
   }, [isMobile, cart.length]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden pt-4">
+    <div className="flex flex-col h-screen overflow-hidden pt-4 px-4">
       {/* Header */}
       <h1 className="mb-4 text-4xl font-bold flex items-center gap-3 text-gray-800">
         <FontAwesomeIcon icon={faStore} className="text-primary" />

@@ -1,44 +1,42 @@
-import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {Button, Container} from "react-bootstrap";
-import TableComponent from "./Table";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Link} from "react-router-dom";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Table } from "./Table";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface ListPageProps {
-  title: string
-  icon: IconProp
-  addRoute: string
-  searchPlaceholder?: string
-  query?: string
-  onQueryChange: (query: string) => void
+  title: string;
+  icon: IconProp;
+  addRoute: string;
+  searchPlaceholder?: string;
+  query?: string;
+  onQueryChange: (query: string) => void;
   onSearch?: () => void;
-  entity: string
+  entity: string;
   data: Record<string, any>[];
   labels: string[];
   keys: string[];
-  actionable?: boolean
+  actionable?: boolean;
 }
 
 export function ListPage({
-                           title,
-                           icon,
-                           addRoute,
-                           searchPlaceholder,
-                           query,
-                           onQueryChange,
-                           onSearch,
-                           entity,
-                           data,
-                           labels,
-                           keys,
-                           actionable
-                         }: ListPageProps
-) {
+  title,
+  icon,
+  addRoute,
+  searchPlaceholder,
+  query,
+  onQueryChange,
+  onSearch,
+  entity,
+  data,
+  labels,
+  keys,
+  actionable,
+}: ListPageProps) {
   return (
-    <Container fluid className="d-flex flex-column h-100 overflow-hidden">
-      <h1 className="mb-4 fw-bold">
-        <FontAwesomeIcon icon={icon} className="nav-icon"/>
+    <div className="flex flex-col h-full overflow-hidden pt-4 px-4 pb-2 md:pb-0">
+      <h1 className="mb-4 font-bold">
+        <FontAwesomeIcon icon={icon} className="" />
         <span className="mx-2">{title} Management</span>
       </h1>
 
@@ -55,22 +53,24 @@ export function ListPage({
         </button>
       </div>
 
-      <div className="d-flex justify-content-end">
-        <Link className="justify-content-end btn-success mb-3" to={addRoute}>
-          <Button variant="primary" className="rounded-3">
-            <FontAwesomeIcon icon={faPlus} className="nav-icon"/>
-            <span className="mx-2">New {title}</span>
-          </Button>
+      <div className="flex justify-end mb-3">
+        <Link to={addRoute}>
+          <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md flex items-center gap-2">
+            <FontAwesomeIcon icon={faPlus} />
+            <span>New {title}</span>
+          </button>
         </Link>
       </div>
 
-      <TableComponent
-        entity={entity}
-        labels={labels}
-        keys={keys}
-        data={data}
-        actionable={actionable}
-      />
-    </Container>
+      <div className="overflow-auto">
+        <Table
+          entity={entity}
+          labels={labels}
+          keys={keys}
+          data={data}
+          actionable={actionable}
+        />
+      </div>
+    </div>
   );
 }

@@ -4,13 +4,13 @@ import { useState } from "react";
 
 export function Layout() {
   const [isSidebarHidden, setSidebarHidden] = useState(false);
-  const sidebarWidth = isSidebarHidden ? "md:w-24" : "md:w-44";
+  const sidebarWidth = isSidebarHidden ? "md:w-20" : "md:w-40";
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-200">
-      {/* Sidebar: Top navbar on mobile, sidebar on desktop */}
+      {/* Sidebar */}
       <div
-        className={`flex-shrink-0 w-full h-14 md:h-full ${sidebarWidth} transition-all duration-300`}
+        className={`bg-white z-10 fixed md:static top-0 left-0 w-full md:h-full ${sidebarWidth} transition-all duration-300 shadow-md`}
       >
         <Sidebar
           isSidebarHidden={isSidebarHidden}
@@ -18,10 +18,9 @@ export function Layout() {
         />
       </div>
 
-      {/* Main content: no scroll here */}
-      <div className="flex-1 relative">
-        {/* Spacer for mobile navbar */}
-        <div className="px-4 h-screen">
+      {/* Main Content */}
+      <div className={`flex-1 md:ml-0 mt-14 md:mt-0 overflow-auto`}>
+        <div className="h-full">
           <Outlet />
         </div>
       </div>

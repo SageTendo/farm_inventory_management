@@ -1,56 +1,97 @@
-import {Container, Row, Col, Button, Form, Card} from "react-bootstrap";
+import { useState } from "react";
 
 export function SettingsPage() {
+  const [form, setForm] = useState({
+    fullName: "John Doe",
+    username: "johndoe",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
   const handlePasswordChange = () => {
-    //   TODO: Add logic to change password
+    console.log("Changing password...", form.password, form.confirmPassword);
+    // TODO: Add real logic
   };
 
   return (
-    <Container fluid className="d-flex justify-content-center align-items-center w-100">
-      <Card className="shadow-lg bg-dark text-light w-100">
-        <Card.Body>
-          <h1 className="mb-4">Settings</h1>
+    <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
+      {/* Header */}
+      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
+        <h1 className="text-3xl font-bold">Settings</h1>
+      </div>
 
-          {/* Account Section */}
-          <Row className="mb-4">
-            <Col>
-              <h4>Account</h4>
+      {/* Account Section */}
+      <div className="flex flex-col justify-center h-full space-y-6 max-w-5xl mx-auto">
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Account</h2>
 
-              {/* User info*/}
-              <div className="d-flex w-100 mb-3">
-                <Form.Group className="w-50 me-3" controlId="formName">
-                  <Form.Label>Full Name</Form.Label>
-                  <Form.Control type="text" placeholder="Full Name" disabled/>
-                </Form.Group>
+          {/* User Info (read-only) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block mb-1 text-sm">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={form.fullName}
+                disabled
+                className="w-full p-3 rounded bg-gray-800 text-gray-400 border border-gray-700"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={form.username}
+                disabled
+                className="w-full p-3 rounded bg-gray-800 text-gray-400 border border-gray-700"
+              />
+            </div>
+          </div>
 
-                <Form.Group className="w-50" controlId="formUsername">
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control type="text" placeholder="Username" disabled/>
-                </Form.Group>
-              </div>
-
-              <Form className="mb-3">
-                <div className="d-flex justify-content-between w-100 mb-3">
-                  <Form.Group className="w-50 me-3" controlId="formPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Enter password" required/>
-                  </Form.Group>
-
-                  {/* confirm password*/}
-                  <Form.Group className="w-50" controlId="formConfirmPassword">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type="password" placeholder="Confirm password" required/>
-                  </Form.Group>
-                </div>
-
-                <Button variant="primary" onClick={handlePasswordChange}>
-                  Change Password
-                </Button>
-              </Form>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-    </Container>
+          {/* Password Fields */}
+          <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1 text-sm">New Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                value={form.password}
+                onChange={handleChange}
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm">Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div className="col-span-1 sm:col-span-2 pt-2">
+              <button
+                type="button"
+                onClick={handlePasswordChange}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 w-full rounded-lg transition"
+              >
+                Change Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }
