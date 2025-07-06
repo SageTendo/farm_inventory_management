@@ -54,7 +54,7 @@ export function Table({ entity, labels, keys, data, actionable = false }: Props)
   return (
     <div className="h-full w-full overflow-x-auto rounded-xl border border-gray-700 bg-gray-900">
       <table className="min-w-full text-sm text-left text-white">
-        <thead className="bg-gray-800 sticky top-0 z-10">
+        <thead className="bg-gray-800 sticky top-0 z-60">
           <tr>
             {labels.map((label, i) => {
               const key = keys[i];
