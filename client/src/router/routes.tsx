@@ -8,7 +8,7 @@ import { NewUser } from "../ui/views/user/NewUser.tsx";
 import { ManageUser } from "../ui/views/user/ManageUser.tsx";
 import { SettingsPage } from "../ui/views/user/SettingsPage.tsx";
 import LoginComponent from "../ui/views/auth/Login";
-import { Layout } from "../ui/components/Layout.tsx";
+import { Layout } from "../ui/components/shared/Layout.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import { Shop } from "../ui/views/pos/Shop.tsx";
 
