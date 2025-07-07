@@ -8,7 +8,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [
     react(),
-    // TODO: add tailwindcss()
     electron({
       main: {
         // Shortcut of `build.lib.entry`.

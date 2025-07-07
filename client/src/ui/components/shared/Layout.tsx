@@ -7,7 +7,7 @@ export function Layout() {
   const sidebarWidth = isSidebarHidden ? "md:w-20" : "md:w-40";
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-200">
+    <div className="flex flex-col md:flex-row w-screen md:h-screen h-screen-dvh overflow-hidden bg-gray-200">
       {/* Sidebar */}
       <div
         className={`bg-white z-10 fixed md:static top-0 left-0 w-full md:h-full ${sidebarWidth} transition-all duration-300 shadow-md`}

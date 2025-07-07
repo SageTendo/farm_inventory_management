@@ -72,12 +72,13 @@ const routes: RouteObject[] = [
   {
     path: "*",
     element: (
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-screen-dvh">
         <h1 className="text-red-600">404: Page Not Found</h1>
         <p className="text-gray-600">
           The page you are looking for does not exist.
         </p>
-        <Link to="/" className="btn btn-primary">
+        <br/>
+        <Link to="/" className="px-4 py-2 bg-blue-600 text-white text-xl rounded-lg">
           Return Home
         </Link>
       </div>
