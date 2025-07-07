@@ -12,7 +12,7 @@ export const ProductsListing = ({
 }: ProductListingProps) => {
   return (
     <div className="overflow-x-hidden flex-grow">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-20 md:pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-4 md:pb-4">
         {products.length === 0 && (
           <div className="col-span-3 flex justify-center items-center">
             <p className="text-2xl font-bold text-gray-500">

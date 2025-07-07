@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 function Dashboard() {
   return (
     <div className="flex flex-col h-full overflow-hidden p-4 pt-4">
-      <h1 className="mb-6 text-4xl font-bold flex items-center gap-3">
-        <FontAwesomeIcon icon={faHome} className="text-primary" />
+      <h1 className="mb-6 font-bold flex items-center gap-3">
+        <FontAwesomeIcon icon={faHome} className="text-blue-900" />
         Dashboard
       </h1>
 

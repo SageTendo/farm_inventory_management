@@ -1,3 +1,5 @@
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 export function SettingsPage() {
@@ -21,8 +23,9 @@ export function SettingsPage() {
   return (
     <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
       {/* Header */}
-      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
-        <h1 className="text-3xl font-bold">Settings</h1>
+      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex items-center border-b border-gray-700 gap-3 font-bol">
+        <FontAwesomeIcon icon={faCog} className="text-4xl text-blue-500" />
+        <h1 className="text-4xl font-bold">Settings</h1>
       </div>
 
       {/* Account Section */}

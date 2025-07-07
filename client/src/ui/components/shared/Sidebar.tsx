@@ -44,7 +44,7 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
           ${isSidebarHidden ? "w-20" : "w-40"}`}
       >
         {/* Brand */}
-        <div className="flex items-center gap-4 px-4 pt-8 pb-6">
+        <div className="flex items-center gap-4 px-4 pt-8 pb-1">
           <FontAwesomeIcon icon={faChartLine} className="text-4xl" />
           {!isSidebarHidden && (
             <span className="text-2xl font-bold whitespace-nowrap">IMS</span>
@@ -68,9 +68,10 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center w-full px-4 py-3 text-sm no-underline font-bold text-white transition duration-300 hover:bg-blue-600 ${
-                  isActive ? "bg-blue-600" : ""
-                }`
+                `flex items-center w-full px-3 py-3 text-sm no-underline font-bold text-white transition duration-300 hover:bg-blue-600 
+                ${isActive ? "bg-blue-600" : ""}
+                ${isSidebarHidden ? "justify-end" : "justify-start"}
+                `
               }
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -83,7 +84,10 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
 
           <button
             onClick={doLogout}
-            className="flex items-center w-full px-4 py-3 mb-2.5 text-sm font-bold text-white transition duration-300 hover:bg-red-600 mt-auto"
+            className={`flex items-center w-full px-4 py-3 text-sm font-bold
+               text-white transition duration-300 hover:bg-red-600 mt-auto
+               ${isSidebarHidden ? "justify-end" : "justify-start"}
+               `}
           >
             <FontAwesomeIcon icon={faSignOutAlt} className="text-base mr-4" />
             {!isSidebarHidden && (

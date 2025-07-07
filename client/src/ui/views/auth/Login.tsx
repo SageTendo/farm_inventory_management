@@ -24,7 +24,7 @@ const LoginPage = () => {
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 px-4">
+    <div className="flex items-center justify-center h-screen-dvh w-full bg-gray-100 px-4">
       <div className="bg-white rounded-2xl shadow-md w-full max-w-sm sm:max-w-md p-6">
         <h2 className="text-center text-2xl font-bold mb-4">🔐 Login</h2>
 

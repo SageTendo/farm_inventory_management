@@ -65,7 +65,7 @@ export const Cart = ({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 pb-4">
           <button
             className="w-1/2 py-2 px-4 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
             onClick={clearCart}

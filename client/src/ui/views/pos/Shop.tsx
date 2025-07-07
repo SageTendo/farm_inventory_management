@@ -1,4 +1,4 @@
-import { faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Product, products } from "../../../mock/pos_data";
 import { useEffect, useState } from "react";
@@ -57,10 +57,10 @@ export function Shop() {
   }, [isMobile, cart.length]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden pt-4 px-4">
+    <div className="flex flex-col h-full overflow-hidden pt-4 px-4">
       {/* Header */}
       <h1 className="mb-4 text-4xl font-bold flex items-center gap-3 text-gray-800">
-        <FontAwesomeIcon icon={faStore} className="text-primary" />
+        <FontAwesomeIcon icon={faStore} className="text-blue-900" />
         Shop
       </h1>
 
@@ -109,8 +109,8 @@ export function Shop() {
             onClick={() => setIsCartOpen(true)}
             className="fixed bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg z-50"
           >
-            <FontAwesomeIcon icon={faStore} size="lg" />
-            <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            <FontAwesomeIcon icon={faCartShopping} size="xl" />
+            <span className="absolute top-0 right-0 -mt-3 -mr-1 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
               {cart.length}
             </span>
           </button>
@@ -119,7 +119,7 @@ export function Shop() {
         {/* Mobile Cart Modal */}
         {isMobile && isCartOpen && cart.length > 0 && (
           <div
-            className="fixed inset-0 z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
+            className="fixed inset-0 z-60 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
             style={{
               top: navHeight
             }}
