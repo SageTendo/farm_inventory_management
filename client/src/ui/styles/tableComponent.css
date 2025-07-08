@@ -1,0 +1,9 @@
+.sortable-header {
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sortable-header:hover {
+    background-color: #343a40; /* slightly darker on hover */
+    color: #ffc107; /* yellowish text color on hover */
+}
