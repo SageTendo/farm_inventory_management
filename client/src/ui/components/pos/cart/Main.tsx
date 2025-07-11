@@ -7,21 +7,25 @@ interface CartProps {
   cart: Item[];
   changeQuantity: (id: number, delta: number) => void;
   removeItem: (id: number) => void;
+  setCartTotal: (number: number) => void;
   clearCart: () => void;
   onClose?: () => void; // Optional, used only in mobile modal
+  onCheckout?: () => void;
 }
 
 export const Cart = ({
   cart,
   changeQuantity,
   removeItem,
+  setCartTotal,
   clearCart,
   onClose,
+  onCheckout,
+
 }: CartProps) => {
-  const total = cart.reduce(
-    (acc, item) => acc + item.sellPrice * item.quantity,
-    0,
-  );
+  const total = cart.reduce((acc, item) => acc + item.sellPrice * item.quantity, 0);
+  setCartTotal(total);
+
   const totalZIG = total * 20;
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -75,7 +79,7 @@ export const Cart = ({
           </button>
           <button
             className="w-1/2 py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-            onClick={() => alert("Checkout not implemented.")}
+            onClick={onCheckout}
           >
             <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
             Checkout

@@ -1,14 +1,19 @@
-import { faCartShopping, faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartShopping,
+  faSearch,
+  faStore,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Product, products } from "../../../mock/pos_data";
 import { useEffect, useState } from "react";
-import { ProductsListing } from "../../components/pos/product/ProductsListing";
-import { Cart } from "../../components/pos/cart/Cart";
+import { ProductsListing } from "../../components/pos/product/Main";
+import { Cart } from "../../components/pos/cart/Main";
 import {
   SCREEN_SIZE,
   useDetectScreenType,
 } from "../../../hooks/useDetectScreenType";
 import { useNavHeight } from "../../../hooks/useNavHeight";
+import CheckoutScreen from "../../components/pos/payment/Main";
 
 export interface Item extends Product {
   quantity: number;
@@ -17,12 +22,14 @@ export interface Item extends Product {
 export function Shop() {
   const [query, setQuery] = useState("");
   const [cart, setCart] = useState<Item[]>([]);
+  const [cartTotal, setCartTotal] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useState(false);
   const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
   const navHeight = useNavHeight();
 
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(query.toLowerCase()),
+    product.name.toLowerCase().includes(query.toLowerCase())
   );
 
   function addToCart(product: Product) {
@@ -40,9 +47,9 @@ export function Shop() {
         .map((item) =>
           item.id === productId
             ? { ...item, quantity: item.quantity + delta }
-            : item,
+            : item
         )
-        .filter((item) => item.stock > 0),
+        .filter((item) => item.stock > 0)
     );
   }
 
@@ -55,6 +62,16 @@ export function Shop() {
       setIsCartOpen(false);
     }
   }, [isMobile, cart.length]);
+
+  function handlePayment(): void {
+    // TODO: implement payment
+    throw new Error("Function not implemented.");
+  }
+
+  function handleCancelPayment(): void {
+    // TODO: implement cancel payment
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden pt-4 px-4">
@@ -98,7 +115,22 @@ export function Shop() {
               cart={cart}
               changeQuantity={changeQuantity}
               removeItem={removeItem}
+              setCartTotal={setCartTotal}
               clearCart={() => setCart([])}
+              onCheckout={() => setIsChekoutScreenOpen(true)}
+            />
+          </div>
+        )}
+
+        {/* Desktop Checkout Screen Modal */}
+        {!isMobile && isChekoutScreenOpen && (
+          <div className="fixed inset-0 md:z-50 flex-col p-20">
+            <CheckoutScreen
+              cart={cart}
+              cartTotal={cartTotal}
+              onClose={() => setIsChekoutScreenOpen(false)}
+              onConfirmPayment={handlePayment}
+              onCancelPayment={handleCancelPayment}
             />
           </div>
         )}
@@ -121,15 +153,17 @@ export function Shop() {
           <div
             className="fixed inset-0 z-60 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
             style={{
-              top: navHeight
+              top: navHeight,
             }}
           >
             <Cart
               cart={cart}
               changeQuantity={changeQuantity}
               removeItem={removeItem}
+              setCartTotal={setCartTotal}
               clearCart={() => setCart([])}
               onClose={() => setIsCartOpen(false)}
+              onCheckout={() => setIsChekoutScreenOpen(false)}
             />
           </div>
         )}
