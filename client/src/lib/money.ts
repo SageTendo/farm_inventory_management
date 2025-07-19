@@ -1,28 +1,55 @@
 /**
- * Represents a monetary value to ensure precision by performing
- * all operations in cents.
+ * Money class for handling monetary values
+ * All values are stored in cents and operations are performed in cents.
+ * Decimals are handled using Banker's Rounding.
  */
 export class Money {
   private value = 0;
 
   private constructor(value: number) {
+    if (isNaN(value) || !Number.isInteger(value))
+      throw new Error(`Invalid money value: ${value}`);
+
+    if (!Number.isSafeInteger(value))
+      throw new Error(`Unsafe money value: ${value}`);
     this.value = value;
   }
 
-  private static asCents(value: number) {
-    return bankersRounding(value * 100);
+  private static convertToCents(value: number) {
+    return bankersRounding(value * 100, 0);
   }
 
-  public add(value: Money) {
-    return new Money(this.value + value.value);
+  public add(money: Money) {
+    return new Money(this.value + money.value);
   }
 
-  public subtract(value: Money) {
-    return new Money(this.value - value.value);
+  public subtract(money: Money) {
+    return new Money(this.value - money.value);
   }
 
   public multiply(multiplier: number) {
-    return new Money(bankersRounding(this.value * multiplier));
+    if (isNaN(multiplier) || !isFinite(multiplier)) {
+      throw new Error(`Invalid multiplier: ${multiplier}`);
+    }
+
+    const result = bankersRounding(this.value * multiplier, 0);
+    if (!Number.isSafeInteger(result)) {
+      throw new Error(`Multiplication result exceeds safe integer range`);
+    }
+
+    return new Money(result);
+  }
+
+  public greaterThan(value: Money): boolean {
+    return this.value > value.value;
+  }
+
+  public lessThan(value: Money): boolean {
+    return this.value < value.value;
+  }
+
+  public equals(value: Money): boolean {
+    return this.value === value.value;
   }
 
   public isZero(): boolean {
@@ -30,7 +57,7 @@ export class Money {
   }
 
   public isPositive(): boolean {
-    return this.value >= 0;
+    return this.value > 0;
   }
 
   public isNegative(): boolean {
@@ -49,23 +76,37 @@ export class Money {
     return this.toDollars.toFixed(2);
   }
 
+  /**
+   * Create a Money object from a number
+   * @param value The number to convert to a Money object
+   */
   static fromNumber(value: number): Money {
-    return new Money(Money.asCents(value));
+    if (!isFinite(value)) throw new Error(`Invalid money value: ${value}`);
+    if (Math.abs(value) > Number.MAX_SAFE_INTEGER / 100) {
+      throw new Error(`Money value too large: ${value}`);
+    }
+    const valueAsCents = Money.convertToCents(value);
+    return new Money(valueAsCents);
   }
 
+  /**
+   * Create a Money object from a string representation of a number
+   * @param value The string to convert to a Money object
+   */
   static fromString(value: string): Money {
-    if (value === "") return new Money(0);
-    const parsed = parseFloat(value);
+    const cleaned = value.trim().replace(/[$,]/g, "");
+    const parsed = parseFloat(cleaned);
     if (isNaN(parsed)) throw new Error(`Invalid money value: ${value}`);
-    return new Money(Money.asCents(parseFloat(value)));
+    return Money.fromNumber(parsed);
   }
 }
 
 /**
  * Round a number to the nearest even number
- * source http://stackoverflow.com/a/3109234
- * @param num
- * @param decimalPlaces (optional)
+ * @see http://stackoverflow.com/a/3109234
+ * @see https://en.wikipedia.org/wiki/Bankers%27_rounding
+ * @param num The number to round
+ * @param decimalPlaces (optional) The number of decimal places to round to
  */
 export function bankersRounding(num: number, decimalPlaces?: number): number {
   var d = decimalPlaces || 0;
