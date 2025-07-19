@@ -5,30 +5,27 @@ import { Item } from "../../../views/pos/Shop";
 
 interface CartProps {
   cart: Item[];
+  cartItemsCount: number;
+  cartTotalUSD: string;
+  cartTotalZIG: string;
   changeQuantity: (id: number, delta: number) => void;
   removeItem: (id: number) => void;
-  setCartTotal: (number: number) => void;
   clearCart: () => void;
   onClose?: () => void; // Optional, used only in mobile modal
-  onCheckout?: () => void;
+  onCheckout: () => void;
 }
 
 export const Cart = ({
   cart,
+  cartTotalUSD,
+  cartTotalZIG,
   changeQuantity,
   removeItem,
-  setCartTotal,
+  cartItemsCount,
   clearCart,
   onClose,
   onCheckout,
-
 }: CartProps) => {
-  const total = cart.reduce((acc, item) => acc + item.sellPrice * item.quantity, 0);
-  setCartTotal(total);
-
-  const totalZIG = total * 20;
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -62,10 +59,10 @@ export const Cart = ({
       {/* Sticky Footer */}
       <div className="bg-gray-900 text-white text-md font-bold pt-3 border-t border-gray-700 px-2">
         <div className="flex justify-between mb-3">
-          <span>Items: {totalItems}</span>
+          <span>Items: {cartItemsCount}</span>
           <div className="text-right">
-            <div>USD: {total.toFixed(2)}</div>
-            <div>ZIG: {totalZIG.toFixed(2)}</div>
+            <div>USD: {cartTotalUSD}</div>
+            <div>ZIG: {cartTotalZIG}</div>
           </div>
         </div>
 

@@ -30,9 +30,10 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
       <h5 className="text-1xl font-extrabold mb-2">{product.name}</h5>
 
       <div className="mb-2 text-sm">
-        <div className="font-bold text-gray-200">USD: {product.sellPrice}</div>
+        <div className="font-bold text-gray-200">USD: {product.sellPrice.read}</div>
         <div className="font-bold text-gray-200">
-          ZIG: {(product.sellPrice * 20).toFixed(2)}
+          {/* //TODO: Fetch exchange rate */}
+          ZIG: {product.sellPrice.multiply(20).read}
         </div>
       </div>
 

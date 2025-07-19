@@ -1,10 +1,11 @@
 import { faker } from "@faker-js/faker";
+import { Money } from "../lib/money";
 
 export interface Product {
   id: number;
   name: string;
-  buyPrice: number;
-  sellPrice: number;
+  buyPrice: Money;
+  sellPrice: Money;
   stock: number;
   addedBy: number;
   isDeleted: boolean;
@@ -17,11 +18,11 @@ for (let i = 0; i < 20; i++) {
   products.push({
     id: i + 1,
     name: faker.commerce.productName(),
-    buyPrice: parseFloat(faker.commerce.price({ min: 10, max: 100 })),
-    sellPrice: parseFloat(faker.commerce.price({ min: 100, max: 500 })),
-    stock: faker.number.int({ min: 10, max: 100 }),
+    buyPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 })),
+    sellPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 })),
+    stock: faker.number.int({ min: 0, max: 100 }),
     addedBy: 1,
-    isDeleted: faker.datatype.boolean(0.1),
+    isDeleted: false,
     createdAt: faker.date.past(),
   });
 }

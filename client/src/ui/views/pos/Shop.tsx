@@ -14,15 +14,36 @@ import {
 } from "../../../hooks/useDetectScreenType";
 import { useNavHeight } from "../../../hooks/useNavHeight";
 import CheckoutScreen from "../../components/pos/payment/Main";
+import { Money } from "../../../lib/money";
 
 export interface Item extends Product {
   quantity: number;
 }
 
+/**
+ * TODO:
+ * - Add a loading state
+ * - Add a success state
+ * - Add a failure state
+ * - Red highlight on insufficient amount to pay
+ * - Prevent confirmation if amount to pay is less than cart total
+ * - Move types to a separate file
+ * - Add pagination of products
+ * - Add a toast for messages (replace alerts)
+ * - Implement payment process
+ **/
 export function Shop() {
   const [query, setQuery] = useState("");
+
   const [cart, setCart] = useState<Item[]>([]);
-  const [cartTotal, setCartTotal] = useState(0);
+  const [cartTotal, setCartTotal] = useState<Money>(Money.fromNumber(0));
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+
+  const [exchangeRate, setExchangeRate] = useState(20); //TODO: Get exchange rate from API
+  const [selectedCurrency, setSelectedCurrency] = useState<"USD" | "ZIG">(
+    "USD"
+  );
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useState(false);
   const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
@@ -32,36 +53,78 @@ export function Shop() {
     product.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  function addToCart(product: Product) {
-    const existingItem = cart.find((item) => item.id === product.id);
-    if (existingItem) {
-      changeQuantity(product.id, 1);
+  function addItemToCart(product: Product) {
+    const cartItem = cart.find((item) => item.id === product.id);
+    const quantityInCart = cartItem?.quantity ?? 0;
+    const availableStock = product.stock - quantityInCart;
+
+    if (availableStock <= 0) {
+      alert("Product is out of stock");
+      return;
+    }
+
+    if (cartItem) {
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
     } else {
       setCart((prev) => [...prev, { ...product, quantity: 1 }]);
     }
   }
 
-  function changeQuantity(productId: number, delta: number) {
+  function changeItemQuantity(productId: number, delta: number) {
+    if (delta === 0) return;
+
+    const cartItem = cart.find((item) => item.id === productId);
+    const product = products.find((item) => item.id === productId); // from full list
+
+    if (!cartItem || !product) return;
+
+    const newQuantity = cartItem.quantity + delta;
+    const maxStock = product.stock;
+
+    if (newQuantity < 1) {
+      removeItemFromCart(productId);
+      return;
+    }
+
+    if (newQuantity > maxStock) {
+      alert("Not enough stock available");
+      return;
+    }
+
     setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === productId
-            ? { ...item, quantity: item.quantity + delta }
-            : item
-        )
-        .filter((item) => item.stock > 0)
+      prev.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
     );
   }
 
-  function removeItem(productId: number) {
+  function removeItemFromCart(productId: number) {
     setCart((prev) => prev.filter((item) => item.id !== productId));
   }
 
+  // Close cart on mobile if cart is empty or screen size is larger
   useEffect(() => {
     if (!isMobile || cart.length === 0) {
       setIsCartOpen(false);
     }
   }, [isMobile, cart.length]);
+
+  // Update cart total and cart items count
+  useEffect(() => {
+    const cartTotal = cart.reduce(
+      (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
+      0
+    );
+
+    setCartTotal(Money.fromNumber(cartTotal));
+    setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
+  }, [cart]);
 
   function handlePayment(): void {
     // TODO: implement payment
@@ -69,8 +132,10 @@ export function Shop() {
   }
 
   function handleCancelPayment(): void {
-    // TODO: implement cancel payment
-    throw new Error("Function not implemented.");
+    setCart([]);
+    setCartTotal(Money.fromNumber(0));
+    setCartItemsCount(0);
+    setIsChekoutScreenOpen(false);
   }
 
   return (
@@ -103,7 +168,7 @@ export function Shop() {
             <h2 className="font-bold mb-3 text-2xl text-gray-800">Products</h2>
             <ProductsListing
               products={filteredProducts}
-              addToCart={addToCart}
+              addToCart={addItemToCart}
             />
           </div>
         )}
@@ -113,9 +178,11 @@ export function Shop() {
           <div className="w-full max-w-sm xl:max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
             <Cart
               cart={cart}
-              changeQuantity={changeQuantity}
-              removeItem={removeItem}
-              setCartTotal={setCartTotal}
+              cartItemsCount={cartItemsCount}
+              cartTotalUSD={cartTotal.read}
+              cartTotalZIG={cartTotal.multiply(exchangeRate).read}
+              changeQuantity={changeItemQuantity}
+              removeItem={removeItemFromCart}
               clearCart={() => setCart([])}
               onCheckout={() => setIsChekoutScreenOpen(true)}
             />
@@ -128,6 +195,9 @@ export function Shop() {
             <CheckoutScreen
               cart={cart}
               cartTotal={cartTotal}
+              selectedCurrency={selectedCurrency}
+              exchangeRate={exchangeRate}
+              onChangeSelectedCurrency={setSelectedCurrency}
               onClose={() => setIsChekoutScreenOpen(false)}
               onConfirmPayment={handlePayment}
               onCancelPayment={handleCancelPayment}
@@ -158,9 +228,11 @@ export function Shop() {
           >
             <Cart
               cart={cart}
-              changeQuantity={changeQuantity}
-              removeItem={removeItem}
-              setCartTotal={setCartTotal}
+              cartItemsCount={cartItemsCount}
+              cartTotalUSD={cartTotal.read}
+              cartTotalZIG={cartTotal.multiply(exchangeRate).read}
+              changeQuantity={changeItemQuantity}
+              removeItem={removeItemFromCart}
               clearCart={() => setCart([])}
               onClose={() => setIsCartOpen(false)}
               onCheckout={() => setIsChekoutScreenOpen(false)}
