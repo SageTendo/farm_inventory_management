@@ -17,7 +17,7 @@ interface CheckoutScreenProps {
   onChangeSelectedCurrency: (currency: "USD" | "ZIG") => void;
   onClose: () => void;
   onCancelPayment: () => void;
-  onConfirmPayment: () => void;
+  onConfirmPayment: (paid: Money, change: Money) => void;
 }
 
 export function CheckoutScreen({
@@ -36,7 +36,7 @@ export function CheckoutScreen({
   const [paidAmount, setPaidAmount] = useState(Money.fromNumber(0));
   const [changeAmount, setChangeAmount] = useState(Money.fromNumber(0));
 
-  // Format values for display
+  // Format numeric values for display
   const numericFormat = (value: string, positiveOnly = false) => {
     return formatNumeral(value, {
       numeralPositiveOnly: positiveOnly,
@@ -88,12 +88,25 @@ export function CheckoutScreen({
   const handleOnPaidAmountInput = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const raw = event.target.value;
-    setInputValue(raw);
-  
-    const sanitized = raw.replace(/[^\d.]/g, '');
-    if (sanitized === '' || Number.isNaN(Number(sanitized))) return setPaidAmount(Money.fromNumber(0));
-    setPaidAmount(Money.fromString(sanitized));
+    const rawValue = event.target.value;
+    setInputValue(rawValue);
+
+    try{
+      if (rawValue === "") return setPaidAmount(Money.fromNumber(0));
+      setPaidAmount(Money.fromString(rawValue));
+    } catch (error) {
+      if (error instanceof UnsafeMonetaryValueError) {
+        alert("Invalid value is too large")
+        // TODO: Log error
+        return;
+      } 
+      
+      if (error instanceof MoneyParseError) {
+        alert("Provided an invalid monetary value...")
+        // TODO: Log error
+        return;
+      }
+    }
   };
 
   return (
@@ -232,7 +245,7 @@ export function CheckoutScreen({
               <button
                 className="flex-1 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={paidAmount.isZero() || changeAmount.isNegative()}
-                onClick={onConfirmPayment}
+                onClick={() => onConfirmPayment(paidAmount, changeAmount)}
               >
                 Confirm
               </button>

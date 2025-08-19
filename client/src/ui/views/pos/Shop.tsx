@@ -25,8 +25,8 @@ export interface Item extends Product {
  * - Add a loading state
  * - Add a success state
  * - Add a failure state
- * - Red highlight on insufficient amount to pay
- * - Prevent confirmation if amount to pay is less than cart total
+ * - Fetch products from DB
+ * - Search products from DB
  * - Move types to a separate file
  * - Add pagination of products
  * - Add a toast for messages (replace alerts)
@@ -126,8 +126,19 @@ export function Shop() {
     setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
   }, [cart]);
 
-  function handlePayment(): void {
+  function handlePayment(paidAmount: Money, changeAmount: Money): void {
     // TODO: implement payment
+    // Things to do:
+    // - Update stock in database
+    // - Verify stock availability
+    // - When inventory update is complete, clear cart and close checkout screen
+    // - If payment is complete, show success message
+    // - Generate receipt and export to PDF ??
+    // - Update products list ??
+    // - If payment is not complete, show error message
+    console.log("Total amount:", cartTotal.toDollars);
+    console.log("Payment received:", paidAmount.toDollars);
+    console.log("Change amount:", changeAmount.toDollars);
     throw new Error("Function not implemented.");
   }
 
@@ -136,6 +147,20 @@ export function Shop() {
     setCartTotal(Money.fromNumber(0));
     setCartItemsCount(0);
     setIsChekoutScreenOpen(false);
+  }
+
+  function handlePreviousPage(): void {
+    // TODO: implement pagination
+    // - Get previous page of products from API
+    // - Update products list
+    throw new Error("Function not implemented.");
+  }
+
+  function handleNextPage(): void {
+    // TODO: implement pagination
+    // - Get next page of products from API
+    // - Update products list
+    throw new Error("Function not implemented.");
   }
 
   return (

@@ -14,6 +14,7 @@ import { NavLink } from "react-router-dom";
 import { useState, Dispatch, SetStateAction } from "react";
 
 function doLogout() {
+  // TODO: handle logout
   console.log("Logging out...");
 }
 
@@ -39,7 +40,7 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen bg-gray-900  text-white overflow-hidden z-50 transition-all duration-300
+        className={`fixed top-0 left-0 h-screen bg-gray-900  text-white overflow-hidden z-50 transition-all duration-75
           hidden md:flex flex-col
           ${isSidebarHidden ? "w-20" : "w-40"}`}
       >

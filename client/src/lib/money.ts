@@ -34,7 +34,7 @@ export class Money {
 
     const result = bankersRounding(this.value * multiplier, 0);
     if (!Number.isSafeInteger(result)) {
-      throw new Error(`Multiplication result exceeds safe integer range`);
+      throw new UnsafeMonetaryValueError(`Multiplication result exceeds safe integer range`);
     }
 
     return new Money(result);
@@ -83,7 +83,7 @@ export class Money {
   static fromNumber(value: number): Money {
     if (!isFinite(value)) throw new Error(`Invalid money value: ${value}`);
     if (Math.abs(value) > Number.MAX_SAFE_INTEGER / 100) {
-      throw new Error(`Money value too large: ${value}`);
+      throw new UnsafeMonetaryValueError(`Money value too large: ${value}`);
     }
     const valueAsCents = Money.convertToCents(value);
     return new Money(valueAsCents);
@@ -96,7 +96,7 @@ export class Money {
   static fromString(value: string): Money {
     const cleaned = value.trim().replace(/[$,]/g, "");
     const parsed = parseFloat(cleaned);
-    if (isNaN(parsed)) throw new Error(`Invalid money value: ${value}`);
+    if (isNaN(parsed)) throw new MoneyParseError(`Invalid money value: ${value}`);
     return Money.fromNumber(parsed);
   }
 }
