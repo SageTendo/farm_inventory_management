@@ -1,5 +1,5 @@
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { productTable } from "../schema";
 import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../schema/types";
@@ -17,7 +17,7 @@ export class ProductRepository
    * @param product The product data to create
    * @returns The created product entry
    */
-  async createProduct(product: NewProductDTO): Promise<ProductDTO> {
+  async create(product: NewProductDTO): Promise<ProductDTO> {
     const [created] = await this.dbContext
       .insert(productTable)
       .values(product)
@@ -30,7 +30,7 @@ export class ProductRepository
    * @param productID The ID of the product to retrieve
    * @returns The product if found, or null
    */
-  async getProductById(productID: number): Promise<ProductDTO | null> {
+  async getById(productID: number): Promise<ProductDTO | null> {
     const product = this.dbContext
       .select()
       .from(productTable)
@@ -45,16 +45,17 @@ export class ProductRepository
    * @param offset Number of products to skip (default 0)
    * @returns Array of products
    */
-  async getAllProducts(
+  async getAll(
+    name: string = "",
     limit: number = 10,
-    offset: number = 0,
+    offset: number = 0
   ): Promise<ProductDTO[]> {
-    return this.dbContext
+    return await this.dbContext
       .select()
       .from(productTable)
+      .where(name ? like(productTable.name, `%${name}%`) : undefined)
       .limit(limit)
-      .offset(offset)
-      .all();
+      .offset(offset);
   }
 
   /**
@@ -62,9 +63,9 @@ export class ProductRepository
    * @param product The updated product data (must include ID)
    * @returns The updated product if found, otherwise null
    */
-  async updateProduct(
+  async update(
     id: number,
-    product: UpdateProductDTO,
+    product: UpdateProductDTO
   ): Promise<ProductDTO | null> {
     const [updated] = await this.dbContext
       .update(productTable)
@@ -78,8 +79,8 @@ export class ProductRepository
    * Deletes a product by its ID
    * @param productID The ID of the product to delete
    */
-  async deleteProduct(productID: number): Promise<void> {
-    return this.dbContext
+  async delete(productID: number): Promise<void> {
+    this.dbContext
       .delete(productTable)
       .where(eq(productTable.id, productID))
       .run();
