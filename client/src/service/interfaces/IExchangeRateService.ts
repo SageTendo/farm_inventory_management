@@ -1,24 +1,27 @@
-import { NewExchangeRateDTO, ExchangeRateDTO } from "../schema/types";
+import {
+  ExchangeRateDTO,
+  NewExchangeRateDTO,
+} from "../../database/schema/types";
 
 /**
- * Interface for exchange rate repository
+ * Interface for exchange rate service
  */
-export interface IExchangeRateRepository {
+export interface IExchangeRateService {
   /**
-   * Sets a new exchange rate in the DB
+   * Sets a new exchange rate
    * @param data The exchange rate data to create
    * @returns A promise that resolves to the created exchange rate entity
    */
   set(data: NewExchangeRateDTO): Promise<ExchangeRateDTO>;
 
   /**
-   * Retrieves all exchange rates from the DB
+   * Retrieves all exchange rates
    * @returns A promise that resolves to an array of exchange rate entities
    */
   getAll(limit?: number, offset?: number): Promise<ExchangeRateDTO[]>;
 
   /**
-   * Retrieves a specific exchange rate by its ID from the DB
+   * Retrieves a specific exchange rate by its ID
    * @param id The ID of the exchange rate to retrieve
    * @returns A promise that resolves to the exchange rate entity if found, otherwise null
    */
