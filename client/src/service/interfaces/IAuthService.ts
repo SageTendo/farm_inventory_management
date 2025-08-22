@@ -1,3 +1,4 @@
+import { RoleType } from "../../database/schema/constants";
 import {
   AuthResponseDTO,
   NewUserDTO,
@@ -13,7 +14,7 @@ export interface IAuthService {
    */
   register(
     registeringUserId: number,
-    newUser: NewUserDTO,
+    newUser: NewUserDTO
   ): Promise<AuthResponseDTO>;
 
   /**
@@ -30,7 +31,7 @@ export interface IAuthService {
    * @param requiredRoles The roles required to access the resource
    * @returns {Promise<boolean>} A promise that resolves to true if the user has the required role, false otherwise
    */
-  hasRequiredRole(userID: number, requiredRoles: string[]): Promise<boolean>;
+  hasRequiredRole(userID: number, requiredRoles: RoleType[]): Promise<boolean>;
 
   /**
    * Update the role of a user
@@ -41,7 +42,7 @@ export interface IAuthService {
   updateRole(
     adminId: number,
     userId: number,
-    roleID: number,
+    roleID: number
   ): Promise<UserResponseDTO | null>;
 
   /**
@@ -53,6 +54,6 @@ export interface IAuthService {
   updatePassword(
     adminId: number,
     userId: number,
-    password: string,
+    password: string
   ): Promise<UserResponseDTO | null>;
 }

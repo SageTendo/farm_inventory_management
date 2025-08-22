@@ -9,30 +9,27 @@ export class UserService implements IUserService {
 
   constructor(
     userRepository: IUserRepository,
-    roleRepository: IRoleRepository,
+    roleRepository: IRoleRepository
   ) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
   }
 
-  async getAllUsers(
-    limit?: number,
-    offset?: number,
-  ): Promise<UserResponseDTO[]> {
-    return await this.userRepository.getAllUsers(limit, offset);
+  async getAll(limit?: number, offset?: number): Promise<UserResponseDTO[]> {
+    return await this.userRepository.getAll(limit, offset);
   }
 
-  async getUserById(id: number): Promise<UserResponseDTO | null> {
-    return await this.userRepository.getUserById(id);
+  async getById(id: number): Promise<UserResponseDTO | null> {
+    return await this.userRepository.getById(id);
   }
 
-  async getUserByUsername(username: string): Promise<UserResponseDTO | null> {
-    return this.userRepository.getUserByUsername(username);
+  async getByUsername(username: string): Promise<UserResponseDTO | null> {
+    return this.userRepository.getByUsername(username);
   }
 
-  async updateUser(
+  async update(
     id: number,
-    entity: UpdateUserDTO,
+    entity: UpdateUserDTO
   ): Promise<UserResponseDTO | null> {
     if (entity.roleID) {
       entity.roleID = undefined;
@@ -42,11 +39,11 @@ export class UserService implements IUserService {
       entity.passwordHash = undefined;
     }
 
-    entity.updatedAt = new Date().toISOString();
-    return await this.userRepository.updateUser(id, entity);
+    entity.updatedAt = new Date();
+    return await this.userRepository.update(id, entity);
   }
 
-  async deleteUser(id: number): Promise<void> {
-    return await this.userRepository.deleteUser(id);
+  async delete(id: number): Promise<void> {
+    return await this.userRepository.delete(id);
   }
 }

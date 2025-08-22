@@ -9,7 +9,7 @@ export class UserRepository
   extends BaseRepository<BetterSQLite3Database>
   implements IUserRepository
 {
-  async createUser(entity: CreateUserDTO): Promise<UserDTO> {
+  async create(entity: CreateUserDTO): Promise<UserDTO> {
     const [user] = await this.dbContext
       .insert(userTable)
       .values(entity)
@@ -17,10 +17,7 @@ export class UserRepository
     return user;
   }
 
-  async getAllUsers(
-    limit: number = 10,
-    offset: number = 0,
-  ): Promise<UserDTO[]> {
+  async getAll(limit: number = 10, offset: number = 0): Promise<UserDTO[]> {
     return this.dbContext
       .select()
       .from(userTable)
@@ -29,7 +26,7 @@ export class UserRepository
       .all();
   }
 
-  async getUserById(id: number): Promise<UserDTO | null> {
+  async getById(id: number): Promise<UserDTO | null> {
     const user = this.dbContext
       .select()
       .from(userTable)
@@ -38,7 +35,7 @@ export class UserRepository
     return user || null;
   }
 
-  async getUserByUsername(username: string): Promise<UserDTO | null> {
+  async getByUsername(username: string): Promise<UserDTO | null> {
     const user = this.dbContext
       .select()
       .from(userTable)
@@ -47,7 +44,7 @@ export class UserRepository
     return user || null;
   }
 
-  async updateUser(id: number, entity: UpdateUserDTO): Promise<UserDTO | null> {
+  async update(id: number, entity: UpdateUserDTO): Promise<UserDTO | null> {
     const [user] = await this.dbContext
       .update(userTable)
       .set(entity)
@@ -56,7 +53,7 @@ export class UserRepository
     return user || null;
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.dbContext.delete(userTable).where(eq(userTable.id, id)).run();
   }
 }

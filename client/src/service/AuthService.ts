@@ -10,6 +10,8 @@ import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
 import { RoleType } from "../database/schema/constants.ts";
 
+const PERMITTED_ROLES: RoleType[] = ["ADMIN"];
+
 export class AuthService implements IAuthService {
   protected userRepository: IUserRepository;
   protected roleRepository: IRoleRepository;
@@ -17,7 +19,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     userRepository: IUserRepository,
-    roleRepository: IRoleRepository,
+    roleRepository: IRoleRepository
   ) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
@@ -25,17 +27,17 @@ export class AuthService implements IAuthService {
 
   async register(
     registeringUserId: number,
-    newUser: NewUserDTO,
+    newUser: NewUserDTO
   ): Promise<AuthResponseDTO> {
-    if (!(await this.hasRequiredRole(registeringUserId, ["ADMIN"]))) {
+    if (!(await this.hasRequiredRole(registeringUserId, PERMITTED_ROLES))) {
       return {
         success: false,
         message: "You do not have permission to register users",
       };
     }
 
-    const existingUser = await this.userRepository.getUserByUsername(
-      newUser.username,
+    const existingUser = await this.userRepository.getByUsername(
+      newUser.username
     );
     if (existingUser) {
       return {
@@ -44,7 +46,7 @@ export class AuthService implements IAuthService {
       };
     }
 
-    const user = await this.userRepository.createUser({
+    const user = await this.userRepository.create({
       fullname: newUser.fullname,
       username: newUser.username,
       passwordHash: await bcrypt.hash(newUser.password, this.SALT),
@@ -64,7 +66,7 @@ export class AuthService implements IAuthService {
   }
 
   async login(username: string, password: string): Promise<AuthResponseDTO> {
-    const user = await this.userRepository.getUserByUsername(username);
+    const user = await this.userRepository.getByUsername(username);
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       return {
         success: false,
@@ -72,7 +74,7 @@ export class AuthService implements IAuthService {
       };
     }
 
-    const role = await this.roleRepository.getRoleById(user.roleID);
+    const role = await this.roleRepository.getById(user.roleID);
     if (role === null) {
       return {
         success: false,
@@ -93,50 +95,53 @@ export class AuthService implements IAuthService {
 
   async hasRequiredRole(
     userID: number,
-    requiredRoles: RoleType[],
+    requiredRoles: RoleType[]
   ): Promise<boolean> {
     if (requiredRoles.length === 0) return true;
 
-    const user = await this.userRepository.getUserById(userID);
+    const user = await this.userRepository.getById(userID);
     if (!user) return false;
 
-    const userRole = await this.roleRepository.getRoleById(user.roleID);
+    const userRole = await this.roleRepository.getById(user.roleID);
     return userRole ? requiredRoles.includes(userRole.type) : false;
   }
 
   async updateRole(
     adminID: number,
     userId: number,
-    roleID: number,
+    roleID: number
   ): Promise<UserResponseDTO | null> {
-    const hasRequiredRole = await this.hasRequiredRole(adminID, ["ADMIN"]);
+    const hasRequiredRole = await this.hasRequiredRole(
+      adminID,
+      PERMITTED_ROLES
+    );
     console.log(hasRequiredRole);
     if (!hasRequiredRole) {
       throw new Error("You do not have permission to update user roles");
     }
 
-    const existingUser = await this.userRepository.getUserById(userId);
+    const existingUser = await this.userRepository.getById(userId);
     if (!existingUser) {
       throw new Error("User not found");
     }
 
-    const role = await this.roleRepository.getRoleById(roleID);
+    const role = await this.roleRepository.getById(roleID);
     if (!role) {
       throw new Error("Invalid role ID");
     }
-    return await this.userRepository.updateUser(userId, { roleID });
+    return await this.userRepository.update(userId, { roleID });
   }
 
   async updatePassword(
     adminID: number,
     userId: number,
-    password: string,
+    password: string
   ): Promise<UserResponseDTO | null> {
-    if (!(await this.hasRequiredRole(adminID, ["ADMIN"]))) {
+    if (!(await this.hasRequiredRole(adminID, PERMITTED_ROLES))) {
       throw new Error("You do not have permission to update user passwords");
     }
 
-    const existingUser = await this.userRepository.getUserById(userId);
+    const existingUser = await this.userRepository.getById(userId);
     if (!existingUser) {
       throw new Error("User not found");
     }
@@ -146,6 +151,6 @@ export class AuthService implements IAuthService {
     }
 
     const passwordHash = await bcrypt.hash(password, this.SALT);
-    return await this.userRepository.updateUser(userId, { passwordHash });
+    return await this.userRepository.update(userId, { passwordHash });
   }
 }
