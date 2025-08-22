@@ -17,7 +17,7 @@ export class StockRepository
    * @param data The stock data to insert
    * @returns The created stock entry
    */
-  async createStock(data: NewStockDTO): Promise<StockDTO> {
+  async create(data: NewStockDTO): Promise<StockDTO> {
     const [stock] = await this.dbContext
       .insert(stockTable)
       .values(data)
@@ -31,10 +31,7 @@ export class StockRepository
    * @param offset offset Number of entries to skip (default 0)
    * @returns An array of stock entries
    */
-  async getAllStocks(
-    limit: number = 10,
-    offset: number = 0,
-  ): Promise<StockDTO[]> {
+  async getAll(limit: number = 10, offset: number = 0): Promise<StockDTO[]> {
     return this.dbContext
       .select()
       .from(stockTable)
@@ -48,7 +45,7 @@ export class StockRepository
    * @param id The ID of the stock entry to retrieve
    * @returns The stock entry or null if not found
    */
-  async getStockById(id: number): Promise<StockDTO | null> {
+  async getById(id: number): Promise<StockDTO | null> {
     const stock = this.dbContext
       .select()
       .from(stockTable)
@@ -63,7 +60,7 @@ export class StockRepository
    * @param data The updated stock data
    * @returns The updated stock entry
    */
-  async updateStock(id: number, data: UpdateStockDTO): Promise<StockDTO> {
+  async update(id: number, data: UpdateStockDTO): Promise<StockDTO> {
     const [stock] = await this.dbContext
       .update(stockTable)
       .set(data)
@@ -77,7 +74,7 @@ export class StockRepository
    * @param id The ID of the stock entry to delete
    * @returns A promise that resolves when the stock entry is deleted
    */
-  async deleteStock(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.dbContext.delete(stockTable).where(eq(stockTable.id, id)).run();
   }
 }
