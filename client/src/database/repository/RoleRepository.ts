@@ -10,7 +10,7 @@ export class RoleRepository
   extends BaseRepository<BetterSQLite3Database>
   implements IRoleRepository
 {
-  async createRole(entity: NewRoleDTO): Promise<RoleDTO> {
+  async create(entity: NewRoleDTO): Promise<RoleDTO> {
     const [role] = await this.dbContext
       .insert(roleTable)
       .values(entity)
@@ -18,10 +18,7 @@ export class RoleRepository
     return role;
   }
 
-  async getAllRoles(
-    limit: number = 10,
-    offset: number = 0,
-  ): Promise<RoleDTO[]> {
+  async getAll(limit: number = 10, offset: number = 0): Promise<RoleDTO[]> {
     return this.dbContext
       .select()
       .from(roleTable)
@@ -30,7 +27,7 @@ export class RoleRepository
       .all();
   }
 
-  async getRoleById(id: number): Promise<RoleDTO | null> {
+  async getById(id: number): Promise<RoleDTO | null> {
     const role = this.dbContext
       .select()
       .from(roleTable)
@@ -39,7 +36,7 @@ export class RoleRepository
     return role || null;
   }
 
-  async getRoleByType(role_type: RoleType): Promise<RoleDTO | null> {
+  async getByType(role_type: RoleType): Promise<RoleDTO | null> {
     const role = this.dbContext
       .select()
       .from(roleTable)
@@ -48,7 +45,7 @@ export class RoleRepository
     return role || null;
   }
 
-  async deleteRole(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.dbContext.delete(roleTable).where(eq(roleTable.id, id)).run();
   }
 }
