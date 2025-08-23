@@ -1,15 +1,8 @@
-import { NewStockDTO, StockDTO, UpdateStockDTO } from "../schema/types";
+import { StockDTO, UpdateStockDTO } from "../schema/types";
 /**
  * Interface for stock repository
  */
 export interface IStockRepository {
-  /**
-   * Creates a new stock entry
-   * @param data The stock data to create
-   * @returns A promise that resolves to the created stock entry
-   */
-  create(data: NewStockDTO): Promise<StockDTO>;
-
   /**
    * Retrieves all stock entries
    * @param limit The maximum number of stock entries to retrieve (optional)

@@ -2,7 +2,7 @@ import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { stockTable } from "../schema";
-import { NewStockDTO, StockDTO, UpdateStockDTO } from "../schema/types";
+import { StockDTO, UpdateStockDTO } from "../schema/types";
 import { IStockRepository } from "../interfaces/IStockRepository";
 
 /**
@@ -12,19 +12,6 @@ export class StockRepository
   extends BaseRepository<BetterSQLite3Database>
   implements IStockRepository
 {
-  /**
-   * Inserts a new stock entry into the database
-   * @param data The stock data to insert
-   * @returns The created stock entry
-   */
-  async create(data: NewStockDTO): Promise<StockDTO> {
-    const [stock] = await this.dbContext
-      .insert(stockTable)
-      .values(data)
-      .returning();
-    return stock;
-  }
-
   /**
    * Retrieves all stock entries with optional pagination
    * @param limit limit Max number of entries to retrieve (default 10)
@@ -75,6 +62,6 @@ export class StockRepository
    * @returns A promise that resolves when the stock entry is deleted
    */
   async delete(id: number): Promise<void> {
-    await this.dbContext.delete(stockTable).where(eq(stockTable.id, id)).run();
+    this.dbContext.delete(stockTable).where(eq(stockTable.id, id)).run();
   }
 }

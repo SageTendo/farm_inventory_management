@@ -1,0 +1,68 @@
+import { StockDTO, UpdateStockDTO } from "../../database/schema/types";
+
+/**
+ * Interface for stock service
+ */
+export interface IStockService {
+  /**
+   * Retrieves all stock entries with optional pagination
+   * @param limit The maximum number of entries to retrieve
+   * @param offset The number of entries to skip
+   * @returns An array of stock entries
+   */
+  getAll(limit?: number, offset?: number): Promise<StockDTO[]>;
+
+  /**
+   * Retrieves a single stock entry by ID
+   * @param id The ID of the stock entry to retrieve
+   * @returns A promise that resolves to the stock entry if found, otherwise null
+   */
+  getById(stockId: number): Promise<StockDTO | null>;
+
+  /**
+   * Updates the quantity of a stock entry
+   * @param userId The ID of the user making the change
+   * @param stockId The ID of the stock entry to update
+   * @param entity The updated stock entry data
+   * @returns A promise that resolves to the updated stock entry if successful, otherwise null
+   */
+  setQuantity(
+    userId: number,
+    stockId: number,
+    entity: UpdateStockDTO
+  ): Promise<StockDTO | null>;
+
+  /**
+   * Updates the low stock threshold of a stock entry
+   * @param userId The ID of the user making the change
+   * @param stockId The ID of the stock entry to update
+   * @param entity The updated stock entry data
+   * @returns A promise that resolves to the updated stock entry if successful, otherwise null
+   */
+  setThreshold(
+    userId: number,
+    stockId: number,
+    entity: UpdateStockDTO
+  ): Promise<StockDTO | null>;
+
+  /**
+   * Decrements the quantity of a stock entry by a given value.
+   * @param userId The ID of the user making the change
+   * @param stockId The ID of the stock to decrement quantity
+   * @param value The value to decrement the quantity by
+   * @returns A promise that resolves to the updated stock entry if successful, otherwise null
+   */
+  decrementStock(
+    userId: number,
+    stockId: number,
+    value: number
+  ): Promise<UpdateStockDTO>;
+
+  /**
+   * Deletes a stock entry
+   * @param userId The user deleting the stock entry
+   * @param stockId The stock to delet
+   * @returns A promise that resolves when the stock entry is deleted
+   */
+  delete(userId: number, stockId: number): Promise<void>;
+}
