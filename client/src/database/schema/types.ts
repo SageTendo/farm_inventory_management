@@ -112,11 +112,13 @@ export interface ProductDTO {
   addedBy: number;
   isDeleted: boolean;
   createdAt: Date;
+  quantity: number;
+  lowStockThreshold: number;
 }
 
 export type NewProductDTO = Omit<ProductDTO, "id" | "isDeleted" | "createdAt">;
 export type UpdateProductDTO = Partial<
-  Omit<ProductDTO, "id" | "addedBy" | "createdAt">
+  Omit<ProductDTO, "id" | "addedBy" | "createdAt" | "isDeleted">
 >;
 
 // Sale DTO

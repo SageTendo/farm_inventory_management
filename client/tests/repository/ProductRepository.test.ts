@@ -26,6 +26,8 @@ test("Create product", async () => {
     name: "Lays Chips",
     buyPrice: 100,
     sellPrice: 120,
+    quantity: 10,
+    lowStockThreshold: 5,
     addedBy: 1,
   });
 

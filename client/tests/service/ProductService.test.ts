@@ -65,6 +65,8 @@ describe("ProductService", () => {
       buyPrice: 100,
       sellPrice: 120,
       addedBy: 1,
+      quantity: 10,
+      lowStockThreshold: 5,
       isDeleted: false,
       createdAt: date,
     });
@@ -74,6 +76,8 @@ describe("ProductService", () => {
       name: "Lays Chips",
       buyPrice: 100,
       sellPrice: 120,
+      quantity: 10,
+      lowStockThreshold: 5,
       addedBy: 1,
     });
 
@@ -86,6 +90,8 @@ describe("ProductService", () => {
       addedBy: 1,
       isDeleted: false,
       createdAt: date,
+      quantity: 10,
+      lowStockThreshold: 5,
     });
   });
 
@@ -98,6 +104,8 @@ describe("ProductService", () => {
       addedBy: 1,
       isDeleted: false,
       createdAt: new Date(),
+      quantity: 10,
+      lowStockThreshold: 5,
     });
 
     const products = await productService.getById(1);
@@ -122,6 +130,8 @@ describe("ProductService", () => {
             addedBy: 1,
             isDeleted: false,
             createdAt: new Date(),
+            quantity: 10,
+            lowStockThreshold: 5,
           },
         ];
       }
@@ -145,6 +155,8 @@ describe("ProductService", () => {
             addedBy: 1,
             isDeleted: false,
             createdAt: new Date(),
+            quantity: 10,
+            lowStockThreshold: 5,
           },
         ];
       }
@@ -165,6 +177,8 @@ describe("ProductService", () => {
           addedBy: 1,
           isDeleted: false,
           createdAt: new Date(),
+          quantity: 10,
+          lowStockThreshold: 5,
         };
       }
       return null;
@@ -179,6 +193,8 @@ describe("ProductService", () => {
       addedBy: 1,
       isDeleted: false,
       createdAt: new Date(),
+      quantity: 10,
+      lowStockThreshold: 5,
     });
 
     const product = await productService.update(1, 1, {
