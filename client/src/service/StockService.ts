@@ -47,22 +47,16 @@ export class StockService implements IStockService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to update the quantity!");
+      throw new Error(
+        "You do not have permission to update the low stock threshold!"
+      );
     return await this.stockRepository.update(stockId, entity);
   }
 
   async decrementStock(
-    userId: number,
     stockId: number,
     value: number
   ): Promise<UpdateStockDTO> {
-    const hasPermission = this.authSerivce.hasRequiredRole(
-      userId,
-      PERMITTED_ROLES
-    );
-    if (!hasPermission)
-      throw new Error("You do not have permission to update the quantity!");
-
     const stock = await this.stockRepository.getById(stockId);
     if (!stock) throw new Error("No stock entry found for this product!");
     if (stock.quantity < value)
@@ -80,7 +74,7 @@ export class StockService implements IStockService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to update the quantity!");
+      throw new Error("You do not have permission to delete this stock!");
     return this.stockRepository.delete(stockId);
   }
 }
