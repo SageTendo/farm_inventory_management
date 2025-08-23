@@ -153,7 +153,7 @@ describe("StockService", () => {
       timestamp: new Date(),
     });
 
-    const product = await stockService.decrementStock(1, 1, 1);
+    const product = await stockService.decrementStock(1, 1);
     expect(product?.quantity).toBe(9);
   });
 
