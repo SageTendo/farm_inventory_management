@@ -9,9 +9,6 @@ export const env = {
   SECRET_KEY: process.env.SECRET_KEY || "development",
 
   // === Database Configuration ===
-  DB_NAME: process.env.DB_NAME || "app",
-  DB_PATH: process.env.DB_PATH || "./src/database",
-  DB_FILE: process.env.DB_FILE || "./src/database/app.db",
-  DB_MIGRATIONS_PATH:
-    process.env.DB_MIGRATIONS_PATH || "./src/database/migrations",
+  DB_NAME: process.env.DB_NAME || "app.db",
+  DB_PATH: process.env.DB_PATH || "./out/database",
 };

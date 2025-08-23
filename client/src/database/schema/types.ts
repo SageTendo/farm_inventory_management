@@ -42,8 +42,8 @@ export interface UserDTO {
   passwordHash: string;
   roleID: number;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // This is the data that is returned from the service layer
@@ -112,11 +112,13 @@ export interface ProductDTO {
   addedBy: number;
   isDeleted: boolean;
   createdAt: Date;
+  quantity: number;
+  lowStockThreshold: number;
 }
 
 export type NewProductDTO = Omit<ProductDTO, "id" | "isDeleted" | "createdAt">;
 export type UpdateProductDTO = Partial<
-  Omit<ProductDTO, "id" | "addedBy" | "createdAt">
+  Omit<ProductDTO, "id" | "addedBy" | "createdAt" | "isDeleted">
 >;
 
 // Sale DTO
@@ -128,7 +130,7 @@ export interface SaleDTO {
   totalAmount: number;
   amountPaid: number;
   changeReceived: number;
-  createdAt: number;
+  createdAt: Date;
 }
 
 export type NewSaleDTO = Omit<SaleDTO, "id" | "createdAt">;
@@ -140,7 +142,7 @@ export interface SaleItemDTO {
   productID: number;
   quantity: number;
   unitPrice: number;
-  createdAt: number;
+  createdAt: Date;
 }
 
 export type NewSaleItemDTO = Omit<SaleItemDTO, "id" | "createdAt">;
@@ -150,7 +152,7 @@ export interface ExchangeRateDTO {
   id: number;
   rate: number;
   updatedBy: number;
-  updatedAt: number;
+  updatedAt: Date;
 }
 
 export type NewExchangeRateDTO = Omit<ExchangeRateDTO, "id" | "updatedAt">;

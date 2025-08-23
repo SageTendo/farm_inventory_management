@@ -31,10 +31,10 @@ export const userTable = sqliteTable("user", {
   isActive: integer({ mode: "boolean" })
     .notNull()
     .$default(() => false),
-  createdAt: text()
+  createdAt: integer({ mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  updatedAt: text()
+  updatedAt: integer({ mode: "timestamp" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
@@ -53,9 +53,9 @@ export const roleTable = sqliteTable(
     check(
       "type_check",
       sql`${table.type}
-      IN ('ADMIN', 'OWNER', 'STAFF')`,
+      IN ('ADMIN', 'OWNER', 'STAFF')`
     ),
-  ],
+  ]
 );
 
 // Exchange Rate Model
@@ -103,7 +103,7 @@ export const productTable = sqliteTable(
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
   },
-  (table) => [index("name_idx").on(table.name)],
+  (table) => [index("name_idx").on(table.name)]
 );
 
 // Sale Model
@@ -208,7 +208,7 @@ export const exchangeRateRelations = relations(
     }),
 
     sales: many(saleTable),
-  }),
+  })
 );
 
 // Product relations

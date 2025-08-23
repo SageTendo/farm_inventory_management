@@ -10,23 +10,23 @@ export class RoleService implements IRoleService {
     this.roleRepository = roleRepository;
   }
 
-  async createRole(entity: NewRoleDTO): Promise<RoleDTO> {
-    return await this.roleRepository.createRole(entity);
+  async create(entity: NewRoleDTO): Promise<RoleDTO> {
+    return await this.roleRepository.create(entity);
   }
 
-  async getAllRoles(): Promise<RoleDTO[]> {
-    return await this.roleRepository.getAllRoles();
+  async getAll(): Promise<RoleDTO[]> {
+    return await this.roleRepository.getAll();
   }
 
-  async getRoleById(id: number): Promise<RoleDTO | null> {
-    return await this.roleRepository.getRoleById(id);
+  async getById(id: number): Promise<RoleDTO | null> {
+    return await this.roleRepository.getById(id);
   }
 
-  async getRoleByType(role_type: RoleType): Promise<RoleDTO | null> {
-    return await this.roleRepository.getRoleByType(role_type);
+  async getByType(role_type: RoleType): Promise<RoleDTO | null> {
+    return await this.roleRepository.getByType(role_type);
   }
 
-  async deleteRole(id: number): Promise<void> {
-    return await this.roleRepository.deleteRole(id);
+  async delete(id: number): Promise<void> {
+    return await this.roleRepository.delete(id);
   }
 }

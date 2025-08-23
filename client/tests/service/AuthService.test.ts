@@ -13,11 +13,11 @@ import {
 import { setupDb } from "../testSetup";
 import { roleTable } from "../../src/database/schema";
 import { AuthService } from "../../src/service/AuthService";
-import { RoleRepository } from "../../src/database/repository/RoleRepository";
-import { UserRepository } from "../../src/database/repository/UserRepository";
 import bcrypt from "bcrypt";
+import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
+import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
 
-let client = new Database(":memory:");
+let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(async () => {
@@ -30,7 +30,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-afterAll(() => {
+afterAll(async () => {
   db.delete(roleTable).run();
   client.close();
 });
@@ -40,30 +40,29 @@ afterEach(() => {
 });
 
 describe("AuthService", () => {
-  const mockUserRepository: UserRepository = {
-    createUser: vi.fn(),
-    getAllUsers: vi.fn(),
-    getUserById: vi.fn(),
-    getUserByUsername: vi.fn(),
-    updateUser: vi.fn(),
-    deleteUser: vi.fn(),
-  } as unknown as UserRepository;
+  const mockUserRepository = vi.mocked<IUserRepository>({
+    create: vi.fn(),
+    getAll: vi.fn(),
+    getById: vi.fn(),
+    getByUsername: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  });
 
-  const mockRoleRepository: RoleRepository = {
-    createRole: vi.fn(),
-    getAllRoles: vi.fn(),
-    getRoleById: vi.fn(),
-    getRoleByType: vi.fn(),
-    deleteRole: vi.fn(),
-  } as unknown as RoleRepository;
-
+  const mockRoleRepository = vi.mocked<IRoleRepository>({
+    create: vi.fn(),
+    getAll: vi.fn(),
+    getById: vi.fn(),
+    getByType: vi.fn(),
+    delete: vi.fn(),
+  });
   const authService = new AuthService(mockUserRepository, mockRoleRepository);
 
   test("registers user if admin and user doesn't exist", async () => {
     const registeringUserId = 1;
     vi.spyOn(authService, "hasRequiredRole").mockResolvedValue(true);
-    mockUserRepository.getUserByUsername.mockResolvedValue(null);
-    mockUserRepository.createUser.mockResolvedValue({
+    mockUserRepository.getByUsername.mockResolvedValue(null);
+    mockUserRepository.create.mockResolvedValue({
       id: 2,
       fullname: "Naruto Uzumaki",
       username: "naruto",
@@ -83,14 +82,28 @@ describe("AuthService", () => {
 
     const result = await authService.register(registeringUserId, newUser);
     expect(result.success).toBe(true);
-    expect(mockUserRepository.createUser).toHaveBeenCalledWith(
-      expect.objectContaining({ username: "naruto" }),
+    expect(mockUserRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ username: "naruto" })
     );
   });
 
   test("fails to register if user already exists", async () => {
     vi.spyOn(authService, "hasRequiredRole").mockResolvedValue(true);
-    mockUserRepository.getUserByUsername.mockResolvedValue({ id: 5 });
+    mockUserRepository.getByUsername.mockImplementation(async (username) => {
+      if (username === "sasuke") {
+        return {
+          id: 5,
+          fullname: "Sasuke",
+          username: "sasuke",
+          passwordHash: "hashedPassword",
+          roleID: 2,
+          isActive: false,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        };
+      }
+      return null;
+    });
 
     const result = await authService.register(1, {
       fullname: "Sasuke",
@@ -105,32 +118,49 @@ describe("AuthService", () => {
 
   test("logs in user with correct credentials", async () => {
     const hashed = await bcrypt.hash("myPass", 10);
-    mockUserRepository.getUserByUsername.mockResolvedValue({
-      id: 1,
-      username: "test",
-      passwordHash: hashed,
-      roleID: 2,
+
+    mockUserRepository.getByUsername.mockImplementation(async (username) => {
+      if (username === "test") {
+        return {
+          id: 1,
+          username: "test",
+          fullname: "",
+          passwordHash: hashed,
+          roleID: 0,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+      }
+      return null;
     });
 
-    mockRoleRepository.getRoleById.mockResolvedValue({
-      type: "ADMIN",
+    mockRoleRepository.getById.mockImplementation(async (id) => {
+      if (id === 0) return { id: 0, type: "ADMIN" };
+      return null;
     });
 
     const result = await authService.login("test", "myPass");
+
     expect(result.success).toBe(true);
-    expect(result.authData.username).toBe("test");
+    expect(result.authData?.username).toBe("test");
   });
 
   test("logs in user with incorrect credentials", async () => {
     const hashed = await bcrypt.hash("myPass", 10);
-    mockUserRepository.getUserByUsername.mockResolvedValue({
+    mockUserRepository.getByUsername.mockResolvedValue({
       id: 1,
       username: "test",
+      fullname: "",
       passwordHash: hashed,
       roleID: 2,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
-    mockRoleRepository.getRoleById.mockResolvedValue({
+    mockRoleRepository.getById.mockResolvedValue({
+      id: 0,
       type: "ADMIN",
     });
 
@@ -144,29 +174,71 @@ describe("AuthService", () => {
     expect(result).toBe(true);
   });
 
+  test("hasRequiredRole returns false for empty requiredRoles", async () => {
+    const result = await authService.hasRequiredRole(1, []);
+    expect(result).toBe(true);
+  });
+
   test("hasRequiredRole returns true for matching role", async () => {
-    mockUserRepository.getUserById.mockResolvedValue({ roleID: 1 });
-    mockRoleRepository.getRoleById.mockResolvedValue({ type: "ADMIN" });
+    mockUserRepository.getById.mockResolvedValue({
+      id: 1,
+      username: "test",
+      fullname: "",
+      passwordHash: "",
+      roleID: 1,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    mockRoleRepository.getById.mockImplementation(async (id) => {
+      if (id === 1) {
+        return {
+          id: 1,
+          type: "ADMIN",
+        };
+      }
+      return null;
+    });
+
     const result = await authService.hasRequiredRole(1, ["ADMIN"]);
     expect(result).toBe(true);
   });
 
   test("hasRequiredRole returns true for multiple matching roles", async () => {
-    mockUserRepository.getUserById.mockResolvedValue({ roleID: 1 });
-    mockRoleRepository.getRoleById.mockResolvedValue({ type: "ADMIN" });
-    const result = await authService.hasRequiredRole(1, ["ADMIN", "USER"]);
+    mockUserRepository.getById.mockResolvedValue({
+      id: 1,
+      username: "test",
+      fullname: "",
+      passwordHash: "",
+      roleID: 1,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    mockRoleRepository.getById.mockResolvedValue({ id: 1, type: "ADMIN" });
+    const result = await authService.hasRequiredRole(1, ["ADMIN", "OWNER"]);
     expect(result).toBe(true);
   });
 
   test("hasRequiredRole returns false for non-matching role", async () => {
-    mockUserRepository.getUserById.mockResolvedValue({ roleID: 1 });
-    mockRoleRepository.getRoleById.mockResolvedValue({ type: "USER" });
+    mockUserRepository.getById.mockResolvedValue({
+      id: 1,
+      username: "test",
+      fullname: "",
+      passwordHash: "",
+      roleID: 1,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    mockRoleRepository.getById.mockResolvedValue({ id: 1, type: "STAFF" });
     const result = await authService.hasRequiredRole(1, ["ADMIN", "OWNER"]);
     expect(result).toBe(false);
   });
 
   test("hasRequiredRole returns false for null user", async () => {
-    mockUserRepository.getUserById.mockResolvedValue(null);
+    mockUserRepository.getById.mockResolvedValue(null);
     const result = await authService.hasRequiredRole(1, ["ADMIN"]);
     expect(result).toBe(false);
   });
