@@ -1,6 +1,6 @@
-import {useState} from "react";
-import {ListPage} from "../../components/ListPage.tsx";
-import {faUsers} from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { ListPage } from "../../components/shared/ListPage.tsx";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const dummy: Record<string, any>[] = [
   {
@@ -66,17 +66,16 @@ const dummy: Record<string, any>[] = [
     role: "admin",
     createdAt: "2022-01-01",
     updatedAt: "2022-01-01",
-  }
+  },
 ];
 
 export function Users() {
-
   const [data, setData] = useState(dummy);
   const [query, setQuery] = useState("");
 
   const handleSearch = () => {
     //   TODO: Handle search logic here
-    console.log(query)
+    console.log(query);
   };
 
   const labels = ["#", "fullname", "username", "role", "Created At"];
@@ -96,5 +95,5 @@ export function Users() {
       keys={keys}
       actionable={true}
     />
-  )
+  );
 }

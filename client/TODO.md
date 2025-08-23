@@ -1,0 +1,6 @@
+- Fix styling changes from bootstrap to tailwind
+- Fix scrolling issue on mobile
+- Fix table width on mobile
+- Fix centering issues on components in views
+- Fix all views & components [ManageX.tsx, Table]
+- Fix padding
