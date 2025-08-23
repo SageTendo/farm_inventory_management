@@ -3,9 +3,11 @@ import { IProductRepository } from "../../src/database/interfaces/IProductReposi
 import { ProductRepository } from "../../src/database/repository/ProductRepository";
 import { setupDb } from "../testSetup";
 import { productTable } from "../../src/database/schema";
+import Database from "better-sqlite3";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let client: any;
-let db: any;
+let client: Database.Database;
+let db: BetterSQLite3Database;
 let productRepository: IProductRepository;
 
 beforeAll(async () => {

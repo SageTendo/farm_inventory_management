@@ -1,10 +1,10 @@
 import Database from "better-sqlite3";
-import { BetterSQLite3Database, drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
 /**
  * Sets up an in-memory SQLite database and runs all migrations.
- * Returns the {@link Database} client and the {@link BetterSQLite3Database} object.
+ * Returns the {@link Database} client.
  */
 export const setupDb = () => {
   const client = new Database(":memory:");

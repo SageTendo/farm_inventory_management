@@ -4,9 +4,11 @@ import { setupDb } from "../testSetup";
 import { roleTable } from "../../src/database/schema";
 import { roleTypes } from "../../src/database/schema/constants";
 import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
+import Database from "better-sqlite3";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let client: any;
-let db: any;
+let client: Database.Database;
+let db: BetterSQLite3Database;
 let roleRepository: IRoleRepository;
 
 beforeAll(async () => {

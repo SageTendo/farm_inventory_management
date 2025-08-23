@@ -5,9 +5,11 @@ import { UserRepository } from "../../src/database/repository/UserRepository";
 import { roleTypes } from "../../src/database/schema/constants";
 import { setupDb } from "../testSetup";
 import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
+import Database from "better-sqlite3";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let client: any;
-let db: any;
+let client: Database.Database;
+let db: BetterSQLite3Database;
 let userRepository: IUserRepository;
 
 beforeAll(async () => {

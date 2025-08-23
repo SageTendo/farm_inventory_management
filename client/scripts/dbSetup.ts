@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import * as fs from "node:fs";
 import { promisify } from "util";
 import { env } from "../src/config";
+import { join } from "path";
 
 const RED = "\x1b[31m";
 const GREEN = "\x1b[32m";
@@ -16,9 +17,11 @@ interface execResponse {
   message: string;
 }
 
+const dbFile = join(env.DB_PATH, env.DB_NAME);
+
 async function create_db(): Promise<execResponse> {
   console.log(`${GREEN}📦 Creating database...${RESET}`);
-  if (fs.existsSync(env.DB_FILE as string)) {
+  if (fs.existsSync(dbFile)) {
     return {
       success: true,
       message: `${YELLOW}⚠️  Database already exists! Skipping creation...${RESET}`,
@@ -26,7 +29,7 @@ async function create_db(): Promise<execResponse> {
   }
 
   try {
-    const { stdout, stderr } = await execAsync(`npx tsx ${env.DB_PATH}/db.ts`);
+    const { stdout, stderr } = await execAsync(`npx tsx src/database/db.ts`);
     const message = stderr
       ? `${YELLOW}⚠️ ${stderr}${RESET}`
       : `${GREEN}${stdout}${RESET}`;
@@ -88,7 +91,7 @@ function delete_db_files() {
 }
 
 async function main() {
-  if (!env.DB_FILE) {
+  if (!dbFile) {
     console.error(`${RED}DB_FILE environment variable is not set${RESET}`);
     return;
   }

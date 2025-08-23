@@ -11,7 +11,6 @@ import {
 } from "vitest";
 import { roleTable } from "../../src/database/schema";
 import { setupDb } from "../testSetup";
-import { IProductRepository } from "../../src/database/interfaces/IProductRepository";
 import { ExchangeRateService } from "../../src/service/ExchangeRateService";
 import { IAuthService } from "../../src/service/interfaces/IAuthService";
 import { IExchangeRateService } from "../../src/service/interfaces/IExchangeRateService";
@@ -56,7 +55,6 @@ describe("ExchangeRateService", () => {
 
   test("Set new rate", async () => {
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
-    const date = new Date();
     mockExchangeRepository.set.mockResolvedValue({
       id: 1,
       rate: 1.2,

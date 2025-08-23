@@ -1,11 +1,12 @@
 import { defineConfig } from "drizzle-kit";
 import { env } from "./src/config";
+import { join } from "path";
 
 export default defineConfig({
   dialect: "sqlite",
-  schema: env.DB_PATH + "/schema/index.ts",
-  out: env.DB_MIGRATIONS_PATH,
+  schema: "src/database/schema/index.ts",
+  out: "src/database/migrations",
   dbCredentials: {
-    url: env.DB_FILE as string,
+    url: join(env.DB_PATH, env.DB_NAME),
   },
 });
