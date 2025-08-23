@@ -1,7 +1,7 @@
 /**
  * Error for monetary parsing errors
  */
-class MoneyParseError extends Error {
+export class MoneyParseError extends Error {
   public constructor(err: string) {
     super(err)
   }
@@ -10,7 +10,7 @@ class MoneyParseError extends Error {
 /**
  * Error for monetary parsing errors
  */
-class UnsafeMonetaryValueError extends Error {
+export class UnsafeMonetaryValueError extends Error {
   public constructor(err: string) {
     super(err)
   }
