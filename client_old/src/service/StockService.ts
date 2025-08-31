@@ -19,13 +19,13 @@ export class StockService implements IStockService {
     return this.stockRepository.getAll(limit, offset);
   }
 
-  async getById(stockId: string): Promise<StockDTO | null> {
+  async getById(stockId: number): Promise<StockDTO | null> {
     return this.stockRepository.getById(stockId);
   }
 
   async setQuantity(
-    userId: string,
-    stockId: string,
+    userId: number,
+    stockId: number,
     entity: UpdateStockDTO
   ): Promise<StockDTO | null> {
     const hasPermission = this.authSerivce.hasRequiredRole(
@@ -38,8 +38,8 @@ export class StockService implements IStockService {
   }
 
   async setThreshold(
-    userId: string,
-    stockId: string,
+    userId: number,
+    stockId: number,
     entity: UpdateStockDTO
   ): Promise<StockDTO | null> {
     const hasPermission = this.authSerivce.hasRequiredRole(
@@ -54,7 +54,7 @@ export class StockService implements IStockService {
   }
 
   async decrementStock(
-    stockId: string,
+    stockId: number,
     value: number
   ): Promise<UpdateStockDTO> {
     const stock = await this.stockRepository.getById(stockId);
@@ -68,7 +68,7 @@ export class StockService implements IStockService {
       quantity: stock.quantity - value,
     });
   }
-  delete(userId: string, stockId: string): Promise<void> {
+  delete(userId: number, stockId: number): Promise<void> {
     const hasPermission = this.authSerivce.hasRequiredRole(
       userId,
       PERMITTED_ROLES

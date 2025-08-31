@@ -13,7 +13,7 @@ export interface IAuthService {
    * @returns {Promise<AuthResponseDTO>} A promise that resolves to the user registration response
    */
   register(
-    registeringUserId: string,
+    registeringUserId: number,
     newUser: NewUserDTO
   ): Promise<AuthResponseDTO>;
 
@@ -31,7 +31,7 @@ export interface IAuthService {
    * @param requiredRoles The roles required to access the resource
    * @returns {Promise<boolean>} A promise that resolves to true if the user has the required role, false otherwise
    */
-  hasRequiredRole(userId: string, requiredRoles: RoleType[]): Promise<boolean>;
+  hasRequiredRole(userID: number, requiredRoles: RoleType[]): Promise<boolean>;
 
   /**
    * Update the role of a user
@@ -40,9 +40,9 @@ export interface IAuthService {
    * @param roleID The id of the role to be assigned to the user
    */
   updateRole(
-    adminId: string,
-    userId: string,
-    roleId: string
+    adminId: number,
+    userId: number,
+    roleID: number
   ): Promise<UserResponseDTO | null>;
 
   /**
@@ -52,8 +52,8 @@ export interface IAuthService {
    * @param password The new password of the user
    */
   updatePassword(
-    adminId: string,
-    userId: string,
+    adminId: number,
+    userId: number,
     password: string
   ): Promise<UserResponseDTO | null>;
 }

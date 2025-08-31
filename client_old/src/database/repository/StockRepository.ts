@@ -1,3 +1,4 @@
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { stockTable } from "../schema";
@@ -8,7 +9,7 @@ import { IStockRepository } from "../interfaces/IStockRepository";
  * Repository class to handle CRUD operations for stock entities.
  */
 export class StockRepository
-  extends BaseRepository
+  extends BaseRepository<BetterSQLite3Database>
   implements IStockRepository
 {
   /**
@@ -31,11 +32,11 @@ export class StockRepository
    * @param id The ID of the stock entry to retrieve
    * @returns The stock entry or null if not found
    */
-  async getById(stockId: string): Promise<StockDTO | null> {
-    const stock = await this.dbContext
+  async getById(id: number): Promise<StockDTO | null> {
+    const stock = this.dbContext
       .select()
       .from(stockTable)
-      .where(eq(stockTable.id, stockId))
+      .where(eq(stockTable.id, id))
       .get();
     return stock || null;
   }
@@ -46,11 +47,11 @@ export class StockRepository
    * @param data The updated stock data
    * @returns The updated stock entry
    */
-  async update(stockId: string, data: UpdateStockDTO): Promise<StockDTO> {
+  async update(id: number, data: UpdateStockDTO): Promise<StockDTO> {
     const [stock] = await this.dbContext
       .update(stockTable)
       .set(data)
-      .where(eq(stockTable.id, stockId))
+      .where(eq(stockTable.id, id))
       .returning();
     return stock || null;
   }
@@ -60,7 +61,7 @@ export class StockRepository
    * @param id The ID of the stock entry to delete
    * @returns A promise that resolves when the stock entry is deleted
    */
-  async delete(stockId: string): Promise<void> {
-    this.dbContext.delete(stockTable).where(eq(stockTable.id, stockId)).run();
+  async delete(id: number): Promise<void> {
+    this.dbContext.delete(stockTable).where(eq(stockTable.id, id)).run();
   }
 }

@@ -28,24 +28,24 @@ export interface IUserRepository {
 
   /**
    * Retrieves a user by their id
-   * @param userId The id of the user to retrieve
+   * @param id The id of the user to retrieve
    * @returns A promise that resolves to the user entity if found, otherwise null
    */
 
-  getById(userId: string): Promise<UserDTO | null>;
+  getById(id: number): Promise<UserDTO | null>;
 
   /**
    * Updates a user by their id
-   * @param userId The id of the user to update
+   * @param id The id of the user to update
    * @param entity The updated user entity
    * @returns A promise that resolves to the updated user entity if found, otherwise null
    */
-  update(userId: string, entity: UpdateUserDTO): Promise<UserDTO | null>;
+  update(id: number, entity: UpdateUserDTO): Promise<UserDTO | null>;
 
   /**
    * Deletes a user by their id
-   * @param userId The id of the user to delete
+   * @param id The id of the user to delete
    * @returns A promise that resolves when the user is deleted
    */
-  delete(userId: string): Promise<void>;
+  delete(id: number): Promise<void>;
 }

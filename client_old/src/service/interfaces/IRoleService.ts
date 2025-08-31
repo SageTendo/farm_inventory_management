@@ -20,7 +20,7 @@ export interface IRoleService {
    * @param id The ID of the role to retrieve
    * @returns A promise that resolves to the role entity
    */
-  getById(roleId: string): Promise<RoleDTO | null>;
+  getById(id: number): Promise<RoleDTO | null>;
 
   /**
    * Get role by its type
@@ -34,5 +34,5 @@ export interface IRoleService {
    * @param id The ID of the role to delete
    * @returns A promise that resolves when the role is deleted
    */
-  delete(roleId: string): Promise<void>;
+  delete(id: number): Promise<void>;
 }

@@ -18,7 +18,7 @@ export interface IProductService {
    * @param id The ID of the product to retrieve.
    * @returns A promise that resolves to the product entity if found, otherwise null.
    */
-  getById(productId: string): Promise<ProductDTO | null>;
+  getById(id: number): Promise<ProductDTO | null>;
 
   /**
    * @param name?: string,
@@ -37,8 +37,8 @@ export interface IProductService {
    * @returns A promise that resolves to the updated product entity if successful, otherwise null.
    */
   update(
-    userId: string,
-    productId: string,
+    userId: number,
+    productId: number,
     entity: UpdateProductDTO
   ): Promise<ProductDTO | null>;
 
@@ -48,5 +48,5 @@ export interface IProductService {
    * @param productId The ID of the product to update.
    * @returns A promise that resolves when the product is deleted.
    */
-  delete(userId: string, productId: string): Promise<void>;
+  delete(userId: number, productId: number): Promise<void>;
 }

@@ -9,7 +9,7 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 export const setupDb = () => {
   const client = new Database(":memory:");
   const db = drizzle(client);
-  migrate(db, { migrationsFolder: "migrations" });
+  migrate(db, { migrationsFolder: "./src/database/migrations" });
   return { client, db };
 };
 

@@ -11,10 +11,10 @@ export interface ISalesRepository {
 
   /**
    * Retrieves a sale by its ID.
-   * @param saleId The ID of the sale to retrieve
+   * @param id The ID of the sale to retrieve
    * @returns The sale if found, otherwise null
    */
-  getSaleById(saleId: string): Promise<SaleDTO>;
+  getSaleById(id: number): Promise<SaleDTO>;
 
   /**
    * Retrieves all sales that occurred between the given dates.

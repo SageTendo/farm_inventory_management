@@ -19,8 +19,8 @@ export class UserService implements IUserService {
     return await this.userRepository.getAll(limit, offset);
   }
 
-  async getById(userId: string): Promise<UserResponseDTO | null> {
-    return await this.userRepository.getById(userId);
+  async getById(id: number): Promise<UserResponseDTO | null> {
+    return await this.userRepository.getById(id);
   }
 
   async getByUsername(username: string): Promise<UserResponseDTO | null> {
@@ -28,7 +28,7 @@ export class UserService implements IUserService {
   }
 
   async update(
-    userId: string,
+    id: number,
     entity: UpdateUserDTO
   ): Promise<UserResponseDTO | null> {
     if (entity.roleID) {
@@ -40,10 +40,10 @@ export class UserService implements IUserService {
     }
 
     entity.updatedAt = new Date();
-    return await this.userRepository.update(userId, entity);
+    return await this.userRepository.update(id, entity);
   }
 
-  async delete(userId: string): Promise<void> {
-    return await this.userRepository.delete(userId);
+  async delete(id: number): Promise<void> {
+    return await this.userRepository.delete(id);
   }
 }

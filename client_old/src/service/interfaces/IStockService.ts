@@ -17,7 +17,7 @@ export interface IStockService {
    * @param id The ID of the stock entry to retrieve
    * @returns A promise that resolves to the stock entry if found, otherwise null
    */
-  getById(stockId: string): Promise<StockDTO | null>;
+  getById(stockId: number): Promise<StockDTO | null>;
 
   /**
    * Updates the quantity of a stock entry
@@ -27,8 +27,8 @@ export interface IStockService {
    * @returns A promise that resolves to the updated stock entry if successful, otherwise null
    */
   setQuantity(
-    userId: string,
-    stockId: string,
+    userId: number,
+    stockId: number,
     entity: UpdateStockDTO
   ): Promise<StockDTO | null>;
 
@@ -40,8 +40,8 @@ export interface IStockService {
    * @returns A promise that resolves to the updated stock entry if successful, otherwise null
    */
   setThreshold(
-    userId: string,
-    stockId: string,
+    userId: number,
+    stockId: number,
     entity: UpdateStockDTO
   ): Promise<StockDTO | null>;
 
@@ -52,7 +52,11 @@ export interface IStockService {
    * @param value The value to decrement the quantity by
    * @returns A promise that resolves to the updated stock entry if successful, otherwise null
    */
-  decrementStock(stockId: string, value: number): Promise<UpdateStockDTO>;
+  decrementStock(
+    userId: number,
+    stockId: number,
+    value: number
+  ): Promise<UpdateStockDTO>;
 
   /**
    * Deletes a stock entry
@@ -60,5 +64,5 @@ export interface IStockService {
    * @param stockId The stock to delet
    * @returns A promise that resolves when the stock entry is deleted
    */
-  delete(userId: string, stockId: string): Promise<void>;
+  delete(userId: number, stockId: number): Promise<void>;
 }

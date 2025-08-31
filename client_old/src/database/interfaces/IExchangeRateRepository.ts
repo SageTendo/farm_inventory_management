@@ -19,8 +19,8 @@ export interface IExchangeRateRepository {
 
   /**
    * Retrieves a specific exchange rate by its ID from the DB
-   * @param exchangeRateID The ID of the exchange rate to retrieve
+   * @param id The ID of the exchange rate to retrieve
    * @returns A promise that resolves to the exchange rate entity if found, otherwise null
    */
-  getById(exchangeRateID: string): Promise<ExchangeRateDTO | null>;
+  getById(id: number): Promise<ExchangeRateDTO | null>;
 }

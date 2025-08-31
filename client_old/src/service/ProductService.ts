@@ -34,8 +34,8 @@ export class ProductService implements IProductService {
     return await this.productRepository.create(product);
   }
 
-  async getById(productId: string): Promise<ProductDTO | null> {
-    return await this.productRepository.getById(productId);
+  async getById(id: number): Promise<ProductDTO | null> {
+    return await this.productRepository.getById(id);
   }
 
   async getAll(
@@ -47,8 +47,8 @@ export class ProductService implements IProductService {
   }
 
   async update(
-    userId: string,
-    productId: string,
+    userId: number,
+    productId: number,
     entity: UpdateProductDTO
   ): Promise<ProductDTO | null> {
     const hasPermission = this.authService.hasRequiredRole(
@@ -64,7 +64,7 @@ export class ProductService implements IProductService {
     return await this.productRepository.update(productId, entity);
   }
 
-  async delete(userId: string, productId: string): Promise<void> {
+  async delete(userId: number, productId: number): Promise<void> {
     const hasPermission = this.authService.hasRequiredRole(
       userId,
       PERMITTED_ROLES

@@ -1,3 +1,4 @@
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { BaseRepository } from ".";
 import { roleTable } from "../schema";
 import { NewRoleDTO, RoleDTO } from "../schema/types";
@@ -5,9 +6,16 @@ import { eq } from "drizzle-orm";
 import { IRoleRepository } from "../interfaces/IRoleRepository";
 import { RoleType } from "../schema/constants";
 
-export class RoleRepository extends BaseRepository implements IRoleRepository {
+export class RoleRepository
+  extends BaseRepository<BetterSQLite3Database>
+  implements IRoleRepository
+{
   async create(entity: NewRoleDTO): Promise<RoleDTO> {
-    return this.dbContext.insert(roleTable).values(entity).returning().get();
+    const [role] = await this.dbContext
+      .insert(roleTable)
+      .values(entity)
+      .returning();
+    return role;
   }
 
   async getAll(limit: number = 10, offset: number = 0): Promise<RoleDTO[]> {
@@ -19,17 +27,17 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
       .all();
   }
 
-  async getById(roleId: string): Promise<RoleDTO | null> {
-    const role = await this.dbContext
+  async getById(id: number): Promise<RoleDTO | null> {
+    const role = this.dbContext
       .select()
       .from(roleTable)
-      .where(eq(roleTable.id, roleId))
+      .where(eq(roleTable.id, id))
       .get();
     return role || null;
   }
 
   async getByType(role_type: RoleType): Promise<RoleDTO | null> {
-    const role = await this.dbContext
+    const role = this.dbContext
       .select()
       .from(roleTable)
       .where(eq(roleTable.type, role_type))
@@ -37,7 +45,7 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
     return role || null;
   }
 
-  async delete(roleId: string): Promise<void> {
-    this.dbContext.delete(roleTable).where(eq(roleTable.id, roleId)).run();
+  async delete(id: number): Promise<void> {
+    this.dbContext.delete(roleTable).where(eq(roleTable.id, id)).run();
   }
 }

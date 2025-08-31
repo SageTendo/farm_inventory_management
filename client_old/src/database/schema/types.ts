@@ -27,7 +27,7 @@ import { RoleType } from "./constants";
 
 // Role DTO
 export interface RoleDTO {
-  id: string;
+  id: number;
   type: RoleType;
 }
 
@@ -36,11 +36,11 @@ export type NewRoleDTO = Omit<RoleDTO, "id">;
 // User DTO
 // This is the data that is returned from the repository layer
 export interface UserDTO {
-  id: string;
+  id: number;
   fullname: string;
   username: string;
   passwordHash: string;
-  roleID: string;
+  roleID: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -54,7 +54,7 @@ export interface NewUserDTO {
   fullname: string;
   username: string;
   password: string; // Plaintext, gets hashed in AuthService
-  roleID: string;
+  roleID: number;
 }
 
 // This is the data that is sent to the repository layer
@@ -62,7 +62,7 @@ export interface CreateUserDTO {
   fullname: string;
   username: string;
   passwordHash: string; // already hashed
-  roleID: string;
+  roleID: number;
 }
 
 // This is the data that is sent to the repository layer
@@ -73,7 +73,7 @@ export interface AuthResponseDTO {
   success: boolean;
   message: string;
   authData?: {
-    id: string;
+    id: number;
     username: string;
     role: RoleType;
   };
@@ -81,8 +81,8 @@ export interface AuthResponseDTO {
 
 // Stock DTO
 export interface StockDTO {
-  id: string;
-  productID: string;
+  id: number;
+  productID: number;
   quantity: number;
   lowStockThreshold: number;
   timestamp: Date;
@@ -95,8 +95,8 @@ export type UpdateStockDTO = Partial<
 
 // UserStock DTO
 export interface UserStock {
-  userID: string;
-  stockID: string;
+  userID: number;
+  stockID: number;
   quantity: number;
 }
 
@@ -105,11 +105,11 @@ export type UpdateUserStockDTO = Omit<UserStock, "id" | "userID" | "stockID">;
 
 // Product DTO
 export interface ProductDTO {
-  id: string;
+  id: number;
   name: string;
   buyPrice: number;
   sellPrice: number;
-  addedBy: string;
+  addedBy: number;
   isDeleted: boolean;
   createdAt: Date;
   quantity: number;
@@ -123,9 +123,9 @@ export type UpdateProductDTO = Partial<
 
 // Sale DTO
 export interface SaleDTO {
-  id: string;
-  sellerID: string;
-  exchangeRateID: string;
+  id: number;
+  sellerID: number;
+  exchangeRateID: number;
   usedLocalCurrency: boolean;
   totalAmount: number;
   amountPaid: number;
@@ -137,9 +137,9 @@ export type NewSaleDTO = Omit<SaleDTO, "id" | "createdAt">;
 
 // SaleItem DTO
 export interface SaleItemDTO {
-  id: string;
-  saleID: string;
-  productID: string;
+  id: number;
+  saleID: number;
+  productID: number;
   quantity: number;
   unitPrice: number;
   createdAt: Date;
@@ -149,9 +149,9 @@ export type NewSaleItemDTO = Omit<SaleItemDTO, "id" | "createdAt">;
 
 // Exchange Rate DTO
 export interface ExchangeRateDTO {
-  id: string;
+  id: number;
   rate: number;
-  updatedBy: string;
+  updatedBy: number;
   updatedAt: Date;
 }
 

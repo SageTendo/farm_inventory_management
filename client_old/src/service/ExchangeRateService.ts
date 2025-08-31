@@ -33,7 +33,7 @@ export class ExchangeRateService implements IExchangeRateService {
     return await this.exchangeRateRepo.getAll(limit, offset);
   }
 
-  async getById(exchangeRateId: string): Promise<ExchangeRateDTO | null> {
-    return await this.exchangeRateRepo.getById(exchangeRateId);
+  async getById(id: number): Promise<ExchangeRateDTO | null> {
+    return await this.exchangeRateRepo.getById(id);
   }
 }

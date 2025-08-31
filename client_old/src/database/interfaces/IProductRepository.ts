@@ -13,10 +13,10 @@ export interface IProductRepository {
 
   /**
    * Retrieves a product by its ID
-   * @param productId The ID of the product to retrieve
+   * @param productID The ID of the product to retrieve
    * @returns A promise that resolves to the product entity if found
    */
-  getById(productId: string): Promise<ProductDTO | null>;
+  getById(productID: number): Promise<ProductDTO | null>;
 
   /**
    * Retrieves multiple products
@@ -28,19 +28,16 @@ export interface IProductRepository {
 
   /**
    * Updates an existing product
-   * @param productId The ID of the product to update
+   * @param id The ID of the product to update
    * @param product The updated product data
    * @returns A promise that resolves to the updated product entity
    */
-  update(
-    productId: string,
-    enitity: UpdateProductDTO
-  ): Promise<ProductDTO | null>;
+  update(id: number, enitity: UpdateProductDTO): Promise<ProductDTO | null>;
 
   /**
    * Deletes a product by its ID
-   * @param productId The ID of the product to delete
+   * @param productID The ID of the product to delete
    * @returns A promise that resolves when the product is deleted
    */
-  delete(productId: string): Promise<void>;
+  delete(productID: number): Promise<void>;
 }

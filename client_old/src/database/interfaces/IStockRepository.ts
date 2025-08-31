@@ -13,23 +13,23 @@ export interface IStockRepository {
 
   /**
    * Retrieves a single stock entry by ID
-   * @param stockId The ID of the stock entry to retrieve
+   * @param id The ID of the stock entry to retrieve
    * @returns A promise that resolves to the stock entry if found, otherwise null
    */
-  getById(stockId: string): Promise<StockDTO | null>;
+  getById(id: number): Promise<StockDTO | null>;
 
   /**
    * Updates a stock entry by ID
-   * @param stockId The ID of the stock entry to update
+   * @param id The ID of the stock entry to update
    * @param data The updated stock data
    * @returns A promise that resolves to the updated stock entry
    */
-  update(stockId: string, data: UpdateStockDTO): Promise<StockDTO>;
+  update(id: number, data: UpdateStockDTO): Promise<StockDTO>;
 
   /**
    * Deletes a stock entry by ID
-   * @param stockId The ID of the stock entry to delete
+   * @param id The ID of the stock entry to delete
    * @returns A promise that resolves when the stock entry is deleted
    */
-  delete(stockId: string): Promise<void>;
+  delete(id: number): Promise<void>;
 }

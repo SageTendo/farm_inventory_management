@@ -10,9 +10,9 @@ export interface IUserService {
 
   /**
    * Gets a user by their id
-   * @param userId The id of the user
+   * @param id The id of the user
    */
-  getById(userId: string): Promise<UserResponseDTO | null>;
+  getById(id: number): Promise<UserResponseDTO | null>;
 
   /**
    * Gets a user by their username
@@ -22,17 +22,14 @@ export interface IUserService {
 
   /**
    * Handles updating a user with the given id
-   * @param userId The id of the user to update
+   * @param id The id of the user to update
    * @param entity The information to update for the user
    */
-  update(
-    userId: string,
-    entity: UpdateUserDTO
-  ): Promise<UserResponseDTO | null>;
+  update(id: number, entity: UpdateUserDTO): Promise<UserResponseDTO | null>;
 
   /**
    * Handles the deletion of a user
-   * @param userId The id of the user to delete
+   * @param id The id of the user to delete
    */
-  delete(userId: string): Promise<void>;
+  delete(id: number): Promise<void>;
 }

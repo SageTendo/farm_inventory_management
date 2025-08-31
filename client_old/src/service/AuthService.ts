@@ -26,7 +26,7 @@ export class AuthService implements IAuthService {
   }
 
   async register(
-    registeringUserId: string,
+    registeringUserId: number,
     newUser: NewUserDTO
   ): Promise<AuthResponseDTO> {
     if (!(await this.hasRequiredRole(registeringUserId, PERMITTED_ROLES))) {
@@ -94,12 +94,12 @@ export class AuthService implements IAuthService {
   }
 
   async hasRequiredRole(
-    userId: string,
+    userID: number,
     requiredRoles: RoleType[]
   ): Promise<boolean> {
     if (requiredRoles.length === 0) return true;
 
-    const user = await this.userRepository.getById(userId);
+    const user = await this.userRepository.getById(userID);
     if (!user) return false;
 
     const userRole = await this.roleRepository.getById(user.roleID);
@@ -107,12 +107,12 @@ export class AuthService implements IAuthService {
   }
 
   async updateRole(
-    adminId: string,
-    userId: string,
-    roleID: string
+    adminID: number,
+    userId: number,
+    roleID: number
   ): Promise<UserResponseDTO | null> {
     const hasRequiredRole = await this.hasRequiredRole(
-      adminId,
+      adminID,
       PERMITTED_ROLES
     );
     console.log(hasRequiredRole);
@@ -133,11 +133,11 @@ export class AuthService implements IAuthService {
   }
 
   async updatePassword(
-    adminId: string,
-    userId: string,
+    adminID: number,
+    userId: number,
     password: string
   ): Promise<UserResponseDTO | null> {
-    if (!(await this.hasRequiredRole(adminId, PERMITTED_ROLES))) {
+    if (!(await this.hasRequiredRole(adminID, PERMITTED_ROLES))) {
       throw new Error("You do not have permission to update user passwords");
     }
 

@@ -18,15 +18,15 @@ export class RoleService implements IRoleService {
     return await this.roleRepository.getAll();
   }
 
-  async getById(roleId: string): Promise<RoleDTO | null> {
-    return await this.roleRepository.getById(roleId);
+  async getById(id: number): Promise<RoleDTO | null> {
+    return await this.roleRepository.getById(id);
   }
 
   async getByType(role_type: RoleType): Promise<RoleDTO | null> {
     return await this.roleRepository.getByType(role_type);
   }
 
-  async delete(roleId: string): Promise<void> {
-    return await this.roleRepository.delete(roleId);
+  async delete(id: number): Promise<void> {
+    return await this.roleRepository.delete(id);
   }
 }

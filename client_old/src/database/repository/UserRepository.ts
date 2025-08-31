@@ -1,10 +1,14 @@
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { BaseRepository } from ".";
 import { userTable } from "../schema";
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
 import { eq } from "drizzle-orm";
 import { IUserRepository } from "../interfaces/IUserRepository";
 
-export class UserRepository extends BaseRepository implements IUserRepository {
+export class UserRepository
+  extends BaseRepository<BetterSQLite3Database>
+  implements IUserRepository
+{
   async create(entity: CreateUserDTO): Promise<UserDTO> {
     const [user] = await this.dbContext
       .insert(userTable)
@@ -22,17 +26,17 @@ export class UserRepository extends BaseRepository implements IUserRepository {
       .all();
   }
 
-  async getById(userId: string): Promise<UserDTO | null> {
-    const user = await this.dbContext
+  async getById(id: number): Promise<UserDTO | null> {
+    const user = this.dbContext
       .select()
       .from(userTable)
-      .where(eq(userTable.id, userId))
+      .where(eq(userTable.id, id))
       .get();
     return user || null;
   }
 
   async getByUsername(username: string): Promise<UserDTO | null> {
-    const user = await this.dbContext
+    const user = this.dbContext
       .select()
       .from(userTable)
       .where(eq(userTable.username, username))
@@ -40,16 +44,16 @@ export class UserRepository extends BaseRepository implements IUserRepository {
     return user || null;
   }
 
-  async update(userId: string, entity: UpdateUserDTO): Promise<UserDTO | null> {
+  async update(id: number, entity: UpdateUserDTO): Promise<UserDTO | null> {
     const [user] = await this.dbContext
       .update(userTable)
       .set(entity)
-      .where(eq(userTable.id, userId))
+      .where(eq(userTable.id, id))
       .returning();
     return user || null;
   }
 
-  async delete(userId: string): Promise<void> {
-    this.dbContext.delete(userTable).where(eq(userTable.id, userId)).run();
+  async delete(id: number): Promise<void> {
+    this.dbContext.delete(userTable).where(eq(userTable.id, id)).run();
   }
 }

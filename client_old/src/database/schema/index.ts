@@ -8,7 +8,6 @@ import {
   index,
 } from "drizzle-orm/sqlite-core";
 import { roleTypes } from "./constants";
-import { v4 as uuidv4 } from "uuid";
 
 // *******************************************
 // How to create db and perform migrations
@@ -22,13 +21,11 @@ import { v4 as uuidv4 } from "uuid";
 
 // User Model
 export const userTable = sqliteTable("user", {
-  id: text()
-    .primaryKey()
-    .$defaultFn(() => uuidv4()),
+  id: integer().primaryKey(),
   fullname: text({ length: 100 }).notNull(),
   username: text({ length: 50 }).notNull().unique(),
   passwordHash: text({ length: 256 }).notNull(),
-  roleID: text()
+  roleID: integer()
     .references(() => roleTable.id, { onDelete: "restrict" })
     .notNull(),
   isActive: integer({ mode: "boolean" })
@@ -46,9 +43,7 @@ export const userTable = sqliteTable("user", {
 export const roleTable = sqliteTable(
   "role",
   {
-    id: text()
-      .primaryKey()
-      .$defaultFn(() => uuidv4()),
+    id: integer().primaryKey(),
     type: text({ enum: roleTypes })
       .unique()
       .notNull()
@@ -65,11 +60,9 @@ export const roleTable = sqliteTable(
 
 // Exchange Rate Model
 export const exchangeRateTable = sqliteTable("exchange_rate", {
-  id: text()
-    .primaryKey()
-    .$defaultFn(() => uuidv4()),
+  id: integer().primaryKey(),
   rate: real().notNull(), // TODO: round to 4 decimals in crud operations
-  updatedBy: text()
+  updatedBy: integer()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
   updatedAt: integer({ mode: "timestamp" })
@@ -80,10 +73,8 @@ export const exchangeRateTable = sqliteTable("exchange_rate", {
 // Stock Model
 // NB: This should probaly be deleted manually when a product is marked as deleted?
 export const stockTable = sqliteTable("stock", {
-  id: text()
-    .primaryKey()
-    .$defaultFn(() => uuidv4()),
-  productID: text()
+  id: integer().primaryKey(),
+  productID: integer()
     .unique()
     .references(() => productTable.id, { onDelete: "cascade" })
     .notNull(),
@@ -100,13 +91,11 @@ export const stockTable = sqliteTable("stock", {
 export const productTable = sqliteTable(
   "product",
   {
-    id: text()
-      .primaryKey()
-      .$defaultFn(() => uuidv4()),
+    id: integer().primaryKey(),
     name: text({ length: 100 }).unique().notNull(),
     buyPrice: integer().notNull(),
     sellPrice: integer().notNull(),
-    addedBy: text()
+    addedBy: integer()
       .references(() => userTable.id, { onDelete: "set null" })
       .notNull(),
     isDeleted: integer({ mode: "boolean" }).default(false).notNull(),
@@ -119,13 +108,11 @@ export const productTable = sqliteTable(
 
 // Sale Model
 export const saleTable = sqliteTable("sale", {
-  id: text()
-    .primaryKey()
-    .$defaultFn(() => uuidv4()),
-  sellerID: text()
+  id: integer().primaryKey(),
+  sellerID: integer()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
-  exchangeRateID: text()
+  exchangeRateID: integer()
     .references(() => exchangeRateTable.id, { onDelete: "restrict" })
     .notNull(),
   usedLocalCurrency: integer({ mode: "boolean" }).notNull(),
@@ -139,13 +126,11 @@ export const saleTable = sqliteTable("sale", {
 
 // Sale Item Model
 export const saleItemTable = sqliteTable("sale_item", {
-  id: text()
-    .primaryKey()
-    .$defaultFn(() => uuidv4()),
-  saleID: text()
+  id: integer().primaryKey(),
+  saleID: integer()
     .references(() => saleTable.id, { onDelete: "cascade" })
     .notNull(),
-  productID: text()
+  productID: integer()
     .references(() => productTable.id, { onDelete: "restrict" }) // TODO: Need to look into whether it should be nullified
     .notNull(),
   quantity: integer().notNull(),
@@ -161,10 +146,10 @@ export const saleItemTable = sqliteTable("sale_item", {
 
 // User Stock Join Table
 export const userStock = sqliteTable("user_stock", {
-  userID: text()
+  userID: integer()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
-  stockID: text()
+  stockID: integer()
     .references(() => stockTable.id, { onDelete: "cascade" })
     .notNull(),
   quantity: integer().notNull(),
