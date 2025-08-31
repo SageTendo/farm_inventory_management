@@ -3,36 +3,34 @@ import { IExchangeRateRepository } from "../../src/database/interfaces/IExchange
 import { ExchangeRateRepository } from "../../src/database/repository/ExchangeRateRepository";
 import { setupDb } from "../testSetup";
 import { productTable } from "../../src/database/schema";
-import Database from "better-sqlite3";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let client: Database.Database;
 let db: BetterSQLite3Database;
 let exchangRateRepository: IExchangeRateRepository;
 
 beforeAll(async () => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
   db.run("PRAGMA foreign_keys = OFF;");
   exchangRateRepository = new ExchangeRateRepository(db);
 });
 
 afterAll(() => {
   db.delete(productTable).run();
-  client.close();
 });
+
+let rateId = "";
 
 test("Set exchange rate", async () => {
   const newRate = await exchangRateRepository.set({
     rate: 1.23,
-    updatedBy: 1,
+    updatedBy: "some user UUID",
   });
+  rateId = newRate.id;
 
   expect(newRate).toStrictEqual({
-    id: 1,
+    id: newRate.id,
     rate: 1.23,
-    updatedBy: 1,
+    updatedBy: "some user UUID",
     updatedAt: expect.any(Date),
   });
 });
@@ -44,11 +42,11 @@ test("Get exchange rates", async () => {
 });
 
 test("Get exchange rate by ID", async () => {
-  const rate = await exchangRateRepository.getById(1);
+  const rate = await exchangRateRepository.getById(rateId);
   expect(rate).toStrictEqual({
-    id: 1,
+    id: rate.id,
     rate: 1.23,
-    updatedBy: 1,
+    updatedBy: "some user UUID",
     updatedAt: expect.any(Date),
   });
 });

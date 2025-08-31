@@ -2,27 +2,20 @@
 import { roleTable, userTable } from "../../src/database/schema";
 import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
 import { UserRepository } from "../../src/database/repository/UserRepository";
-import { roleTypes } from "../../src/database/schema/constants";
 import { setupDb } from "../testSetup";
 import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
-import Database from "better-sqlite3";
-import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let client: Database.Database;
-let db: BetterSQLite3Database;
+let db: any;
 let userRepository: IUserRepository;
 
 beforeAll(async () => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
   db.run("PRAGMA foreign_keys = OFF;");
   userRepository = new UserRepository(db);
 });
 
 afterAll(() => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 beforeEach(() => {
@@ -34,15 +27,15 @@ test("Create a new user", async () => {
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
   });
 
   expect(user).toEqual({
-    id: expect.any(Number),
+    id: expect.any(String),
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
     isActive: false,
     createdAt: expect.any(Date),
     updatedAt: expect.any(Date),
@@ -54,7 +47,7 @@ test("Get a user by id", async () => {
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
   });
 
   const userFromDb = await userRepository.getById(user.id);
@@ -66,7 +59,7 @@ test("Get a user by username", async () => {
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
   });
 
   const userFromDb = await userRepository.getByUsername("johndoe");
@@ -78,21 +71,21 @@ test("Update a user", async () => {
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
   }); // Create a user
 
   const updatedUser = await userRepository.update(user.id, {
     fullname: "Jane Doe",
     username: "janedoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 2,
+    roleID: "Some Role UUID",
   });
   expect(updatedUser).toEqual({
     id: user.id,
     fullname: "Jane Doe",
     username: "janedoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 2,
+    roleID: "Some Role UUID",
     isActive: false,
     createdAt: expect.any(Date),
     updatedAt: expect.any(Date),
@@ -104,7 +97,7 @@ test("Delete a user", async () => {
     fullname: "John Doe",
     username: "johndoe",
     passwordHash: "hashedPassword",
-    roleID: roleTypes.indexOf("ADMIN") + 1,
+    roleID: "Some Role UUID",
   });
 
   await userRepository.delete(user.id);

@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1756159396419,
+      "tag": "0000_nebulous_hiroim",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1756159772620,
+      "tag": "0001_mute_ben_parker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1756160030125,
+      "tag": "0002_broad_umar",
+      "breakpoints": true
+    }
+  ]
+}

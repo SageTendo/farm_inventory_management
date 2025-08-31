@@ -19,14 +19,11 @@ let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(() => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
 });
 
 afterAll(async () => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 describe("UserService", () => {
@@ -55,24 +52,24 @@ describe("UserService", () => {
 
   test("Get user by id", async () => {
     mockUserRepository.getById.mockResolvedValue({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
 
-    const user = await mockUserRepository.getById(1);
+    const user = await mockUserRepository.getById("user UUID");
 
     expect(user).toEqual({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -81,11 +78,11 @@ describe("UserService", () => {
 
   test("Get user by username", async () => {
     mockUserRepository.getByUsername.mockResolvedValue({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -94,11 +91,11 @@ describe("UserService", () => {
     const user = await mockUserRepository.getByUsername("johndoe");
 
     expect(user).toEqual({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -108,11 +105,11 @@ describe("UserService", () => {
   test("Get all users", async () => {
     mockUserRepository.getAll.mockResolvedValue([
       {
-        id: 1,
+        id: "user UUID",
         fullname: "John Doe",
         username: "johndoe",
         passwordHash: "hashedPassword",
-        roleID: 1,
+        roleID: "user role UUID",
         isActive: false,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -123,11 +120,11 @@ describe("UserService", () => {
 
     expect(users).toEqual([
       {
-        id: 1,
+        id: "user UUID",
         fullname: "John Doe",
         username: "johndoe",
         passwordHash: "hashedPassword",
-        roleID: 1,
+        roleID: "user role UUID",
         isActive: false,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -137,31 +134,31 @@ describe("UserService", () => {
 
   test("Update user", async () => {
     mockUserRepository.update.mockResolvedValue({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe1",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
 
-    const user = await userService.update(1, {
+    const user = await userService.update("user UUID", {
       fullname: "John Doe",
       username: "johndoe1",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       updatedAt: expect.any(Date),
     });
 
     expect(user).toEqual({
-      id: 1,
+      id: "user UUID",
       fullname: "John Doe",
       username: "johndoe1",
       passwordHash: "hashedPassword",
-      roleID: 1,
+      roleID: "user role UUID",
       isActive: false,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -171,7 +168,7 @@ describe("UserService", () => {
   test("Delete user", async () => {
     mockUserRepository.delete.mockResolvedValue(undefined);
 
-    await userService.delete(1);
-    expect(mockUserRepository.delete).toHaveBeenCalledWith(1);
+    await userService.delete("user UUID");
+    expect(mockUserRepository.delete).toHaveBeenCalledWith("user UUID");
   });
 });

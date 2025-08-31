@@ -1,5 +1,4 @@
-import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { and, eq, gt, like } from "drizzle-orm";
+import { and, eq, gt, like, ne } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { productTable, stockTable } from "../schema";
 import {
@@ -9,12 +8,14 @@ import {
   UpdateProductDTO,
 } from "../schema/types";
 import { IProductRepository } from "../interfaces/IProductRepository";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { expect } from "vitest";
 
 /**
  * Repository class to handle CRUD operations for product entities.
  */
 export class ProductRepository
-  extends BaseRepository<BetterSQLite3Database>
+  extends BaseRepository
   implements IProductRepository
 {
   /**
@@ -23,36 +24,23 @@ export class ProductRepository
    * @returns The created product entry
    */
   async create(data: NewProductDTO): Promise<ProductDTO> {
-    return this.dbContext.transaction((tx) => {
+    return this.dbContext.transaction((tx: BetterSQLite3Database) => {
       // Insert product
-      const product_result = tx.insert(productTable).values(data).run();
-      if (!product_result) throw new Error("Failed to insert product");
+      const product = tx.insert(productTable).values(data).returning().get();
+      if (!product) throw new Error("Failed to insert product");
 
       // Insert stock
-      const stock_result = tx
+      const stock = tx
         .insert(stockTable)
         .values({
           quantity: data.quantity,
           lowStockThreshold: data.lowStockThreshold,
-          productID: product_result.lastInsertRowid,
+          productID: product.id,
           timestamp: new Date(),
         } as NewStockDTO)
-        .run();
-      if (!stock_result.lastInsertRowid)
-        throw new Error("Failed to insert stock");
-
-      // Fetch product with stock
-      const product = tx
-        .select()
-        .from(productTable)
-        .where(eq(productTable.id, Number(product_result.lastInsertRowid)))
+        .returning()
         .get();
-
-      const stock = tx
-        .select()
-        .from(stockTable)
-        .where(eq(stockTable.id, Number(stock_result.lastInsertRowid)))
-        .get();
+      if (!stock) throw new Error("Failed to insert stock");
 
       return {
         ...product,
@@ -64,22 +52,24 @@ export class ProductRepository
 
   /**
    * Retrieves a product by its ID
-   * @param productID The ID of the product to retrieve
+   * @param productId The ID of the product to retrieve
    * @returns The product if found, or null
    */
-  async getById(productID: number): Promise<ProductDTO | null> {
-    const result = this.dbContext
+  async getById(productId: string): Promise<ProductDTO | null> {
+    const product = await this.dbContext
       .select()
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .where(eq(productTable.id, productID))
+      .where(
+        and(eq(productTable.id, productId), ne(productTable.isDeleted, true))
+      )
       .get();
 
-    if (!result) return null;
+    if (!product) return null;
     return {
-      ...result.product,
-      quantity: result.stock?.quantity,
-      lowStockThreshold: result.stock?.lowStockThreshold,
+      ...product.product,
+      quantity: product.stock?.quantity,
+      lowStockThreshold: product.stock?.lowStockThreshold,
     } as ProductDTO;
   }
 
@@ -94,22 +84,23 @@ export class ProductRepository
     limit: number = 10,
     offset: number = 0
   ): Promise<ProductDTO[]> {
-    const resultsList = this.dbContext
+    const products = this.dbContext
       .select()
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
       .where(
         and(
           name ? like(productTable.name, `%${name}%`) : undefined,
-          gt(stockTable.quantity, 0)
+          gt(stockTable.quantity, 0),
+          ne(productTable.isDeleted, true)
         )
       )
       .limit(limit)
       .offset(offset)
       .all();
 
-    if (!resultsList) return [];
-    return resultsList.map((result) => ({
+    if (!products) return [];
+    return products.map((result) => ({
       ...result.product,
       quantity: result.stock?.quantity,
       lowStockThreshold: result.stock?.lowStockThreshold,
@@ -122,12 +113,14 @@ export class ProductRepository
    * @returns The updated product if found, otherwise null
    */
   async update(
-    id: number,
+    productId: string,
     product: UpdateProductDTO
   ): Promise<ProductDTO | null> {
+    let updatedProduct, updatedStock;
+
     // Update product fields
     if (product.name || product.buyPrice || product.sellPrice) {
-      this.dbContext
+      updatedProduct = this.dbContext
         .update(productTable)
         .set({
           ...(product.name !== undefined && { name: product.name }),
@@ -136,8 +129,9 @@ export class ProductRepository
             sellPrice: product.sellPrice,
           }),
         })
-        .where(eq(productTable.id, id))
-        .run();
+        .where(eq(productTable.id, productId))
+        .returning()
+        .get();
     }
 
     // Update stock fields if provided
@@ -145,7 +139,7 @@ export class ProductRepository
       product.quantity !== undefined ||
       product.lowStockThreshold !== undefined
     ) {
-      this.dbContext
+      updatedStock = this.dbContext
         .update(stockTable)
         .set({
           ...(product.quantity !== undefined && { quantity: product.quantity }),
@@ -153,23 +147,16 @@ export class ProductRepository
             lowStockThreshold: product.lowStockThreshold,
           }),
         })
-        .where(eq(stockTable.productID, id))
-        .run();
+        .where(eq(stockTable.productID, productId))
+        .returning()
+        .get();
     }
 
-    // Fetch and return updated entity
-    const result = this.dbContext
-      .select()
-      .from(productTable)
-      .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .where(eq(productTable.id, id))
-      .get();
-
-    if (!result) return null;
+    if (!updatedProduct && !updatedStock) return null;
     return {
-      ...result.product,
-      quantity: result.stock?.quantity,
-      lowStockThreshold: result.stock?.lowStockThreshold,
+      ...updatedProduct,
+      quantity: updatedStock?.quantity,
+      lowStockThreshold: updatedStock?.lowStockThreshold,
     } as ProductDTO;
   }
 
@@ -177,11 +164,14 @@ export class ProductRepository
    * Deletes a product by its ID
    * @param productID The ID of the product to delete
    */
-  async delete(productID: number): Promise<void> {
+  async delete(productID: string): Promise<void> {
     this.dbContext
       .update(productTable)
-      .set({ isDeleted: true })
+      .set({ isDeleted: true } as Partial<ProductDTO>)
       .where(eq(productTable.id, productID))
       .run();
+
+    const product = await this.getById(productID);
+    expect(product).toBeNull();
   }
 }

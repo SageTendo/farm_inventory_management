@@ -19,14 +19,11 @@ let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(() => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
 });
 
 afterAll(async () => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 afterEach(() => {
@@ -56,35 +53,35 @@ describe("ExchangeRateService", () => {
   test("Set new rate", async () => {
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
     mockExchangeRepository.set.mockResolvedValue({
-      id: 1,
+      id: "UUID",
       rate: 1.2,
       updatedAt: new Date(),
-      updatedBy: 1,
+      updatedBy: "user UUID",
     });
 
     const rate = await exchangeRateService.set({
       rate: 1.2,
-      updatedBy: 1,
+      updatedBy: "user UUID",
     });
 
     expect(rate).toBeDefined();
     expect(rate).toEqual({
-      id: 1,
+      id: "UUID",
       rate: 1.2,
       updatedAt: expect.any(Date),
-      updatedBy: 1,
+      updatedBy: "user UUID",
     });
   });
 
   test("Get by ID", async () => {
     mockExchangeRepository.getById.mockResolvedValue({
-      id: 1,
+      id: "UUID",
       rate: 1.2,
-      updatedBy: 1,
       updatedAt: new Date(),
+      updatedBy: "user UUID",
     });
 
-    const rate = await exchangeRateService.getById(1);
+    const rate = await exchangeRateService.getById("UUID");
     expect(rate).toBeDefined();
   });
 

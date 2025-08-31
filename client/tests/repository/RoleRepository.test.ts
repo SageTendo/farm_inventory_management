@@ -6,21 +6,20 @@ import { roleTypes } from "../../src/database/schema/constants";
 import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
 import Database from "better-sqlite3";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { RoleDTO } from "src/database/schema/types";
 
 let client: Database.Database;
 let db: BetterSQLite3Database;
 let roleRepository: IRoleRepository;
+let savedRoles: RoleDTO[] = [];
 
 beforeAll(async () => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
   roleRepository = new RoleRepository(db);
 });
 
 afterAll(() => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 test("Create all roles", async () => {
@@ -37,11 +36,12 @@ test("Create all roles", async () => {
 test("Get all roles", async () => {
   const roles = await roleRepository.getAll();
   expect(roles.length).toBe(roleTypes.length);
+  savedRoles = roles;
 });
 
 test("Get a role by id", async () => {
   const roleType = roleTypes[0];
-  const role = await roleRepository.getById(roleType.indexOf(roleType) + 1);
+  const role = await roleRepository.getById(savedRoles[0].id);
   expect(role).not.toBeNull();
   expect(role?.type).toBe(roleType);
 });
@@ -55,10 +55,10 @@ test("Get a role by type", async () => {
 
 test("Delete a role by id", async () => {
   const roleType = roleTypes[0];
-  const role = await roleRepository.getById(roleType.indexOf(roleType) + 1);
+  const role = await roleRepository.getById(savedRoles[0].id);
   expect(role).not.toBeNull();
 
-  await roleRepository.delete(role?.id || 0);
-  const deletedRole = await roleRepository.getById(role?.id || 0);
+  await roleRepository.delete(role?.id);
+  const deletedRole = await roleRepository.getById(role?.id);
   expect(deletedRole).toBeNull();
 });

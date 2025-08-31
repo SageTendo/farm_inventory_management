@@ -19,14 +19,11 @@ let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(() => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
 });
 
 afterAll(async () => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 afterEach(() => {
@@ -60,11 +57,11 @@ describe("ProductService", () => {
 
     const date = new Date();
     mockProductRepository.create.mockResolvedValue({
-      id: 1,
+      id: "UUID",
       name: "Lays Chips",
       buyPrice: 100,
       sellPrice: 120,
-      addedBy: 1,
+      addedBy: "user UUID",
       quantity: 10,
       lowStockThreshold: 5,
       isDeleted: false,
@@ -78,16 +75,16 @@ describe("ProductService", () => {
       sellPrice: 120,
       quantity: 10,
       lowStockThreshold: 5,
-      addedBy: 1,
+      addedBy: "user UUID",
     });
 
     expect(product).toBeDefined();
     expect(product).toEqual({
-      id: 1,
+      id: "UUID",
       name: "Lays Chips",
       buyPrice: 100,
       sellPrice: 120,
-      addedBy: 1,
+      addedBy: "user UUID",
       isDeleted: false,
       createdAt: date,
       quantity: 10,
@@ -97,18 +94,18 @@ describe("ProductService", () => {
 
   test("Get product by ID", async () => {
     mockProductRepository.getById.mockResolvedValue({
-      id: 1,
+      id: "UUID",
       name: "Lays Chips",
       buyPrice: 100,
       sellPrice: 120,
-      addedBy: 1,
+      addedBy: "user UUID",
       isDeleted: false,
       createdAt: new Date(),
       quantity: 10,
       lowStockThreshold: 5,
     });
 
-    const products = await productService.getById(1);
+    const products = await productService.getById("UUID");
     expect(products).toBeDefined();
   });
 
@@ -123,11 +120,11 @@ describe("ProductService", () => {
       if (name === "Lays Chips") {
         return [
           {
-            id: 1,
+            id: "UUID",
             name: "Lays Chips",
             buyPrice: 100,
             sellPrice: 120,
-            addedBy: 1,
+            addedBy: "user UUID",
             isDeleted: false,
             createdAt: new Date(),
             quantity: 10,
@@ -148,11 +145,11 @@ describe("ProductService", () => {
       if (name === "Lays Chips") {
         return [
           {
-            id: 1,
+            id: "UUID",
             name: "Lays Chips",
             buyPrice: 100,
             sellPrice: 120,
-            addedBy: 1,
+            addedBy: "user UUID",
             isDeleted: false,
             createdAt: new Date(),
             quantity: 10,
@@ -168,13 +165,13 @@ describe("ProductService", () => {
 
   test("Update product", async () => {
     mockProductRepository.getById.mockImplementation(async (id) => {
-      if (id === 1) {
+      if (id === "UUID") {
         return {
-          id: 1,
+          id: "UUID",
           name: "Lays Salted Chips",
           buyPrice: 100,
           sellPrice: 130,
-          addedBy: 1,
+          addedBy: "user UUID",
           isDeleted: false,
           createdAt: new Date(),
           quantity: 10,
@@ -186,18 +183,18 @@ describe("ProductService", () => {
 
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
     mockProductRepository.update.mockResolvedValue({
-      id: 1,
+      id: "UUID",
       name: "Lays Salted Chips",
       buyPrice: 100,
       sellPrice: 130,
-      addedBy: 1,
+      addedBy: "user UUID",
       isDeleted: false,
       createdAt: new Date(),
       quantity: 10,
       lowStockThreshold: 5,
     });
 
-    const product = await productService.update(1, 1, {
+    const product = await productService.update("user UUID", "UUID", {
       name: "Lays Salted Chips",
       buyPrice: 100,
       sellPrice: 130,
@@ -211,6 +208,6 @@ describe("ProductService", () => {
   test("Delete product", async () => {
     mockProductRepository.delete.mockResolvedValue();
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
-    await productService.delete(1, 1);
+    await productService.delete("user UUID", "UUID");
   });
 });

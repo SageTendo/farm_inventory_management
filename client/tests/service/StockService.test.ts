@@ -19,14 +19,11 @@ let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(() => {
-  const setup = setupDb();
-  client = setup.client;
-  db = setup.db;
+  db = setupDb();
 });
 
 afterAll(async () => {
   db.delete(roleTable).run();
-  client.close();
 });
 
 afterEach(() => {
@@ -53,14 +50,14 @@ describe("StockService", () => {
 
   test("Get product by ID", async () => {
     mockStockRepository.getById.mockResolvedValue({
-      id: 1,
-      productID: 1,
+      id: "stock UUID",
+      productID: "product UUID",
       quantity: 10,
       lowStockThreshold: 5,
       timestamp: new Date(),
     });
 
-    const products = await stockService.getById(1);
+    const products = await stockService.getById("product UUID");
     expect(products).toBeDefined();
   });
 
@@ -72,10 +69,10 @@ describe("StockService", () => {
 
   test("Set Quantity", async () => {
     mockStockRepository.getById.mockImplementation(async (id) => {
-      if (id === 1) {
+      if (id === "stock UUID") {
         return {
-          id: 1,
-          productID: 1,
+          id: "stock UUID",
+          productID: "product UUID",
           quantity: 10,
           lowStockThreshold: 5,
           timestamp: new Date(),
@@ -86,14 +83,14 @@ describe("StockService", () => {
 
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
     mockStockRepository.update.mockResolvedValue({
-      id: 1,
-      productID: 1,
+      id: "stock UUID",
+      productID: "product UUID",
       quantity: 20,
       lowStockThreshold: 5,
       timestamp: new Date(),
     });
 
-    const product = await stockService.setQuantity(1, 1, {
+    const product = await stockService.setQuantity("user UUID", "stock UUID", {
       quantity: 20,
     });
 
@@ -102,10 +99,10 @@ describe("StockService", () => {
 
   test("Set Threshold", async () => {
     mockStockRepository.getById.mockImplementation(async (id) => {
-      if (id === 1) {
+      if (id === "stock UUID") {
         return {
-          id: 1,
-          productID: 1,
+          id: "stock UUID",
+          productID: "product UUID",
           quantity: 10,
           lowStockThreshold: 5,
           timestamp: new Date(),
@@ -116,14 +113,14 @@ describe("StockService", () => {
 
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
     mockStockRepository.update.mockResolvedValue({
-      id: 1,
-      productID: 1,
+      id: "stock UUID",
+      productID: "product UUID",
       quantity: 10,
       lowStockThreshold: 20,
       timestamp: new Date(),
     });
 
-    const product = await stockService.setThreshold(1, 1, {
+    const product = await stockService.setThreshold("user UUID", "stock UUID", {
       lowStockThreshold: 20,
     });
 
@@ -132,10 +129,10 @@ describe("StockService", () => {
 
   test("Decrement Stock", async () => {
     mockStockRepository.getById.mockImplementation(async (id) => {
-      if (id === 1) {
+      if (id === "stock UUID") {
         return {
-          id: 1,
-          productID: 1,
+          id: "stock UUID",
+          productID: "product UUID",
           quantity: 10,
           lowStockThreshold: 5,
           timestamp: new Date(),
@@ -146,20 +143,20 @@ describe("StockService", () => {
 
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
     mockStockRepository.update.mockResolvedValue({
-      id: 1,
-      productID: 1,
+      id: "stock UUID",
+      productID: "product UUID",
       quantity: 9,
       lowStockThreshold: 20,
       timestamp: new Date(),
     });
 
-    const product = await stockService.decrementStock(1, 1);
+    const product = await stockService.decrementStock("stock UUID", 1);
     expect(product?.quantity).toBe(9);
   });
 
   test("Delete product", async () => {
     mockStockRepository.delete.mockResolvedValue();
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
-    await stockService.delete(1, 1);
+    await stockService.delete("user UUID", "stock UUID");
   });
 });

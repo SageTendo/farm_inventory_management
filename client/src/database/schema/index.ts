@@ -8,6 +8,7 @@ import {
   index,
 } from "drizzle-orm/sqlite-core";
 import { roleTypes } from "./constants";
+import { v4 as uuidv4 } from "uuid";
 
 // *******************************************
 // How to create db and perform migrations
@@ -21,20 +22,22 @@ import { roleTypes } from "./constants";
 
 // User Model
 export const userTable = sqliteTable("user", {
-  id: integer().primaryKey(),
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
   fullname: text({ length: 100 }).notNull(),
   username: text({ length: 50 }).notNull().unique(),
   passwordHash: text({ length: 256 }).notNull(),
-  roleID: integer()
+  roleID: text()
     .references(() => roleTable.id, { onDelete: "restrict" })
     .notNull(),
   isActive: integer({ mode: "boolean" })
     .notNull()
     .$default(() => false),
-  createdAt: integer({ mode: "timestamp" })
+  createdAt: integer({ mode: "timestamp_ms" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  updatedAt: integer({ mode: "timestamp" })
+  updatedAt: integer({ mode: "timestamp_ms" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
@@ -43,7 +46,9 @@ export const userTable = sqliteTable("user", {
 export const roleTable = sqliteTable(
   "role",
   {
-    id: integer().primaryKey(),
+    id: text()
+      .primaryKey()
+      .$defaultFn(() => uuidv4()),
     type: text({ enum: roleTypes })
       .unique()
       .notNull()
@@ -60,12 +65,14 @@ export const roleTable = sqliteTable(
 
 // Exchange Rate Model
 export const exchangeRateTable = sqliteTable("exchange_rate", {
-  id: integer().primaryKey(),
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
   rate: real().notNull(), // TODO: round to 4 decimals in crud operations
-  updatedBy: integer()
+  updatedBy: text()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
-  updatedAt: integer({ mode: "timestamp" })
+  updatedAt: integer({ mode: "timestamp_ms" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
@@ -73,8 +80,10 @@ export const exchangeRateTable = sqliteTable("exchange_rate", {
 // Stock Model
 // NB: This should probaly be deleted manually when a product is marked as deleted?
 export const stockTable = sqliteTable("stock", {
-  id: integer().primaryKey(),
-  productID: integer()
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  productID: text()
     .unique()
     .references(() => productTable.id, { onDelete: "cascade" })
     .notNull(),
@@ -91,15 +100,19 @@ export const stockTable = sqliteTable("stock", {
 export const productTable = sqliteTable(
   "product",
   {
-    id: integer().primaryKey(),
+    id: text()
+      .primaryKey()
+      .$defaultFn(() => uuidv4()),
     name: text({ length: 100 }).unique().notNull(),
     buyPrice: integer().notNull(),
     sellPrice: integer().notNull(),
-    addedBy: integer()
+    addedBy: text()
       .references(() => userTable.id, { onDelete: "set null" })
       .notNull(),
-    isDeleted: integer({ mode: "boolean" }).default(false).notNull(),
-    createdAt: integer({ mode: "timestamp" })
+    isDeleted: integer({ mode: "boolean" })
+      .notNull()
+      .$defaultFn(() => false),
+    createdAt: integer({ mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
   },
@@ -108,34 +121,38 @@ export const productTable = sqliteTable(
 
 // Sale Model
 export const saleTable = sqliteTable("sale", {
-  id: integer().primaryKey(),
-  sellerID: integer()
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  sellerID: text()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
-  exchangeRateID: integer()
+  exchangeRateID: text()
     .references(() => exchangeRateTable.id, { onDelete: "restrict" })
     .notNull(),
   usedLocalCurrency: integer({ mode: "boolean" }).notNull(),
   totalAmount: integer().notNull(),
   amountPaid: integer().notNull(),
   changeReceived: integer().notNull(),
-  createdAt: integer({ mode: "timestamp" })
+  createdAt: integer({ mode: "timestamp_ms" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Sale Item Model
 export const saleItemTable = sqliteTable("sale_item", {
-  id: integer().primaryKey(),
-  saleID: integer()
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => uuidv4()),
+  saleID: text()
     .references(() => saleTable.id, { onDelete: "cascade" })
     .notNull(),
-  productID: integer()
+  productID: text()
     .references(() => productTable.id, { onDelete: "restrict" }) // TODO: Need to look into whether it should be nullified
     .notNull(),
   quantity: integer().notNull(),
   unitPrice: integer().notNull(),
-  createdAt: integer({ mode: "timestamp" })
+  createdAt: integer({ mode: "timestamp_ms" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
@@ -146,10 +163,10 @@ export const saleItemTable = sqliteTable("sale_item", {
 
 // User Stock Join Table
 export const userStock = sqliteTable("user_stock", {
-  userID: integer()
+  userID: text()
     .references(() => userTable.id, { onDelete: "set null" })
     .notNull(),
-  stockID: integer()
+  stockID: text()
     .references(() => stockTable.id, { onDelete: "cascade" })
     .notNull(),
   quantity: integer().notNull(),
