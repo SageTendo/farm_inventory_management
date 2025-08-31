@@ -125,136 +125,138 @@ client
 ├─ forge.config.ts
 ├─ index.html
 ├─ migrations
-│ ├─ 0000_chubby_mole_man.sql
-│ └─ meta
-│ ├─ 0000_snapshot.json
-│ └─ \_journal.json
+│  ├─ 0000_chubby_mole_man.sql
+│  └─ meta
+│     ├─ 0000_snapshot.json
+│     └─ _journal.json
 ├─ package-lock.json
 ├─ package.json
-├─ postcss.config.js
+├─ postcss.config.mjs
 ├─ public
-│ ├─ electron-vite.animate.svg
-│ ├─ electron-vite.svg
-│ ├─ fonts
-│ │ └─ Lato
-│ │ ├─ Lato-Black.ttf
-│ │ ├─ Lato-BlackItalic.ttf
-│ │ ├─ Lato-Bold.ttf
-│ │ ├─ Lato-BoldItalic.ttf
-│ │ ├─ Lato-Italic.ttf
-│ │ ├─ Lato-Light.ttf
-│ │ ├─ Lato-LightItalic.ttf
-│ │ ├─ Lato-Regular.ttf
-│ │ ├─ Lato-Thin.ttf
-│ │ └─ Lato-ThinItalic.ttf
-│ └─ vite.svg
+│  ├─ electron-vite.animate.svg
+│  ├─ electron-vite.svg
+│  ├─ fonts
+│  │  └─ Lato
+│  │     ├─ Lato-Black.ttf
+│  │     ├─ Lato-BlackItalic.ttf
+│  │     ├─ Lato-Bold.ttf
+│  │     ├─ Lato-BoldItalic.ttf
+│  │     ├─ Lato-Italic.ttf
+│  │     ├─ Lato-Light.ttf
+│  │     ├─ Lato-LightItalic.ttf
+│  │     ├─ Lato-Regular.ttf
+│  │     ├─ Lato-Thin.ttf
+│  │     └─ Lato-ThinItalic.ttf
+│  └─ vite.svg
 ├─ scripts
-│ └─ dbSetup.ts
+│  └─ dbSetup.ts
 ├─ src
-│ ├─ App.tsx
-│ ├─ config.ts
-│ ├─ database
-│ │ ├─ db.ts
-│ │ ├─ interfaces
-│ │ │ ├─ IExchangeRateRepository.ts
-│ │ │ ├─ IProductRepository.ts
-│ │ │ ├─ IRoleRepository.ts
-│ │ │ ├─ ISalesRepository.ts
-│ │ │ ├─ IStockRepository.ts
-│ │ │ └─ IUserRepository.ts
-│ │ ├─ repository
-│ │ │ ├─ ExchangeRateRepository.ts
-│ │ │ ├─ ProductRepository.ts
-│ │ │ ├─ RoleRepository.ts
-│ │ │ ├─ StockRepository.ts
-│ │ │ ├─ UserRepository.ts
-│ │ │ └─ index.ts
-│ │ └─ schema
-│ │ ├─ constants.ts
-│ │ ├─ index.ts
-│ │ └─ types.ts
-│ ├─ hooks
-│ │ ├─ useAuth.ts
-│ │ ├─ useDetectScreenType.ts
-│ │ └─ useNavHeight.ts
-│ ├─ index.css
-│ ├─ lib
-│ │ ├─ error.ts
-│ │ └─ money.ts
-│ ├─ main.ts
-│ ├─ mock
-│ │ └─ pos_data.ts
-│ ├─ preload.ts
-│ ├─ renderer.tsx
-│ ├─ router
-│ │ ├─ ProtectedRoute.tsx
-│ │ └─ routes.tsx
-│ ├─ service
-│ │ ├─ AuthService.ts
-│ │ ├─ ExchangeRateService.ts
-│ │ ├─ ProductService.ts
-│ │ ├─ RoleService.ts
-│ │ ├─ StockService.ts
-│ │ ├─ UserService.ts
-│ │ └─ interfaces
-│ │ ├─ IAuthService.ts
-│ │ ├─ IExchangeRateService.ts
-│ │ ├─ IProductService.ts
-│ │ ├─ IRoleService.ts
-│ │ ├─ IStockService.ts
-│ │ └─ IUserService.ts
-│ ├─ ui
-│ │ ├─ components
-│ │ │ ├─ pos
-│ │ │ │ ├─ cart
-│ │ │ │ │ ├─ CartItem.tsx
-│ │ │ │ │ └─ Main.tsx
-│ │ │ │ ├─ payment
-│ │ │ │ │ ├─ Main.tsx
-│ │ │ │ │ └─ PurchaseItem.tsx
-│ │ │ │ └─ product
-│ │ │ │ ├─ Main.tsx
-│ │ │ │ └─ ProductCard.tsx
-│ │ │ └─ shared
-│ │ │ ├─ Layout.tsx
-│ │ │ ├─ ListPage.tsx
-│ │ │ ├─ Sidebar.tsx
-│ │ │ ├─ SummaryCard.tsx
-│ │ │ └─ Table.tsx
-│ │ ├─ styles
-│ │ │ └─ tableComponent.css
-│ │ └─ views
-│ │ ├─ Dashboard.tsx
-│ │ ├─ auth
-│ │ │ └─ Login.tsx
-│ │ ├─ pos
-│ │ │ └─ Shop.tsx
-│ │ ├─ product
-│ │ │ ├─ ManageProduct.tsx
-│ │ │ ├─ NewProduct.tsx
-│ │ │ └─ Products.tsx
-│ │ └─ user
-│ │ ├─ ManageUser.tsx
-│ │ ├─ NewUser.tsx
-│ │ ├─ SettingsPage.tsx
-│ │ └─ Users.tsx
-│ └─ vite-env.d.ts
+│  ├─ config.ts
+│  ├─ index.css
+│  ├─ lib
+│  │  ├─ error.ts
+│  │  └─ money.ts
+│  ├─ main
+│  │  ├─ database
+│  │  │  ├─ db.ts
+│  │  │  ├─ interfaces
+│  │  │  │  ├─ IExchangeRateRepository.ts
+│  │  │  │  ├─ IProductRepository.ts
+│  │  │  │  ├─ IRoleRepository.ts
+│  │  │  │  ├─ ISalesRepository.ts
+│  │  │  │  ├─ IStockRepository.ts
+│  │  │  │  └─ IUserRepository.ts
+│  │  │  ├─ repository
+│  │  │  │  ├─ ExchangeRateRepository.ts
+│  │  │  │  ├─ ProductRepository.ts
+│  │  │  │  ├─ RoleRepository.ts
+│  │  │  │  ├─ StockRepository.ts
+│  │  │  │  ├─ UserRepository.ts
+│  │  │  │  └─ index.ts
+│  │  │  └─ schema
+│  │  │     ├─ constants.ts
+│  │  │     ├─ index.ts
+│  │  │     └─ types.ts
+│  │  └─ service
+│  │     ├─ AuthService.ts
+│  │     ├─ ExchangeRateService.ts
+│  │     ├─ ProductService.ts
+│  │     ├─ RoleService.ts
+│  │     ├─ StockService.ts
+│  │     ├─ UserService.ts
+│  │     └─ interfaces
+│  │        ├─ IAuthService.ts
+│  │        ├─ IExchangeRateService.ts
+│  │        ├─ IProductService.ts
+│  │        ├─ IRoleService.ts
+│  │        ├─ IStockService.ts
+│  │        └─ IUserService.ts
+│  ├─ main.ts
+│  ├─ preload.ts
+│  ├─ renderer
+│  │  ├─ App.tsx
+│  │  ├─ hooks
+│  │  │  ├─ useAuth.ts
+│  │  │  ├─ useDetectScreenType.ts
+│  │  │  └─ useNavHeight.ts
+│  │  ├─ mock
+│  │  │  └─ pos_data.ts
+│  │  ├─ router
+│  │  │  ├─ ProtectedRoute.tsx
+│  │  │  └─ routes.tsx
+│  │  └─ ui
+│  │     ├─ components
+│  │     │  ├─ pos
+│  │     │  │  ├─ cart
+│  │     │  │  │  ├─ CartItem.tsx
+│  │     │  │  │  └─ Main.tsx
+│  │     │  │  ├─ payment
+│  │     │  │  │  ├─ Main.tsx
+│  │     │  │  │  └─ PurchaseItem.tsx
+│  │     │  │  └─ product
+│  │     │  │     ├─ Main.tsx
+│  │     │  │     └─ ProductCard.tsx
+│  │     │  └─ shared
+│  │     │     ├─ Layout.tsx
+│  │     │     ├─ ListPage.tsx
+│  │     │     ├─ Sidebar.tsx
+│  │     │     ├─ SummaryCard.tsx
+│  │     │     └─ Table.tsx
+│  │     ├─ styles
+│  │     │  └─ tableComponent.css
+│  │     └─ views
+│  │        ├─ Dashboard.tsx
+│  │        ├─ auth
+│  │        │  └─ Login.tsx
+│  │        ├─ pos
+│  │        │  └─ Shop.tsx
+│  │        ├─ product
+│  │        │  ├─ ManageProduct.tsx
+│  │        │  ├─ NewProduct.tsx
+│  │        │  └─ Products.tsx
+│  │        └─ user
+│  │           ├─ ManageUser.tsx
+│  │           ├─ NewUser.tsx
+│  │           ├─ SettingsPage.tsx
+│  │           └─ Users.tsx
+│  ├─ renderer.tsx
+│  └─ vite-env.d.ts
 ├─ tailwind.config.js
 ├─ tests
-│ ├─ lib
-│ │ └─ money.test.ts
-│ ├─ repository
-│ │ ├─ ExchangeRateRepository.test.ts
-│ │ ├─ ProductRepository.test.ts
-│ │ ├─ RoleRepository.test.ts
-│ │ └─ UserRepository.test.ts
-│ ├─ service
-│ │ ├─ AuthService.test.ts
-│ │ ├─ ExchangeRateService.test.ts
-│ │ ├─ ProductService.test.ts
-│ │ ├─ StockService.test.ts
-│ │ └─ UserService.test.ts
-│ └─ testSetup.ts
+│  ├─ lib
+│  │  └─ money.test.ts
+│  ├─ repository
+│  │  ├─ ExchangeRateRepository.test.ts
+│  │  ├─ ProductRepository.test.ts
+│  │  ├─ RoleRepository.test.ts
+│  │  └─ UserRepository.test.ts
+│  ├─ service
+│  │  ├─ AuthService.test.ts
+│  │  ├─ ExchangeRateService.test.ts
+│  │  ├─ ProductService.test.ts
+│  │  ├─ StockService.test.ts
+│  │  └─ UserService.test.ts
+│  └─ testSetup.ts
 ├─ tsconfig.json
 ├─ vite.main.config.ts
 ├─ vite.preload.config.ts
