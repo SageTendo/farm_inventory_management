@@ -37,7 +37,7 @@ export class Money {
     const result = bankersRounding(this.value * multiplier, 0);
     if (!Number.isSafeInteger(result)) {
       throw new UnsafeMonetaryValueError(
-        `Multiplication result exceeds safe integer range`,
+        `Multiplication result exceeds safe integer range`
       );
     }
 
