@@ -8,7 +8,7 @@ import {
 
 import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
-import { RoleType } from "../database/schema/constants.ts";
+import { RoleType } from "../database/schema/constants";
 
 const PERMITTED_ROLES: RoleType[] = ["ADMIN"];
 

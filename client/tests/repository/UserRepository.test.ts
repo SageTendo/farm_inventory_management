@@ -4,8 +4,9 @@ import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
 import { UserRepository } from "../../src/database/repository/UserRepository";
 import { setupDb } from "../testSetup";
 import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-let db: any;
+let db: BetterSQLite3Database;
 let userRepository: IUserRepository;
 
 beforeAll(async () => {

@@ -1,7 +1,7 @@
-import { IUserService } from "./interfaces/IUserService.ts";
-import { UpdateUserDTO, UserResponseDTO } from "../database/schema/types.ts";
-import { IUserRepository } from "../database/interfaces/IUserRepository.ts";
-import { IRoleRepository } from "../database/interfaces/IRoleRepository.ts";
+import { IUserService } from "./interfaces/IUserService";
+import { UpdateUserDTO, UserResponseDTO } from "../database/schema/types";
+import { IUserRepository } from "../database/interfaces/IUserRepository";
+import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;

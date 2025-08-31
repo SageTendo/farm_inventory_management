@@ -4,11 +4,9 @@ import { setupDb } from "../testSetup";
 import { roleTable } from "../../src/database/schema";
 import { roleTypes } from "../../src/database/schema/constants";
 import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
-import Database from "better-sqlite3";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { RoleDTO } from "src/database/schema/types";
 
-let client: Database.Database;
 let db: BetterSQLite3Database;
 let roleRepository: IRoleRepository;
 let savedRoles: RoleDTO[] = [];
@@ -54,7 +52,6 @@ test("Get a role by type", async () => {
 });
 
 test("Delete a role by id", async () => {
-  const roleType = roleTypes[0];
   const role = await roleRepository.getById(savedRoles[0].id);
   expect(role).not.toBeNull();
 

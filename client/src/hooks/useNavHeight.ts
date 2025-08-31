@@ -1,4 +1,4 @@
-import { SCREEN_SIZE, useDetectScreenType } from "./useDetectScreenType.ts";
+import { SCREEN_SIZE, useDetectScreenType } from "./useDetectScreenType";
 import { useEffect, useState } from "react";
 
 const NAV_HEIGHT_PX = 55;

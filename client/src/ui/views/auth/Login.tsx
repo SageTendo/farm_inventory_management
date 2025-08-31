@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../hooks/useAuth.ts";
+import { useAuth } from "../../../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 
 const LoginPage = () => {

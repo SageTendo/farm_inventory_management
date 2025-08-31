@@ -1,5 +1,5 @@
-import { NewRoleDTO, RoleDTO } from "../../database/schema/types.ts";
-import { RoleType } from "../../database/schema/constants.ts";
+import { NewRoleDTO, RoleDTO } from "../../database/schema/types";
+import { RoleType } from "../../database/schema/constants";
 
 export interface IRoleService {
   /**

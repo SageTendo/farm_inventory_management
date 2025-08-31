@@ -1,4 +1,3 @@
-import Database from "better-sqlite3";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import {
   afterAll,
@@ -15,7 +14,6 @@ import { UserService } from "../../src/service/UserService";
 import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
 import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
 
-let client: Database.Database;
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(() => {

@@ -1,7 +1,7 @@
-import { IRoleService } from "./interfaces/IRoleService.ts";
-import { IRoleRepository } from "../database/interfaces/IRoleRepository.ts";
-import { NewRoleDTO, RoleDTO } from "../database/schema/types.ts";
-import { RoleType } from "../database/schema/constants.ts";
+import { IRoleService } from "./interfaces/IRoleService";
+import { IRoleRepository } from "../database/interfaces/IRoleRepository";
+import { NewRoleDTO, RoleDTO } from "../database/schema/types";
+import { RoleType } from "../database/schema/constants";
 
 export class RoleService implements IRoleService {
   protected roleRepository: IRoleRepository;

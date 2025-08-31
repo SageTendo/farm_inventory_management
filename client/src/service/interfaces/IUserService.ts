@@ -1,4 +1,4 @@
-import { UpdateUserDTO, UserResponseDTO } from "../../database/schema/types.ts";
+import { UpdateUserDTO, UserResponseDTO } from "../../database/schema/types";
 
 export interface IUserService {
   /**

@@ -1,4 +1,4 @@
-import { Product } from "../../../../mock/pos_data.ts";
+import { Product } from "../../../../mock/pos_data";
 import { ProductCard } from "./ProductCard";
 
 interface ProductListingProps {

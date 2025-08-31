@@ -1,4 +1,4 @@
-import { Product } from "../../../../mock/pos_data.ts";
+import { Product } from "../../../../mock/pos_data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -30,7 +30,9 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
       <h5 className="text-1xl font-extrabold mb-2">{product.name}</h5>
 
       <div className="mb-2 text-sm">
-        <div className="font-bold text-gray-200">USD: {product.sellPrice.read}</div>
+        <div className="font-bold text-gray-200">
+          USD: {product.sellPrice.read}
+        </div>
         <div className="font-bold text-gray-200">
           {/* //TODO: Fetch exchange rate */}
           ZIG: {product.sellPrice.multiply(20).read}
