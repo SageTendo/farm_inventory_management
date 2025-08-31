@@ -5,7 +5,7 @@ import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
  */
 export abstract class BaseRepository {
   protected dbContext: BetterSQLite3Database;
-  constructor(dbContext: any) {
+  constructor(dbContext: BetterSQLite3Database) {
     this.dbContext = dbContext;
   }
 }

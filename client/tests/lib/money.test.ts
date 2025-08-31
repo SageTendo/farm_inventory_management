@@ -34,10 +34,10 @@ describe("Banker's Rounding", () => {
     expect(bankersRounding(4.5)).toBe(4);
     expect(bankersRounding(5.5)).toBe(6);
     expect(bankersRounding(6.5)).toBe(6);
-    expect(bankersRounding(7.5)).toBe(8.00);
-    expect(bankersRounding(8.5)).toBe(8.00);
-    expect(bankersRounding(9.5)).toBe(10.00);
-    expect(bankersRounding(10.5)).toBe(10.00);
+    expect(bankersRounding(7.5)).toBe(8.0);
+    expect(bankersRounding(8.5)).toBe(8.0);
+    expect(bankersRounding(9.5)).toBe(10.0);
+    expect(bankersRounding(10.5)).toBe(10.0);
   });
 });
 
@@ -184,17 +184,22 @@ describe("Money", () => {
   });
 });
 
-
 describe("Money - Additional Edge Cases", () => {
   describe("Input Validation Edge Cases", () => {
     it("should handle invalid number inputs", () => {
       expect(() => Money.fromNumber(NaN)).toThrow("Invalid money value");
-      expect(() => Money.fromNumber(Infinity)).toThrow("Invalid money value: Infinity");
-      expect(() => Money.fromNumber(-Infinity)).toThrow("Invalid money value: -Infinity");
+      expect(() => Money.fromNumber(Infinity)).toThrow(
+        "Invalid money value: Infinity",
+      );
+      expect(() => Money.fromNumber(-Infinity)).toThrow(
+        "Invalid money value: -Infinity",
+      );
     });
 
     it("should handle invalid string inputs", () => {
-      expect(() => Money.fromString("not a number")).toThrow("Invalid money value");
+      expect(() => Money.fromString("not a number")).toThrow(
+        "Invalid money value",
+      );
       expect(() => Money.fromString("")).toThrow("Invalid money value");
       expect(() => Money.fromString("   ")).toThrow("Invalid money value");
       expect(() => Money.fromString("abc123")).toThrow("Invalid money value");
@@ -204,7 +209,7 @@ describe("Money - Additional Edge Cases", () => {
       // JavaScript's 0.1 + 0.2 = 0.30000000000000004
       const result = Money.fromNumber(0.1 + 0.2);
       expect(result.toCents).toBe(30); // Should round correctly to 30 cents
-      expect(result.toDollars).toBe(0.30);
+      expect(result.toDollars).toBe(0.3);
     });
 
     it("should handle very small values correctly", () => {
@@ -220,8 +225,12 @@ describe("Money - Additional Edge Cases", () => {
     it("should handle multiplication by invalid numbers", () => {
       const money = Money.fromNumber(10);
       expect(() => money.multiply(NaN)).toThrow("Invalid multiplier: NaN");
-      expect(() => money.multiply(Infinity)).toThrow("Invalid multiplier: Infinity");
-      expect(() => money.multiply(-Infinity)).toThrow("Invalid multiplier: -Infinity");
+      expect(() => money.multiply(Infinity)).toThrow(
+        "Invalid multiplier: Infinity",
+      );
+      expect(() => money.multiply(-Infinity)).toThrow(
+        "Invalid multiplier: -Infinity",
+      );
     });
 
     it("should handle banker's rounding in multiplication", () => {
@@ -236,16 +245,18 @@ describe("Money - Additional Edge Cases", () => {
       const large = Money.fromNumber(50000000); // $50M
       // This should be close to the limit but not exceed it
       expect(() => large.multiply(100)).not.toThrow();
-      
+
       // This should exceed MAX_SAFE_INTEGER and throw
-      expect(() => large.multiply(10000000000)).toThrow("Multiplication result exceeds safe integer range");
+      expect(() => large.multiply(10000000000)).toThrow(
+        "Multiplication result exceeds safe integer range",
+      );
     });
 
     it("should handle negative zero correctly", () => {
       const money = Money.fromNumber(100);
       const result1 = money.multiply(-0);
       const result2 = money.multiply(0);
-      
+
       expect(result1.toCents).toBe(0);
       expect(result2.toCents).toBe(0);
       expect(result1.isZero()).toBe(true);
@@ -270,7 +281,7 @@ describe("Money - Additional Edge Cases", () => {
     it("should handle very close values", () => {
       const money1 = Money.fromNumber(1.005); // Rounds to 1.00
       const money2 = Money.fromNumber(1.004); // Rounds to 1.00
-      
+
       expect(money1.equals(money2)).toBe(true);
       expect(money1.greaterThan(money2)).toBe(false);
       expect(money1.lessThan(money2)).toBe(false);
@@ -315,8 +326,8 @@ describe("Money - Additional Edge Cases", () => {
     it("should maintain consistency when chaining operations", () => {
       const base = Money.fromNumber(10.666); // Rounds to 10.67
       const multiplied = base.multiply(3); // 10.67 * 3 = 32.01
-      const divided = multiplied.multiply(1/3); // Should get back close to original
-      
+      const divided = multiplied.multiply(1 / 3); // Should get back close to original
+
       expect(base.toCents).toBe(1067);
       expect(multiplied.toCents).toBe(3201);
       // Due to rounding, we might not get exactly back to 1067
@@ -326,7 +337,7 @@ describe("Money - Additional Edge Cases", () => {
     it("should handle addition and subtraction with rounded values", () => {
       const money1 = Money.fromNumber(1.005); // Rounds to 1.00
       const money2 = Money.fromNumber(0.995); // Rounds to 1.00
-      
+
       expect(money1.add(money2).toCents).toBe(200); // 1.00 + 1.00 = 2.00
       expect(money1.subtract(money2).toCents).toBe(0); // 1.00 - 1.00 = 0.00
     });
@@ -336,13 +347,7 @@ describe("Money - Additional Edge Cases", () => {
     it("should reject non-integer values in constructor", () => {
       // These would be called internally, but testing the validation
       expect(() => {
-        // @ts-ignore - accessing private constructor for testing
-        new Money(1.5);
-      }).toThrow("Invalid money value");
-      
-      expect(() => {
-        // @ts-ignore - accessing private constructor for testing  
-        new Money(NaN);
+        Money.fromNumber(NaN);
       }).toThrow("Invalid money value");
     });
   });

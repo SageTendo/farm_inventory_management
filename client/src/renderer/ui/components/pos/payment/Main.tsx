@@ -1,13 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Item } from "../../../views/pos/Shop";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react";
-import { Money } from "../../../../lib/money";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   formatNumeral,
   registerCursorTracker,
   NumeralThousandGroupStyles,
 } from "cleave-zen";
+import {
+  UnsafeMonetaryValueError,
+  MoneyParseError,
+} from "../../../../../lib/error";
+import { Money } from "../../../../../lib/money";
+import { Item } from "../../../views/pos/Shop";
 
 interface CheckoutScreenProps {
   cart: Item[];
@@ -67,7 +71,7 @@ export function CheckoutScreen({
   }, [totalAmount, paidAmount]);
 
   useEffect(() => {
-    // Call this in return to make sure it is unregister when component unmount
+    // Call this in return to make sure it is unregistered when component unmount
     return registerCursorTracker({ input: inputRef.current!, delimiter: "*" });
   }, []);
 
@@ -85,24 +89,22 @@ export function CheckoutScreen({
     setInputValue("");
   }, [selectedCurrency]);
 
-  const handleOnPaidAmountInput = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleOnPaidAmountInput = (event: ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value;
     setInputValue(rawValue);
 
-    try{
+    try {
       if (rawValue === "") return setPaidAmount(Money.fromNumber(0));
       setPaidAmount(Money.fromString(rawValue));
     } catch (error) {
       if (error instanceof UnsafeMonetaryValueError) {
-        alert("Invalid value is too large")
+        alert("Invalid value is too large");
         // TODO: Log error
         return;
-      } 
-      
+      }
+
       if (error instanceof MoneyParseError) {
-        alert("Provided an invalid monetary value...")
+        alert("Provided an invalid monetary value...");
         // TODO: Log error
         return;
       }
@@ -256,5 +258,3 @@ export function CheckoutScreen({
     </div>
   );
 }
-
-export default CheckoutScreen;

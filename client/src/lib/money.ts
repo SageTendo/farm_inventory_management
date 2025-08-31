@@ -36,7 +36,9 @@ export class Money {
 
     const result = bankersRounding(this.value * multiplier, 0);
     if (!Number.isSafeInteger(result)) {
-      throw new UnsafeMonetaryValueError(`Multiplication result exceeds safe integer range`);
+      throw new UnsafeMonetaryValueError(
+        `Multiplication result exceeds safe integer range`,
+      );
     }
 
     return new Money(result);
@@ -98,7 +100,9 @@ export class Money {
   static fromString(value: string): Money {
     const cleaned = value.trim().replace(/[$,]/g, "");
     const parsed = parseFloat(cleaned);
-    if (isNaN(parsed)) throw new MoneyParseError(`Invalid money value: ${value}`);
+    if (isNaN(parsed)) {
+      throw new MoneyParseError(`Invalid money value: ${value}`);
+    }
     return Money.fromNumber(parsed);
   }
 }
@@ -111,12 +115,13 @@ export class Money {
  * @param decimalPlaces (optional) The number of decimal places to round to
  */
 export function bankersRounding(num: number, decimalPlaces?: number): number {
-  var d = decimalPlaces || 0;
-  var m = Math.pow(10, d);
-  var n = +(d ? num * m : num).toFixed(8); // Avoid rounding errors
-  var i = Math.floor(n),
+  const d = decimalPlaces || 0;
+  const m = Math.pow(10, d);
+  const n = +(d ? num * m : num).toFixed(8); // Avoid rounding errors
+  const i = Math.floor(n),
     f = n - i;
-  var e = 1e-8; // Allow for rounding errors in f
-  var r = f > 0.5 - e && f < 0.5 + e ? (i % 2 == 0 ? i : i + 1) : Math.round(n);
+  const e = 1e-8; // Allow for rounding errors in f
+  const r =
+    f > 0.5 - e && f < 0.5 + e ? (i % 2 == 0 ? i : i + 1) : Math.round(n);
   return d ? r / m : r;
 }

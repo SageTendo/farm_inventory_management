@@ -18,13 +18,15 @@ export const CartItem = ({
       {/* Item info */}
       <div className="p-2 pr-6">
         <h5 className="font-bold mb-1">{item.name}</h5>
-        <div className="text-sm text-gray-300">Price: ${item.sellPrice.read}</div>
+        <div className="text-sm text-gray-300">
+          Price: ${item.sellPrice.read}
+        </div>
         <div className="text-sm text-gray-300">Quantity: {item.quantity}</div>
       </div>
 
       {/* Action buttons */}
       <div className="flex items-center gap-2">
-      <button
+        <button
           onClick={() => removeItem(item.id)}
           className="p-4 px-5 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition text-sm"
         >
@@ -49,7 +51,6 @@ export const CartItem = ({
         >
           <FontAwesomeIcon icon={faPlus} />
         </button>
-
       </div>
     </div>
   );

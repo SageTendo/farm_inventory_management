@@ -61,7 +61,7 @@ export class ProductRepository
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
       .where(
-        and(eq(productTable.id, productId), ne(productTable.isDeleted, true))
+        and(eq(productTable.id, productId), ne(productTable.isDeleted, true)),
       )
       .get();
 
@@ -75,15 +75,12 @@ export class ProductRepository
 
   /**
    * Retrieves multiple products, with optional pagination
+   * @param name Filtering by name
    * @param limit Number of products to return (default 10)
    * @param offset Number of products to skip (default 0)
    * @returns Array of products
    */
-  async getAll(
-    name: string = "",
-    limit: number = 10,
-    offset: number = 0
-  ): Promise<ProductDTO[]> {
+  async getAll(name = "", limit = 10, offset = 0): Promise<ProductDTO[]> {
     const products = this.dbContext
       .select()
       .from(productTable)
@@ -92,8 +89,8 @@ export class ProductRepository
         and(
           name ? like(productTable.name, `%${name}%`) : undefined,
           gt(stockTable.quantity, 0),
-          ne(productTable.isDeleted, true)
-        )
+          ne(productTable.isDeleted, true),
+        ),
       )
       .limit(limit)
       .offset(offset)
@@ -109,12 +106,13 @@ export class ProductRepository
 
   /**
    * Updates an existing product
+   * @param productId ID of the product to update
    * @param product The updated product data (must include ID)
    * @returns The updated product if found, otherwise null
    */
   async update(
     productId: string,
-    product: UpdateProductDTO
+    product: UpdateProductDTO,
   ): Promise<ProductDTO | null> {
     let updatedProduct, updatedStock;
 

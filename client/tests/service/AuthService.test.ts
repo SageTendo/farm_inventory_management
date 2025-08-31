@@ -10,11 +10,11 @@ import {
   vi,
 } from "vitest";
 import { setupDb } from "../testSetup";
-import { roleTable } from "../../src/database/schema";
-import { AuthService } from "../../src/service/AuthService";
+import { roleTable } from "../../src/main/database/schema";
+import { AuthService } from "../../src/main/service/AuthService";
 import bcrypt from "bcrypt";
-import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
-import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
+import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
+import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
 
 let db: BetterSQLite3Database<Record<string, never>>;
 

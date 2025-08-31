@@ -1,9 +1,9 @@
 // users.test.ts
-import { roleTable, userTable } from "../../src/database/schema";
+import { roleTable, userTable } from "../../src/main/database/schema";
 import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
-import { UserRepository } from "../../src/database/repository/UserRepository";
+import { UserRepository } from "../../src/main/database/repository/UserRepository";
 import { setupDb } from "../testSetup";
-import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
+import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 let db: BetterSQLite3Database;

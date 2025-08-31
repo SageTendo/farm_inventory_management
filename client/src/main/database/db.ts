@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/better-sqlite3";
-import { env } from "../config";
+import { env } from "../../config";
 import { join } from "path";
 import fs from "fs";
 import Database from "better-sqlite3";

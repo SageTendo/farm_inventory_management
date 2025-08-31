@@ -10,7 +10,7 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
     return this.dbContext.insert(roleTable).values(entity).returning().get();
   }
 
-  async getAll(limit: number = 10, offset: number = 0): Promise<RoleDTO[]> {
+  async getAll(limit = 10, offset = 0): Promise<RoleDTO[]> {
     return this.dbContext
       .select()
       .from(roleTable)

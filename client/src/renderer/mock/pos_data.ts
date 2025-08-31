@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Money } from "../lib/money";
+import { Money } from "../../lib/money";
 
 export interface Product {
   id: number;

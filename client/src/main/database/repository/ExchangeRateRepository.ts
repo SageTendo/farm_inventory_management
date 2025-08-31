@@ -1,6 +1,6 @@
 import { BaseRepository } from ".";
 import { IExchangeRateRepository } from "../interfaces/IExchangeRateRepository";
-import { NewExchangeRateDTO, ExchangeRateDTO } from "../schema/types";
+import { ExchangeRateDTO, NewExchangeRateDTO } from "../schema/types";
 import { exchangeRateTable } from "../schema";
 import { eq } from "drizzle-orm";
 
@@ -9,15 +9,14 @@ export class ExchangeRateRepository
   implements IExchangeRateRepository
 {
   async set(data: NewExchangeRateDTO): Promise<ExchangeRateDTO> {
-    const created = this.dbContext
+    return this.dbContext
       .insert(exchangeRateTable)
       .values(data)
       .returning()
       .get();
-    return created;
   }
 
-  async getAll(limit: number = 10, offset: number): Promise<ExchangeRateDTO[]> {
+  async getAll(limit = 10, offset: number): Promise<ExchangeRateDTO[]> {
     return this.dbContext
       .select()
       .from(exchangeRateTable)

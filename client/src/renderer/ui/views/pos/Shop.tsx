@@ -13,8 +13,8 @@ import {
   useDetectScreenType,
 } from "../../../hooks/useDetectScreenType";
 import { useNavHeight } from "../../../hooks/useNavHeight";
-import CheckoutScreen from "../../components/pos/payment/Main";
-import { Money } from "../../../lib/money";
+import { CheckoutScreen } from "../../components/pos/payment/Main";
+import { Money } from "../../../../lib/money";
 
 export interface Item extends Product {
   quantity: number;
@@ -41,7 +41,7 @@ export function Shop() {
 
   const [exchangeRate, setExchangeRate] = useState(20); //TODO: Get exchange rate from API
   const [selectedCurrency, setSelectedCurrency] = useState<"USD" | "ZIG">(
-    "USD"
+    "USD",
   );
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -50,7 +50,7 @@ export function Shop() {
   const navHeight = useNavHeight();
 
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(query.toLowerCase())
+    product.name.toLowerCase().includes(query.toLowerCase()),
   );
 
   function addItemToCart(product: Product) {
@@ -68,8 +68,8 @@ export function Shop() {
         prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+            : item,
+        ),
       );
     } else {
       setCart((prev) => [...prev, { ...product, quantity: 1 }]);
@@ -99,8 +99,8 @@ export function Shop() {
 
     setCart((prev) =>
       prev.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      )
+        item.id === productId ? { ...item, quantity: newQuantity } : item,
+      ),
     );
   }
 
@@ -119,7 +119,7 @@ export function Shop() {
   useEffect(() => {
     const cartTotal = cart.reduce(
       (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
-      0
+      0,
     );
 
     setCartTotal(Money.fromNumber(cartTotal));

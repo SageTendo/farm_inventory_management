@@ -8,11 +8,11 @@ import {
   expect,
   test,
 } from "vitest";
-import { roleTable } from "../../src/database/schema";
+import { roleTable } from "../../src/main/database/schema";
 import { setupDb } from "../testSetup";
-import { ExchangeRateService } from "../../src/service/ExchangeRateService";
-import { IAuthService } from "../../src/service/interfaces/IAuthService";
-import { IExchangeRateService } from "../../src/service/interfaces/IExchangeRateService";
+import { ExchangeRateService } from "../../src/main/service/ExchangeRateService";
+import { IAuthService } from "../../src/main/service/interfaces/IAuthService";
+import { IExchangeRateService } from "../../src/main/service/interfaces/IExchangeRateService";
 
 let db: BetterSQLite3Database<Record<string, never>>;
 

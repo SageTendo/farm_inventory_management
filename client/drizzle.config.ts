@@ -1,6 +1,4 @@
 import { defineConfig } from "drizzle-kit";
-import { env } from "./src/config";
-import { join } from "path";
 
 const dbFile =
   process.env.DB_PATH && process.env.DB_NAME

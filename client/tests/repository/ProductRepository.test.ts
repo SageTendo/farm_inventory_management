@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, beforeEach, expect, test } from "vitest";
-import { IProductRepository } from "../../src/database/interfaces/IProductRepository";
-import { ProductRepository } from "../../src/database/repository/ProductRepository";
+import { IProductRepository } from "../../src/main/database/interfaces/IProductRepository";
+import { ProductRepository } from "../../src/main/database/repository/ProductRepository";
 import { setupDb } from "../testSetup";
-import { productTable } from "../../src/database/schema";
+import { productTable } from "../../src/main/database/schema";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 let db: BetterSQLite3Database;

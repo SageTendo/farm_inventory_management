@@ -9,10 +9,10 @@ import {
   beforeEach,
 } from "vitest";
 import { setupDb } from "../testSetup";
-import { roleTable } from "../../src/database/schema";
-import { UserService } from "../../src/service/UserService";
-import { IUserRepository } from "../../src/database/interfaces/IUserRepository";
-import { IRoleRepository } from "../../src/database/interfaces/IRoleRepository";
+import { roleTable } from "../../src/main/database/schema";
+import { UserService } from "../../src/main/service/UserService";
+import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
+import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
 
 let db: BetterSQLite3Database<Record<string, never>>;
 

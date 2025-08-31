@@ -17,7 +17,7 @@ export class StockRepository
    * @param offset offset Number of entries to skip (default 0)
    * @returns An array of stock entries
    */
-  async getAll(limit: number = 10, offset: number = 0): Promise<StockDTO[]> {
+  async getAll(limit = 10, offset = 0): Promise<StockDTO[]> {
     return this.dbContext
       .select()
       .from(stockTable)

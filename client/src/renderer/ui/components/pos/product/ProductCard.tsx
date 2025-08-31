@@ -1,7 +1,7 @@
-import { Product } from "../../../../mock/pos_data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { Product } from "../../../../mock/pos_data";
 
 interface ProductCardProps {
   product: Product;

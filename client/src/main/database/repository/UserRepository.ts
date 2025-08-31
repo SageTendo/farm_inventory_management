@@ -13,7 +13,7 @@ export class UserRepository extends BaseRepository implements IUserRepository {
     return user;
   }
 
-  async getAll(limit: number = 10, offset: number = 0): Promise<UserDTO[]> {
+  async getAll(limit = 10, offset = 0): Promise<UserDTO[]> {
     return this.dbContext
       .select()
       .from(userTable)
