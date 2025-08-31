@@ -5,14 +5,11 @@ import fs from "fs";
 import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { app } from "electron";
-// import { app } from "electron";
 
-function initDb(
-  path: string = env.DB_PATH,
-  file: string = join(env.DB_PATH, env.DB_NAME)
-) {
+function initDb(path: string = env.DB_PATH, file: string = env.DB_NAME) {
+  console.error(path, file);
   const inMemory = file === "memory";
-  const dbURL = inMemory ? ":memory:" : "file:/" + file;
+  const dbPath = inMemory ? ":memory:" : join(path, file);
 
   if (!inMemory) {
     if (!fs.existsSync(path)) {
@@ -20,15 +17,15 @@ function initDb(
       fs.mkdirSync(path, { recursive: true });
     }
 
-    if (!fs.existsSync(file)) {
+    if (!fs.existsSync(dbPath)) {
       console.log("Creating db file:", file);
-      fs.writeFileSync(file, "");
+      fs.writeFileSync(dbPath, "");
     }
   }
 
-  const sqlite = new Database(dbURL);
+  const sqlite = new Database(dbPath);
   const db = drizzle(sqlite);
-  migrate(db, { migrationsFolder: "migrations" });
+  migrate(db, { migrationsFolder: env.DB_MIGRATIONS_PATH });
 
   if (!inMemory) {
     db.run("PRAGMA journal_mode = WAL;");
@@ -36,7 +33,7 @@ function initDb(
   }
 
   if (process.env.NODE_ENV !== "test")
-    console.log(`Database initialized (${inMemory ? "in-memory" : file})`);
+    console.log(`Database initialized (${dbPath})`);
   return db;
 }
 
@@ -46,7 +43,7 @@ export const getDb = () => {
       return initDb();
     case "test":
       return initDb("", "memory");
-    case "prod":
+    default:
       return initDb(app.getPath("userData"), "app.db");
   }
 };

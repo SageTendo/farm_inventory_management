@@ -6,13 +6,23 @@ import { MakerRpm } from "@electron-forge/maker-rpm";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
+import { cp, mkdir } from "node:fs/promises";
+import path from "node:path";
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
-    extraResource: ["./migrations"],
+    asar: {
+      unpack: "*.{node,dylib}",
+      unpackDir: "{better-sqlite3,sqlite3}",
+    },
+    extraResource: ["src/main/migrations"],
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    onlyModules: ["better-sqlite3", "sqlite3"],
+    force: true,
+    platform: process.platform,
+    buildFromSource: true,
+  },
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ["darwin"]),
@@ -55,6 +65,49 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  hooks: {
+    async packageAfterCopy(_forgeConfig, buildPath) {
+      const requiredNativePackages = [
+        "better-sqlite3",
+        "bindings",
+        "sqlite3",
+        "drizzle-orm",
+
+        "resolve-from",
+        "get-package-type",
+      ];
+
+      const sourceNodeModulesPath = path.resolve(__dirname, "node_modules");
+      const destNodeModulesPath = path.resolve(buildPath, "node_modules");
+
+      await Promise.all(
+        requiredNativePackages.map(async (packageName) => {
+          const sourcePath = path.join(sourceNodeModulesPath, packageName);
+          const destPath = path.join(destNodeModulesPath, packageName);
+
+          mkdir(path.dirname(destPath), { recursive: true });
+          cp(sourcePath, destPath, {
+            recursive: true,
+            preserveTimestamps: true,
+          });
+        })
+      );
+
+      const sourceMigrationsPath = path.resolve(
+        __dirname,
+        "src",
+        "main",
+        "migrations"
+      );
+      const destMigrationsPath = path.resolve(buildPath, "migrations");
+
+      mkdir(destMigrationsPath, { recursive: true });
+      cp(sourceMigrationsPath, destMigrationsPath, {
+        recursive: true,
+        preserveTimestamps: true,
+      });
+    },
+  },
 };
 
 export default config;

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "90569932-4dc3-4545-8687-bce0c79c5db2",
+  "id": "80c7d8d8-c358-4284-a26e-37c713202730",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "exchange_rate": {
@@ -100,8 +100,7 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": false
+          "autoincrement": false
         },
         "createdAt": {
           "name": "createdAt",

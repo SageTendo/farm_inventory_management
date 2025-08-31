@@ -12,7 +12,7 @@ CREATE TABLE `product` (
 	`buyPrice` integer NOT NULL,
 	`sellPrice` integer NOT NULL,
 	`addedBy` text NOT NULL,
-	`isDeleted` integer DEFAULT false NOT NULL,
+	`isDeleted` integer NOT NULL,
 	`createdAt` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	FOREIGN KEY (`addedBy`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE set null
 );

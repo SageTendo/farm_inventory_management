@@ -7,8 +7,8 @@ const dbFile =
 
 export default defineConfig({
   dialect: "sqlite",
-  schema: "src/database/schema/index.ts",
-  out: "migrations",
+  schema: "src/main/database/schema/index.ts",
+  out: "src/main/migrations",
   dbCredentials: {
     url: dbFile,
   },

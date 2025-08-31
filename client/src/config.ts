@@ -10,5 +10,6 @@ export const env = {
 
   // === Database Configuration ===
   DB_NAME: process.env.DB_NAME || "app.db",
-  DB_PATH: process.env.DB_PATH || "./out/database",
+  DB_PATH: process.env.DB_PATH || "../out/database",
+  DB_MIGRATIONS_PATH: process.env.DB_MIGRATIONS_PATH || "main/migrations",
 };

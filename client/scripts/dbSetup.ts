@@ -82,6 +82,8 @@ function delete_db_files() {
   const dbFilesRegex = new RegExp("(.*).db(.*)");
   console.log(`${BLUE}Deleting database...${RESET}`);
   const databaseDir = env.DB_PATH as string;
+  if (!fs.existsSync(databaseDir)) return;
+
   for (const file of fs.readdirSync(databaseDir)) {
     if (file.match(dbFilesRegex)) {
       fs.unlinkSync(databaseDir + "/" + file);

@@ -1,15 +1,15 @@
 {
-  "name": "farm_inventry_management",
-  "productName": "Tuckshop POS",
+  "name": "farm_tuckshop_pos",
+  "productName": "TuckshopPOS",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "POS system for family farm tuckshop",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "clean": "rm -rf .vite/ out/",
+    "clean": "rm -rf .vite/ out/ dist/",
     "test": "export NODE_ENV=test; vitest",
     "lint": "eslint --ext .ts,.tsx .",
     "db_init": "npx tsx ./scripts/dbSetup.ts",
@@ -17,7 +17,7 @@
     "db_generate": "npx drizzle-kit generate",
     "db_migrate": "npx drizzle-kit migrate",
     "db_delete": "npx tsx ./scripts/dbSetup.ts DELETE",
-    "db_nuke": "npx tsx ./scripts/dbSetup.ts DELETE && rm -rf src/database/migrations"
+    "db_nuke": "npx tsx ./scripts/dbSetup.ts DELETE && rm -rf src/main/migrations"
   },
   "keywords": [],
   "author": {
