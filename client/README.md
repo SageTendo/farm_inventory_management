@@ -67,12 +67,13 @@ npm run db_delete
 > [RIDE THE LIGHTNING!](https://en.wikipedia.org/wiki/Ride_the_Lightning)
 >
 > Deleting database migrations can lead to serious issues including:
+>
 > - Broken production environments
 > - Loss of schema history
 > - Inconsistencies between dev and prod DBs
 >
 > Only delete migrations if you're fully resetting the database schema in a controlled environment (like local dev).
-> 
+>
 > Migrations are a form of version control for the database, ensure a backup exists before yeeting anything.
 
 ```bash
@@ -88,6 +89,7 @@ npm run dev
 ```
 
 ---
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
@@ -98,12 +100,12 @@ If you are developing a production application, we recommend updating the config
 export default {
   // other rules...
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-}
+};
 ```
 
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or
@@ -112,158 +114,150 @@ export default {
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` &
   `plugin:react/jsx-runtime` to the `extends` list
 
+# Project Tree
+
 ```
 client
-├─ .env
-├─ .eslintrc.cjs
+├─ .eslintrc.json
 ├─ README.md
 ├─ TODO.md
-├─ client-1.0.0.tgz
 ├─ drizzle.config.ts
-├─ electron
-│  ├─ electron-env.d.ts
-│  ├─ main.ts
-│  └─ preload.ts
-├─ electron-builder.json5
+├─ forge.config.ts
 ├─ index.html
 ├─ migrations
-│  └─ 0000_amusing_the_phantom.sql
-├─ out
-│  └─ database
+│ ├─ 0000_chubby_mole_man.sql
+│ └─ meta
+│ ├─ 0000_snapshot.json
+│ └─ \_journal.json
 ├─ package-lock.json
 ├─ package.json
 ├─ postcss.config.js
 ├─ public
-│  ├─ electron-vite.animate.svg
-│  ├─ electron-vite.svg
-│  ├─ fonts
-│  │  └─ Lato
-│  │     ├─ Lato-Black.ttf
-│  │     ├─ Lato-BlackItalic.ttf
-│  │     ├─ Lato-Bold.ttf
-│  │     ├─ Lato-BoldItalic.ttf
-│  │     ├─ Lato-Italic.ttf
-│  │     ├─ Lato-Light.ttf
-│  │     ├─ Lato-LightItalic.ttf
-│  │     ├─ Lato-Regular.ttf
-│  │     ├─ Lato-Thin.ttf
-│  │     └─ Lato-ThinItalic.ttf
-│  └─ vite.svg
+│ ├─ electron-vite.animate.svg
+│ ├─ electron-vite.svg
+│ ├─ fonts
+│ │ └─ Lato
+│ │ ├─ Lato-Black.ttf
+│ │ ├─ Lato-BlackItalic.ttf
+│ │ ├─ Lato-Bold.ttf
+│ │ ├─ Lato-BoldItalic.ttf
+│ │ ├─ Lato-Italic.ttf
+│ │ ├─ Lato-Light.ttf
+│ │ ├─ Lato-LightItalic.ttf
+│ │ ├─ Lato-Regular.ttf
+│ │ ├─ Lato-Thin.ttf
+│ │ └─ Lato-ThinItalic.ttf
+│ └─ vite.svg
 ├─ scripts
-│  └─ dbSetup.ts
+│ └─ dbSetup.ts
 ├─ src
-│  ├─ App.tsx
-│  ├─ config.ts
-│  ├─ database
-│  │  ├─ db.ts
-│  │  ├─ interfaces
-│  │  │  ├─ IExchangeRateRepository.ts
-│  │  │  ├─ IProductRepository.ts
-│  │  │  ├─ IRoleRepository.ts
-│  │  │  ├─ ISalesRepository.ts
-│  │  │  ├─ IStockRepository.ts
-│  │  │  └─ IUserRepository.ts
-│  │  ├─ migrations
-│  │  │  ├─ 0000_superb_forgotten_one.sql
-│  │  │  ├─ 0001_material_la_nuit.sql
-│  │  │  └─ meta
-│  │  │     ├─ 0000_snapshot.json
-│  │  │     ├─ 0001_snapshot.json
-│  │  │     └─ _journal.json
-│  │  ├─ repository
-│  │  │  ├─ ExchangeRateRepository.ts
-│  │  │  ├─ ProductRepository.ts
-│  │  │  ├─ RoleRepository.ts
-│  │  │  ├─ StockRepository.ts
-│  │  │  ├─ UserRepository.ts
-│  │  │  └─ index.ts
-│  │  └─ schema
-│  │     ├─ constants.ts
-│  │     ├─ index.ts
-│  │     └─ types.ts
-│  ├─ hooks
-│  │  ├─ useAuth.ts
-│  │  ├─ useDetectScreenType.ts
-│  │  └─ useNavHeight.ts
-│  ├─ index.css
-│  ├─ lib
-│  │  ├─ error.ts
-│  │  └─ money.ts
-│  ├─ main.tsx
-│  ├─ mock
-│  │  └─ pos_data.ts
-│  ├─ router
-│  │  ├─ ProtectedRoute.tsx
-│  │  └─ routes.tsx
-│  ├─ service
-│  │  ├─ AuthService.ts
-│  │  ├─ ExchangeRateService.ts
-│  │  ├─ ProductService.ts
-│  │  ├─ RoleService.ts
-│  │  ├─ StockService.ts
-│  │  ├─ UserService.ts
-│  │  └─ interfaces
-│  │     ├─ IAuthService.ts
-│  │     ├─ IExchangeRateService.ts
-│  │     ├─ IProductService.ts
-│  │     ├─ IRoleService.ts
-│  │     ├─ IStockService.ts
-│  │     └─ IUserService.ts
-│  ├─ ui
-│  │  ├─ components
-│  │  │  ├─ pos
-│  │  │  │  ├─ cart
-│  │  │  │  │  ├─ CartItem.tsx
-│  │  │  │  │  └─ Main.tsx
-│  │  │  │  ├─ payment
-│  │  │  │  │  ├─ Main.tsx
-│  │  │  │  │  └─ PurchaseItem.tsx
-│  │  │  │  └─ product
-│  │  │  │     ├─ Main.tsx
-│  │  │  │     └─ ProductCard.tsx
-│  │  │  └─ shared
-│  │  │     ├─ Layout.tsx
-│  │  │     ├─ ListPage.tsx
-│  │  │     ├─ Sidebar.tsx
-│  │  │     ├─ SummaryCard.tsx
-│  │  │     └─ Table.tsx
-│  │  ├─ styles
-│  │  │  └─ tableComponent.css
-│  │  └─ views
-│  │     ├─ Dashboard.tsx
-│  │     ├─ auth
-│  │     │  └─ Login.tsx
-│  │     ├─ pos
-│  │     │  └─ Shop.tsx
-│  │     ├─ product
-│  │     │  ├─ ManageProduct.tsx
-│  │     │  ├─ NewProduct.tsx
-│  │     │  └─ Products.tsx
-│  │     └─ user
-│  │        ├─ ManageUser.tsx
-│  │        ├─ NewUser.tsx
-│  │        ├─ SettingsPage.tsx
-│  │        └─ Users.tsx
-│  └─ vite-env.d.ts
+│ ├─ App.tsx
+│ ├─ config.ts
+│ ├─ database
+│ │ ├─ db.ts
+│ │ ├─ interfaces
+│ │ │ ├─ IExchangeRateRepository.ts
+│ │ │ ├─ IProductRepository.ts
+│ │ │ ├─ IRoleRepository.ts
+│ │ │ ├─ ISalesRepository.ts
+│ │ │ ├─ IStockRepository.ts
+│ │ │ └─ IUserRepository.ts
+│ │ ├─ repository
+│ │ │ ├─ ExchangeRateRepository.ts
+│ │ │ ├─ ProductRepository.ts
+│ │ │ ├─ RoleRepository.ts
+│ │ │ ├─ StockRepository.ts
+│ │ │ ├─ UserRepository.ts
+│ │ │ └─ index.ts
+│ │ └─ schema
+│ │ ├─ constants.ts
+│ │ ├─ index.ts
+│ │ └─ types.ts
+│ ├─ hooks
+│ │ ├─ useAuth.ts
+│ │ ├─ useDetectScreenType.ts
+│ │ └─ useNavHeight.ts
+│ ├─ index.css
+│ ├─ lib
+│ │ ├─ error.ts
+│ │ └─ money.ts
+│ ├─ main.ts
+│ ├─ mock
+│ │ └─ pos_data.ts
+│ ├─ preload.ts
+│ ├─ renderer.tsx
+│ ├─ router
+│ │ ├─ ProtectedRoute.tsx
+│ │ └─ routes.tsx
+│ ├─ service
+│ │ ├─ AuthService.ts
+│ │ ├─ ExchangeRateService.ts
+│ │ ├─ ProductService.ts
+│ │ ├─ RoleService.ts
+│ │ ├─ StockService.ts
+│ │ ├─ UserService.ts
+│ │ └─ interfaces
+│ │ ├─ IAuthService.ts
+│ │ ├─ IExchangeRateService.ts
+│ │ ├─ IProductService.ts
+│ │ ├─ IRoleService.ts
+│ │ ├─ IStockService.ts
+│ │ └─ IUserService.ts
+│ ├─ ui
+│ │ ├─ components
+│ │ │ ├─ pos
+│ │ │ │ ├─ cart
+│ │ │ │ │ ├─ CartItem.tsx
+│ │ │ │ │ └─ Main.tsx
+│ │ │ │ ├─ payment
+│ │ │ │ │ ├─ Main.tsx
+│ │ │ │ │ └─ PurchaseItem.tsx
+│ │ │ │ └─ product
+│ │ │ │ ├─ Main.tsx
+│ │ │ │ └─ ProductCard.tsx
+│ │ │ └─ shared
+│ │ │ ├─ Layout.tsx
+│ │ │ ├─ ListPage.tsx
+│ │ │ ├─ Sidebar.tsx
+│ │ │ ├─ SummaryCard.tsx
+│ │ │ └─ Table.tsx
+│ │ ├─ styles
+│ │ │ └─ tableComponent.css
+│ │ └─ views
+│ │ ├─ Dashboard.tsx
+│ │ ├─ auth
+│ │ │ └─ Login.tsx
+│ │ ├─ pos
+│ │ │ └─ Shop.tsx
+│ │ ├─ product
+│ │ │ ├─ ManageProduct.tsx
+│ │ │ ├─ NewProduct.tsx
+│ │ │ └─ Products.tsx
+│ │ └─ user
+│ │ ├─ ManageUser.tsx
+│ │ ├─ NewUser.tsx
+│ │ ├─ SettingsPage.tsx
+│ │ └─ Users.tsx
+│ └─ vite-env.d.ts
 ├─ tailwind.config.js
 ├─ tests
-│  ├─ lib
-│  │  └─ money.test.ts
-│  ├─ repository
-│  │  ├─ ExchangeRateRepository.test.ts
-│  │  ├─ ProductRepository.test.ts
-│  │  ├─ RoleRepository.test.ts
-│  │  └─ UserRepository.test.ts
-│  ├─ service
-│  │  ├─ AuthService.test.ts
-│  │  ├─ ExchangeRateService.test.ts
-│  │  ├─ ProductService.test.ts
-│  │  ├─ StockService.test.ts
-│  │  └─ UserService.test.ts
-│  └─ testSetup.ts
+│ ├─ lib
+│ │ └─ money.test.ts
+│ ├─ repository
+│ │ ├─ ExchangeRateRepository.test.ts
+│ │ ├─ ProductRepository.test.ts
+│ │ ├─ RoleRepository.test.ts
+│ │ └─ UserRepository.test.ts
+│ ├─ service
+│ │ ├─ AuthService.test.ts
+│ │ ├─ ExchangeRateService.test.ts
+│ │ ├─ ProductService.test.ts
+│ │ ├─ StockService.test.ts
+│ │ └─ UserService.test.ts
+│ └─ testSetup.ts
 ├─ tsconfig.json
-├─ tsconfig.node.json
-├─ vite.config.ts
-└─ vitest.config.ts
+├─ vite.main.config.ts
+├─ vite.preload.config.ts
+└─ vite.renderer.config.ts
 
 ```
