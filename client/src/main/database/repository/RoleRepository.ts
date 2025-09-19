@@ -20,7 +20,7 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
   }
 
   async getById(roleId: string): Promise<RoleDTO | null> {
-    const role = await this.dbContext
+    const role = this.dbContext
       .select()
       .from(roleTable)
       .where(eq(roleTable.id, roleId))
@@ -29,7 +29,7 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
   }
 
   async getByType(role_type: RoleType): Promise<RoleDTO | null> {
-    const role = await this.dbContext
+    const role = this.dbContext
       .select()
       .from(roleTable)
       .where(eq(roleTable.type, role_type))
