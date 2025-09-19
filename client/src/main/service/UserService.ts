@@ -2,6 +2,8 @@ import { IUserService } from "./interfaces/IUserService";
 import { UpdateUserDTO, UserResponseDTO } from "../database/schema/types";
 import { IUserRepository } from "../database/interfaces/IUserRepository";
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
+import bcrypt from "bcrypt";
+import { env } from "../../config";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;
@@ -14,6 +16,35 @@ export class UserService implements IUserService {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
   }
+
+  populateDefaultAdmin = async (
+    adminFullname: string,
+    adminUsername: string,
+    adminPassword: string
+  ): Promise<void> => {
+    const existingAdmin =
+      await this.userRepository.getByUsername(adminUsername);
+    if (existingAdmin) {
+      return;
+    }
+
+    const adminRole = await this.roleRepository.getByType("ADMIN");
+    if (!adminRole) {
+      throw new Error("Admin role not found. Please populate roles first.");
+    }
+
+    const passwordHash = await bcrypt.hash(adminPassword, env.SALT_ROUNDS);
+    if (!passwordHash) {
+      throw new Error("Failed to hash admin password");
+    }
+
+    await this.userRepository.create({
+      username: adminUsername,
+      passwordHash: passwordHash,
+      fullname: adminFullname,
+      roleID: adminRole.id,
+    });
+  };
 
   async getAll(limit?: number, offset?: number): Promise<UserResponseDTO[]> {
     return await this.userRepository.getAll(limit, offset);
