@@ -67,11 +67,16 @@ const config: ForgeConfig = {
   ],
   hooks: {
     async packageAfterCopy(_forgeConfig, buildPath) {
+      const src = path.resolve(__dirname, "package.json");
+      const dest = path.join(buildPath, "package.json");
+      await cp(src, dest);
+      
       const requiredNativePackages = [
         "better-sqlite3",
         "bindings",
         "sqlite3",
         "drizzle-orm",
+        "bcrypt",
 
         "resolve-from",
         "get-package-type",
