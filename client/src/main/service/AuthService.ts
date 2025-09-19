@@ -9,13 +9,13 @@ import {
 import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
 import { RoleType } from "../database/schema/constants";
+import { env } from "../../config";
 
 const PERMITTED_ROLES: RoleType[] = ["ADMIN"];
 
 export class AuthService implements IAuthService {
   protected userRepository: IUserRepository;
   protected roleRepository: IRoleRepository;
-  private readonly SALT = 10;
 
   constructor(
     userRepository: IUserRepository,
@@ -49,7 +49,7 @@ export class AuthService implements IAuthService {
     const user = await this.userRepository.create({
       fullname: newUser.fullname,
       username: newUser.username,
-      passwordHash: await bcrypt.hash(newUser.password, this.SALT),
+      passwordHash: await bcrypt.hash(newUser.password, env.SALT_ROUNDS),
       roleID: newUser.roleID,
     });
     if (!user) {
@@ -150,7 +150,7 @@ export class AuthService implements IAuthService {
       throw new Error("Password cannot be empty");
     }
 
-    const passwordHash = await bcrypt.hash(password, this.SALT);
+    const passwordHash = await bcrypt.hash(password, env.SALT_ROUNDS);
     return await this.userRepository.update(userId, { passwordHash });
   }
 }

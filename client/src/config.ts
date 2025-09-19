@@ -12,4 +12,7 @@ export const env = {
   DB_NAME: process.env.DB_NAME || "app.db",
   DB_PATH: process.env.DB_PATH || "../out/database",
   DB_MIGRATIONS_PATH: process.env.DB_MIGRATIONS_PATH || "main/migrations",
+
+  // === ENCRYPTION ===
+  SALT_ROUNDS: process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS) : 10,
 };
