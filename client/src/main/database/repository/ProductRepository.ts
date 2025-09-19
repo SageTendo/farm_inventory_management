@@ -9,7 +9,6 @@ import {
 } from "../schema/types";
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { expect } from "vitest";
 
 /**
  * Repository class to handle CRUD operations for product entities.
@@ -168,8 +167,5 @@ export class ProductRepository
       .set({ isDeleted: true } as Partial<ProductDTO>)
       .where(eq(productTable.id, productID))
       .run();
-
-    const product = await this.getById(productID);
-    expect(product).toBeNull();
   }
 }
