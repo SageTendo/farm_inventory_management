@@ -5,7 +5,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     rollupOptions: {
-      external: ["drizzle-orm", "better-sqlite3", "sqlite3"],
+      external: ["drizzle-orm", "better-sqlite3", "sqlite3", "bcrypt"],
     },
     lib: {
       entry: "src/main.ts",
