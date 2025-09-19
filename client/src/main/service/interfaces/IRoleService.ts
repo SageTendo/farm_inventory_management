@@ -3,6 +3,11 @@ import { RoleType } from "../../database/schema/constants";
 
 export interface IRoleService {
   /**
+   * Populates default roles if they do not already exist
+   */
+  populateDefaultRoles(): Promise<void>;
+
+  /**
    * Create a new role
    * @param entity A new role to be inserted into the database
    * @returns A promise that resolves to the created role entity

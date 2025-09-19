@@ -2,6 +2,18 @@ import { UpdateUserDTO, UserResponseDTO } from "../../database/schema/types";
 
 export interface IUserService {
   /**
+   * Populates a default admin user if one does not already exist
+   * @param adminUsername The username of the admin user
+   * @param adminPassword The password of the admin user
+   * @param adminFullname The full name of the admin user
+   */
+  populateDefaultAdmin(
+    adminUsername: string,
+    adminPassword: string,
+    adminFullname: string
+  ): Promise<void>;
+
+  /**
    * Get all users
    * @param limit The maximum number of users to retrieve
    * @param offset The number of users to skip before retrieving the first user

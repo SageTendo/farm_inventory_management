@@ -1,13 +1,24 @@
 import { IRoleService } from "./interfaces/IRoleService";
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import { NewRoleDTO, RoleDTO } from "../database/schema/types";
-import { RoleType } from "../database/schema/constants";
+import { RoleType, roleTypes } from "../database/schema/constants";
 
 export class RoleService implements IRoleService {
   protected roleRepository: IRoleRepository;
 
   constructor(roleRepository: IRoleRepository) {
     this.roleRepository = roleRepository;
+  }
+
+  async populateDefaultRoles(): Promise<void> {
+    for (const role of roleTypes) {
+      const existingRole = await this.roleRepository.getByType(role);
+      if (!existingRole) {
+        await this.roleRepository.create({
+          type: role,
+        });
+      }
+    }
   }
 
   async create(entity: NewRoleDTO): Promise<RoleDTO> {
