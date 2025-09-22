@@ -3,6 +3,7 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import { ServiceRegistry } from "./main/service";
 import { env } from "./config";
+import { attachWindow, detachWindow } from "./main/setupIPC";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -29,6 +30,15 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+  });
+
+  // Attach IPC handlers to the window
+  attachWindow(mainWindow);
+
+  // Detach IPC handlers when the window is closed
+  mainWindow.on("closed", () => {
+    detachWindow(mainWindow);
+    mainWindow.destroy();
   });
 
   // and load the index.html of the app.
