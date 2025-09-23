@@ -1,4 +1,4 @@
-import { NewProductDTO, UpdateProductDTO, ProductDTO } from "../schema/types";
+import { ProductDTO, NewProductDTO, UpdateProductDTO } from "../../../shared/dto/product";
 
 /**
  * Interface for product repository

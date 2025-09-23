@@ -1,10 +1,10 @@
+import { NewExchangeRateDTO, ExchangeRateDTO } from "../../shared/dto/exchangeRate";
 import { IExchangeRateRepository } from "../database/interfaces/IExchangeRateRepository";
-import { RoleType } from "../database/schema/constants";
-import { NewExchangeRateDTO, ExchangeRateDTO } from "../database/schema/types";
+import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IExchangeRateService } from "./interfaces/IExchangeRateService";
 
-const PERMITTED_ROLES: RoleType[] = ["ADMIN", "OWNER"];
+const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
 export class ExchangeRateService implements IExchangeRateService {
   private authService: IAuthService;

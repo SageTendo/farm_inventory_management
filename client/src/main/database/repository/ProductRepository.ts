@@ -1,14 +1,10 @@
 import { and, eq, gt, like, ne } from "drizzle-orm";
 import { BaseRepository } from ".";
-import { productTable, stockTable } from "../schema";
-import {
-  NewProductDTO,
-  NewStockDTO,
-  ProductDTO,
-  UpdateProductDTO,
-} from "../schema/types";
+import { productTable, stockTable } from "..";
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../../../shared/dto/product";
+import { NewStockDTO } from "../../../shared/dto/stock";
 
 /**
  * Repository class to handle CRUD operations for product entities.

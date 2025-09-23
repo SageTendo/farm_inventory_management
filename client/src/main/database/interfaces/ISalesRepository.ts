@@ -1,4 +1,4 @@
-import { NewSaleDTO, NewSaleItemDTO, SaleDTO } from "../schema/types";
+import { SaleDTO, NewSaleDTO, NewSaleItemDTO } from "../../../shared/dto/sale";
 
 export interface ISalesRepository {
   /**

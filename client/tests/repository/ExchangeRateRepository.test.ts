@@ -2,7 +2,7 @@ import { afterAll, beforeAll, expect, test } from "vitest";
 import { IExchangeRateRepository } from "../../src/main/database/interfaces/IExchangeRateRepository";
 import { ExchangeRateRepository } from "../../src/main/database/repository/ExchangeRateRepository";
 import { setupDb } from "../testSetup";
-import { productTable } from "../../src/main/database/schema";
+import { productTable } from "../../src/main/database";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 let db: BetterSQLite3Database;

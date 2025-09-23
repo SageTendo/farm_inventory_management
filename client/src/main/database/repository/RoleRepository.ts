@@ -1,8 +1,8 @@
 import { BaseRepository } from ".";
-import { roleTable } from "../schema";
+import { roleTable } from "..";
 import { eq } from "drizzle-orm";
 import { IRoleRepository } from "../interfaces/IRoleRepository";
-import { RoleType } from "../schema/constants";
+import { UserRoleType } from "../../../shared/types";
 import { NewRoleDTO, RoleDTO } from "../../../shared/dto/role";
 
 export class RoleRepository extends BaseRepository implements IRoleRepository {
@@ -28,7 +28,7 @@ export class RoleRepository extends BaseRepository implements IRoleRepository {
     return role || null;
   }
 
-  async getByType(role_type: RoleType): Promise<RoleDTO | null> {
+  async getByType(role_type: UserRoleType): Promise<RoleDTO | null> {
     const role = this.dbContext
       .select()
       .from(roleTable)

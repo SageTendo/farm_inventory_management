@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { BaseRepository } from ".";
-import { stockTable } from "../schema";
-import { StockDTO, UpdateStockDTO } from "../schema/types";
+import { stockTable } from "..";
 import { IStockRepository } from "../interfaces/IStockRepository";
+import { StockDTO, UpdateStockDTO } from "../../../shared/dto/stock";
 
 /**
  * Repository class to handle CRUD operations for stock entities.

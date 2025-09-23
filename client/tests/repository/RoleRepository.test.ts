@@ -1,11 +1,11 @@
 import { RoleRepository } from "../../src/main/database/repository/RoleRepository";
 import { afterAll, beforeAll, expect, test } from "vitest";
 import { setupDb } from "../testSetup";
-import { roleTable } from "../../src/main/database/schema";
-import { roleTypes } from "../../src/main/database/schema/constants";
+import { roleTable } from "../../src/main/database";
+import { roleTypes } from "../../src/shared/types";
 import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { RoleDTO } from "../../src/main/database/schema/types";
+import { RoleDTO } from "../../src/shared/types";
 
 let db: BetterSQLite3Database;
 let roleRepository: IRoleRepository;

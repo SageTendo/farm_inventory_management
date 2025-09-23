@@ -1,9 +1,6 @@
-import { RoleType } from "../../database/schema/constants";
-import {
-  AuthResponseDTO,
-  NewUserDTO,
-  UserResponseDTO,
-} from "../../database/schema/types";
+import { AuthResponseDTO } from "../../../shared/dto/auth";
+import { NewUserDTO, UserResponseDTO } from "../../../shared/dto/user";
+import { UserRoleType } from "../../../shared/types";
 
 export interface IAuthService {
   /**
@@ -31,7 +28,7 @@ export interface IAuthService {
    * @param requiredRoles The roles required to access the resource
    * @returns {Promise<boolean>} A promise that resolves to true if the user has the required role, false otherwise
    */
-  hasRequiredRole(userId: string, requiredRoles: RoleType[]): Promise<boolean>;
+  hasRequiredRole(userId: string, requiredRoles: UserRoleType[]): Promise<boolean>;
 
   /**
    * Update the role of a user

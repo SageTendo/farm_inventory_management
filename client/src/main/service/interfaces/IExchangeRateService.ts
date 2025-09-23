@@ -1,7 +1,7 @@
 import {
-  ExchangeRateDTO,
   NewExchangeRateDTO,
-} from "../../database/schema/types";
+  ExchangeRateDTO,
+} from "../../../shared/dto/exchangeRate";
 
 /**
  * Interface for exchange rate service

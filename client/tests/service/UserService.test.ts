@@ -9,7 +9,7 @@ import {
   beforeEach,
 } from "vitest";
 import { setupDb } from "../testSetup";
-import { roleTable } from "../../src/main/database/schema";
+import { roleTable } from "../../src/main/database";
 import { UserService } from "../../src/main/service/UserService";
 import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
 import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
