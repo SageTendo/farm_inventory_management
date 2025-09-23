@@ -1,17 +1,15 @@
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import { IUserRepository } from "../database/interfaces/IUserRepository";
-import {
-  AuthResponseDTO,
-  NewUserDTO,
-  UserResponseDTO,
-} from "../database/schema/types";
 
 import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
-import { RoleType } from "../database/schema/constants";
 import { env } from "../../config";
+import { UserRoleType } from "../../shared/types";
+import { RoleType } from "aws-sdk/clients/cognitoidentity";
+import { AuthResponseDTO } from "../../shared/dto/auth";
+import { NewUserDTO, UserResponseDTO } from "../../shared/dto/user";
 
-const PERMITTED_ROLES: RoleType[] = ["ADMIN"];
+const PERMITTED_ROLES: UserRoleType[] = ["ADMIN"];
 
 export class AuthService implements IAuthService {
   protected userRepository: IUserRepository;
@@ -50,8 +48,7 @@ export class AuthService implements IAuthService {
       fullname: newUser.fullname,
       username: newUser.username,
       passwordHash: await bcrypt.hash(newUser.password, env.SALT_ROUNDS),
-      roleID: newUser.roleID,
-    });
+      roleID: newUser.roleID,    });
     if (!user) {
       return {
         success: false,

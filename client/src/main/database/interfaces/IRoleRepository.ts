@@ -1,5 +1,5 @@
-import { RoleType } from "../schema/constants";
-import { NewRoleDTO, RoleDTO } from "../schema/types";
+import { NewRoleDTO, RoleDTO } from "../../../shared/dto/role";
+import { UserRoleType } from "../../../shared/types";
 
 /**
  * Interface for role repository
@@ -32,7 +32,7 @@ export interface IRoleRepository {
    * @param {RoleType} type The type of the role to retrieve
    * @returns {Promise<RoleDTO | null>} A promise that resolves to the role entity if found, otherwise null
    */
-  getByType(type: RoleType): Promise<RoleDTO | null>;
+  getByType(type: UserRoleType): Promise<RoleDTO | null>;
 
   /**
    * Deletes a role by its ID

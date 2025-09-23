@@ -1,4 +1,4 @@
-import { roleTypes } from "../../main/database/schema/constants";
+import { userRoleTypes } from "../types";
 import { z } from "zod";
 
 export const AuthResponseDTO = z.object({
@@ -8,7 +8,7 @@ export const AuthResponseDTO = z.object({
     .object({
       id: z.string(),
       username: z.string(),
-      role: z.enum(roleTypes),
+      role: z.enum(userRoleTypes),
     })
     .optional(),
 });

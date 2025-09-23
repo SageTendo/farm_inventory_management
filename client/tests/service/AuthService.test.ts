@@ -10,7 +10,7 @@ import {
   vi,
 } from "vitest";
 import { setupDb } from "../testSetup";
-import { roleTable } from "../../src/main/database/schema";
+import { roleTable } from "../../src/main/database";
 import { AuthService } from "../../src/main/service/AuthService";
 import bcrypt from "bcrypt";
 import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";

@@ -1,4 +1,5 @@
-import { StockDTO, UpdateStockDTO } from "../schema/types";
+import { StockDTO, UpdateStockDTO } from "../../../shared/dto/stock";
+
 /**
  * Interface for stock repository
  */

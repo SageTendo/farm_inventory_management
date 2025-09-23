@@ -1,7 +1,7 @@
 import { IRoleService } from "./interfaces/IRoleService";
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
-import { NewRoleDTO, RoleDTO } from "../database/schema/types";
-import { RoleType, roleTypes } from "../database/schema/constants";
+import { UserRoleType, userRoleTypes } from "../../shared/types";
+import { NewRoleDTO, RoleDTO } from "../../shared/dto/role";
 
 export class RoleService implements IRoleService {
   protected roleRepository: IRoleRepository;
@@ -11,7 +11,7 @@ export class RoleService implements IRoleService {
   }
 
   async populateDefaultRoles(): Promise<void> {
-    for (const role of roleTypes) {
+    for (const role of userRoleTypes) {
       const existingRole = await this.roleRepository.getByType(role);
       if (!existingRole) {
         await this.roleRepository.create({
@@ -33,7 +33,7 @@ export class RoleService implements IRoleService {
     return await this.roleRepository.getById(roleId);
   }
 
-  async getByType(role_type: RoleType): Promise<RoleDTO | null> {
+  async getByType(role_type: UserRoleType): Promise<RoleDTO | null> {
     return await this.roleRepository.getByType(role_type);
   }
 

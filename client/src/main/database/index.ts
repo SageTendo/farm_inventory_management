@@ -7,7 +7,7 @@ import {
   real,
   index,
 } from "drizzle-orm/sqlite-core";
-import { roleTypes } from "./constants";
+import { userRoleTypes } from "../../shared/types";
 import { v4 as uuidv4 } from "uuid";
 
 // *******************************************
@@ -49,10 +49,10 @@ export const roleTable = sqliteTable(
     id: text()
       .primaryKey()
       .$defaultFn(() => uuidv4()),
-    type: text({ enum: roleTypes })
+    type: text({ enum: userRoleTypes })
       .unique()
       .notNull()
-      .$default(() => roleTypes[2]),
+      .$default(() => userRoleTypes[2]),
   },
   (table) => [
     check(

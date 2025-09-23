@@ -1,5 +1,5 @@
-import { NewRoleDTO, RoleDTO } from "../../database/schema/types";
-import { RoleType } from "../../database/schema/constants";
+import { NewRoleDTO, RoleDTO } from "../../../shared/dto/role";
+import { UserRoleType } from "../../../shared/types";
 
 export interface IRoleService {
   /**
@@ -32,7 +32,7 @@ export interface IRoleService {
    * @param role_type The type of the role to retrieve
    * @returns A promise that resolves to the role entity
    */
-  getByType(role_type: RoleType): Promise<RoleDTO | null>;
+  getByType(role_type: UserRoleType): Promise<RoleDTO | null>;
 
   /**
    * Delete role by its ID

@@ -1,7 +1,7 @@
 import { BaseRepository } from ".";
+import { NewExchangeRateDTO, ExchangeRateDTO } from "../../../shared/dto/exchangeRate";
 import { IExchangeRateRepository } from "../interfaces/IExchangeRateRepository";
-import { ExchangeRateDTO, NewExchangeRateDTO } from "../schema/types";
-import { exchangeRateTable } from "../schema";
+import { exchangeRateTable } from "..";
 import { eq } from "drizzle-orm";
 
 export class ExchangeRateRepository

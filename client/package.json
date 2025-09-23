@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "clean": "rm -rf .vite/ out/ dist/",
-    "test": "export NODE_ENV=test; vitest",
+    "test": "export NODE_ENV=test; npm rebuild; vitest",
     "lint": "eslint --ext .ts,.tsx .",
     "db_init": "npx tsx ./scripts/dbSetup.ts",
     "db_push": "npx drizzle-kit push",

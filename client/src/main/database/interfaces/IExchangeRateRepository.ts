@@ -1,5 +1,4 @@
-import { NewExchangeRateDTO, ExchangeRateDTO } from "../schema/types";
-
+import { ExchangeRateDTO, NewExchangeRateDTO } from "../../../shared/dto/exchangeRate";
 /**
  * Interface for exchange rate repository
  */

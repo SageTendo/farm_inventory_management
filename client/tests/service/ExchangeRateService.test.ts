@@ -8,7 +8,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { roleTable } from "../../src/main/database/schema";
+import { roleTable } from "../../src/main/database";
 import { setupDb } from "../testSetup";
 import { ExchangeRateService } from "../../src/main/service/ExchangeRateService";
 import { IAuthService } from "../../src/main/service/interfaces/IAuthService";

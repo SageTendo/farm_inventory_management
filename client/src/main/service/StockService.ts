@@ -1,10 +1,10 @@
+import { StockDTO, UpdateStockDTO } from "../../shared/dto/stock";
 import { IStockRepository } from "../database/interfaces/IStockRepository";
-import { RoleType } from "../database/schema/constants";
-import { StockDTO, UpdateStockDTO } from "../database/schema/types";
+import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IStockService } from "./interfaces/IStockService";
 
-const PERMITTED_ROLES: RoleType[] = ["ADMIN", "OWNER"];
+const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
 export class StockService implements IStockService {
   private authSerivce: IAuthService;

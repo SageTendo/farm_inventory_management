@@ -1,14 +1,10 @@
+import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../../shared/dto/product";
 import { IProductRepository } from "../database/interfaces/IProductRepository";
-import { RoleType } from "../database/schema/constants";
-import {
-  NewProductDTO,
-  ProductDTO,
-  UpdateProductDTO,
-} from "../database/schema/types";
+import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IProductService } from "./interfaces/IProductService";
 
-const PERMITTED_ROLES: RoleType[] = ["ADMIN", "OWNER"];
+const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
 export class ProductService implements IProductService {
   protected authService: IAuthService;

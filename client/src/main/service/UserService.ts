@@ -1,9 +1,9 @@
 import { IUserService } from "./interfaces/IUserService";
-import { UpdateUserDTO, UserResponseDTO } from "../database/schema/types";
 import { IUserRepository } from "../database/interfaces/IUserRepository";
 import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import bcrypt from "bcrypt";
 import { env } from "../../config";
+import { UserResponseDTO, UpdateUserDTO } from "../../shared/dto/user";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;

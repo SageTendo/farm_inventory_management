@@ -1,5 +1,5 @@
 // users.test.ts
-import { roleTable, userTable } from "../../src/main/database/schema";
+import { roleTable, userTable } from "../../src/main/database";
 import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
 import { UserRepository } from "../../src/main/database/repository/UserRepository";
 import { setupDb } from "../testSetup";

@@ -2,7 +2,7 @@ import {
   NewProductDTO,
   ProductDTO,
   UpdateProductDTO,
-} from "../../database/schema/types";
+} from "../../../shared/dto/product";
 
 export interface IProductService {
   /**
