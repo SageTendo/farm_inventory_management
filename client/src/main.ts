@@ -3,7 +3,7 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import { ServiceRegistry } from "./main/service";
 import { env } from "./config";
-import { attachWindow, detachWindow } from "./main/setupIPC";
+import { attachWindow, detachWindow } from "./main/setupRPC";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {

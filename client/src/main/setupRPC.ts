@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
+// eslint-disable-next-line import/no-unresolved
 import { createIPCHandler } from "electron-trpc/main";
-import { appRouter } from "../shared/ipc";
+import { appRouter } from "../shared/trpc";
 
 let ipcHandler: ReturnType<typeof createIPCHandler> | undefined;
 

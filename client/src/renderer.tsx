@@ -1,7 +1,7 @@
 import { createTRPCProxyClient } from "@trpc/client";
 // eslint-disable-next-line import/no-unresolved
 import { ipcLink } from "electron-trpc/renderer";
-import type { AppRouter } from "./shared/ipc";
+import type { AppRouter } from "./shared/trpc";
 
 import { createRoot } from "react-dom/client";
 import React from "react";
