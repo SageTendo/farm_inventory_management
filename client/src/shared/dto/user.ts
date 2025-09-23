@@ -23,7 +23,7 @@ export const NewUserDTO = z.object({
 });
 
 // This is the data that is sent to the repository layer
-export const CreateUserDTO = NewUserDTO.extend({
+export const CreateUserDTO = NewUserDTO.omit({ password: true }).extend({
   passwordHash: z.string(),
 });
 
