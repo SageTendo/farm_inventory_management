@@ -1,0 +1,11 @@
+import { roleTypes } from "../../main/database/schema/constants";
+import { z } from "zod";
+
+export const RoleDTO = z.object({
+  id: z.string(),
+  type: z.enum(roleTypes),
+});
+export const NewRoleDTO = RoleDTO.omit({ id: true });
+
+export type RoleDTO = z.infer<typeof RoleDTO>;
+export type NewRoleDTO = z.infer<typeof NewRoleDTO>;

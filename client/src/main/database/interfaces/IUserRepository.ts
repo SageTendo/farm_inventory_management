@@ -1,4 +1,8 @@
-import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
+import {
+  CreateUserDTO,
+  UpdateUserDTO,
+  UserDTO,
+} from "../../../shared/dto/user";
 
 /**
  * Interface for user repository

@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "src/renderer/*",
+    "src/preload.ts"
+  ],
+  "ext": "ts, json, html, tsx",
+  "exec": "npm start"
+}
