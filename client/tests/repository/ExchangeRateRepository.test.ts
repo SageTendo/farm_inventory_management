@@ -24,6 +24,7 @@ test("Set exchange rate", async () => {
   const newRate = await exchangRateRepository.set({
     rate: 1.23,
     updatedBy: "some user UUID",
+    updatedAt: new Date(),
   });
   rateId = newRate.id;
 
