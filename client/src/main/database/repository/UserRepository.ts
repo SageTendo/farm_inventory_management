@@ -1,6 +1,6 @@
 import { BaseRepository } from ".";
 import { userTable } from "../schema";
-import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../schema/types";
+import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../../../shared/dto/user";
 import { eq } from "drizzle-orm";
 import { IUserRepository } from "../interfaces/IUserRepository";
 

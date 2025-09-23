@@ -1,9 +1,9 @@
 import { BaseRepository } from ".";
 import { roleTable } from "../schema";
-import { NewRoleDTO, RoleDTO } from "../schema/types";
 import { eq } from "drizzle-orm";
 import { IRoleRepository } from "../interfaces/IRoleRepository";
 import { RoleType } from "../schema/constants";
+import { NewRoleDTO, RoleDTO } from "../../../shared/dto/role";
 
 export class RoleRepository extends BaseRepository implements IRoleRepository {
   async create(entity: NewRoleDTO): Promise<RoleDTO> {
