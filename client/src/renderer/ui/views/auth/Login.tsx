@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../context/AuthProvider";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!username.trim() || !password.trim()) {
@@ -15,12 +15,11 @@ const LoginPage = () => {
       return;
     }
 
-    // TODO: Handle login logic here
-    console.log({ username, password });
-    setErrorMsg("");
+    const response = await login(username, password);
+    if (!response.success) setErrorMsg(response.message);
   };
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (

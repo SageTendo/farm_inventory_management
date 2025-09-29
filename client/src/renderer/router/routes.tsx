@@ -27,7 +27,6 @@ export const paths = {
   newUser: "/users/new",
   manageUser: "/users/:id/manage",
   settings: "/settings",
-  logout: "/logout",
 } as const;
 
 // This will be for authenticated users
@@ -51,7 +50,6 @@ const protectedRoutes: RouteObject[] = [
           { path: paths.newUser, element: <NewUser /> },
           { path: paths.manageUser, element: <ManageUser /> },
           { path: paths.settings, element: <SettingsPage /> },
-          { path: paths.logout, element: <div>Logout</div> },
         ],
       },
     ],

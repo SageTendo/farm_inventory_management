@@ -5,9 +5,9 @@ import bcrypt from "bcrypt";
 import { IAuthService } from "./interfaces/IAuthService";
 import { env } from "../../config";
 import { UserRoleType } from "../../shared/types";
-import { RoleType } from "aws-sdk/clients/cognitoidentity";
-import { AuthResponseDTO } from "../../shared/dto/auth";
+import { AuthResponseDTO, AuthDataDTO } from "../../shared/dto/auth";
 import { NewUserDTO, UserResponseDTO } from "../../shared/dto/user";
+import crypto from "crypto";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN"];
 
@@ -21,6 +21,30 @@ export class AuthService implements IAuthService {
   ) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
+  }
+
+  async signSession(authData: AuthDataDTO): Promise<string> {
+    const hmac = crypto.createHmac("sha256", env.SECRET_KEY);
+    const dataToSign = JSON.stringify(authData);
+    hmac.update(dataToSign);
+    return hmac.digest("hex");
+  }
+
+  async validateSession(
+    sessionToken: string,
+    authData: AuthDataDTO
+  ): Promise<boolean> {
+    const computedSessionToken = await this.signSession(authData);
+    const computedSessionTokenBuffer = Buffer.from(computedSessionToken);
+    const providedSessionTokenBuffer = Buffer.from(sessionToken);
+    if (computedSessionTokenBuffer.length !== providedSessionTokenBuffer.length)
+      return false;
+
+    const isValidSession = crypto.timingSafeEqual(
+      computedSessionTokenBuffer,
+      providedSessionTokenBuffer
+    );
+    return isValidSession;
   }
 
   async register(
@@ -48,7 +72,8 @@ export class AuthService implements IAuthService {
       fullname: newUser.fullname,
       username: newUser.username,
       passwordHash: await bcrypt.hash(newUser.password, env.SALT_ROUNDS),
-      roleID: newUser.roleID,    });
+      roleID: newUser.roleID,
+    });
     if (!user) {
       return {
         success: false,
@@ -92,7 +117,7 @@ export class AuthService implements IAuthService {
 
   async hasRequiredRole(
     userId: string,
-    requiredRoles: RoleType[]
+    requiredRoles: UserRoleType[]
   ): Promise<boolean> {
     if (requiredRoles.length === 0) return true;
 

@@ -1,4 +1,4 @@
-import { AuthResponseDTO } from "../../../shared/dto/auth";
+import { AuthDataDTO, AuthResponseDTO } from "../../../shared/dto/auth";
 import { NewUserDTO, UserResponseDTO } from "../../../shared/dto/user";
 import { UserRoleType } from "../../../shared/types";
 
@@ -28,7 +28,10 @@ export interface IAuthService {
    * @param requiredRoles The roles required to access the resource
    * @returns {Promise<boolean>} A promise that resolves to true if the user has the required role, false otherwise
    */
-  hasRequiredRole(userId: string, requiredRoles: UserRoleType[]): Promise<boolean>;
+  hasRequiredRole(
+    userId: string,
+    requiredRoles: UserRoleType[]
+  ): Promise<boolean>;
 
   /**
    * Update the role of a user
@@ -53,4 +56,22 @@ export interface IAuthService {
     userId: string,
     password: string
   ): Promise<UserResponseDTO | null>;
+
+  /**
+   * Sign the auth data to create a session token
+   * @param authData The auth data to be signed
+   * @returns {string} The signed session token
+   */
+  signSession(authData: AuthDataDTO): Promise<string>;
+
+  /**
+   * Validate the session token by comparing it to the signed auth data
+   * @param authToken The auth token to be validated
+   * @param authData The auth data to be validated against
+   * @returns {boolean} True if the session is valid, false otherwise
+   */
+  validateSession(
+    sessionToken: string,
+    authData: AuthDataDTO
+  ): Promise<boolean>;
 }

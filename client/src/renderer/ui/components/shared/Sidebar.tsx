@@ -12,11 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import { useState, Dispatch, SetStateAction } from "react";
-
-function doLogout() {
-  // TODO: handle logout
-  console.log("Logging out...");
-}
+import { useAuth } from "../../../context/AuthProvider";
+import toast from "react-hot-toast";
 
 interface SidebarProps {
   isSidebarHidden: boolean;
@@ -35,6 +32,11 @@ const navItems = [
 
 function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
+  const doLogout = () => {
+    logout();
+    toast.success("You have been logged out!");
+  };
 
   return (
     <>
