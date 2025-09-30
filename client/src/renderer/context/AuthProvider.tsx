@@ -30,7 +30,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const validateSession = async (): Promise<SessionValidationResult> => {
     const authDataRaw = localStorage.getItem(constants.AUTH_DATA);
     const sessionToken = localStorage.getItem(constants.SESSION);
-    if (!authDataRaw && !sessionToken) return {};
+    if (!isAuthenticated && !authDataRaw && !sessionToken) {
+      return {};
+    }
 
     if (!authDataRaw || !sessionToken) {
       logout();
