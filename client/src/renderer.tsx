@@ -1,28 +1,20 @@
-import { createTRPCProxyClient } from "@trpc/client";
-// eslint-disable-next-line import/no-unresolved
-import { ipcLink } from "electron-trpc/renderer";
-import type { AppRouter } from "./shared/trpc";
-
 import { createRoot } from "react-dom/client";
-import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import App from "./renderer/App";
 import "./index.css";
-
-export const trpcClient = createTRPCProxyClient<AppRouter>({
-  links: [ipcLink()],
-  transformer: {
-    serialize: (data: unknown) => JSON.stringify(data),
-    deserialize: (data: string) => JSON.parse(data),
-  },
-});
+import { AuthProvider } from "./renderer/context/AuthProvider";
+import { Toaster } from "react-hot-toast";
+import React from "react";
 
 const Main = () => {
   return (
     <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+          <Toaster position="top-right" reverseOrder={false} />
+        </BrowserRouter>
+      </AuthProvider>
     </React.StrictMode>
   );
 };

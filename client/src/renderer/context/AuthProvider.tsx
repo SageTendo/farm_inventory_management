@@ -1,18 +1,20 @@
-import { useEffect, useState, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 import { trpcClient } from "../../shared/trpc/client";
 import { AuthDataDTO } from "../../shared/dto/auth";
-import toast from "react-hot-toast";
+
+type AuthResult = {
+  success: boolean;
+  message?: string;
+};
+
+type SessionValidationResult = {
+  err?: string;
+};
 
 type AuthContextType = {
   isAuthenticated: boolean;
-  login: (
-    username: string,
-    password: string
-  ) => Promise<{
-    success: boolean;
-    message?: string;
-  }>;
-  validateSession: () => Promise<void>;
+  login: (username: string, password: string) => Promise<AuthResult>;
+  validateSession: () => Promise<SessionValidationResult>;
   logout: () => void;
 };
 
@@ -22,20 +24,19 @@ const enum constants {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    validateSession();
-  }, []);
-
-  const validateSession = async () => {
+  const validateSession = async (): Promise<SessionValidationResult> => {
     const authDataRaw = localStorage.getItem(constants.AUTH_DATA);
     const sessionToken = localStorage.getItem(constants.SESSION);
+    if (!authDataRaw && !sessionToken) return {};
+
     if (!authDataRaw || !sessionToken) {
-      toast.error("Invalid Session: Missing session data");
-      return logout();
+      logout();
+      return {
+        err: "Invalid Session: No active session found",
+      };
     }
 
     // TODO: Comm with server to validate token
@@ -43,10 +44,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       parsedData = AuthDataDTO.parse(JSON.parse(authDataRaw));
     } catch {
-      toast.error(
-        "Invalid Session: You have been logged out because the active session data could not be read"
-      );
-      return logout();
+      logout();
+      return {
+        err: "Invalid Session: Active session data could not be read",
+      };
     }
 
     // Validate token by signing the auth data and comparing it to the token
@@ -56,18 +57,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (!isSessionValid) {
-      toast.error(
-        "Invalid Session: You have been logged out because active session may have been tampered with/become invalid"
-      );
-      return logout();
+      logout();
+      return {
+        err: "Invalid Session: Active session may have been tampered with/become invalid",
+      };
     }
     setIsAuthenticated(true);
+    return {};
   };
 
   const login = async (
     username: string,
     password: string
-  ): Promise<{ success: boolean; message?: string }> => {
+  ): Promise<AuthResult> => {
     try {
       const response = await trpcClient.auth.login.query({
         username,
@@ -95,8 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
       return { success: true };
     } catch (err) {
-      const errorMessage =
-        err.message ? err.message : "Unexpected error";
+      const errorMessage = err.message ? err.message : "Unexpected error";
       return { success: false, message: errorMessage };
     }
   };
