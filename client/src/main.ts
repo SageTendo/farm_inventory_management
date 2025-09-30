@@ -36,7 +36,7 @@ const createWindow = () => {
   attachWindow(mainWindow);
 
   // Detach IPC handlers when the window is closed
-  mainWindow.on("closed", () => {
+  mainWindow.on("close", () => {
     detachWindow(mainWindow);
     mainWindow.destroy();
   });
