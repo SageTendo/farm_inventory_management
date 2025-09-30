@@ -41,7 +41,7 @@ export function Shop() {
 
   const [exchangeRate, setExchangeRate] = useState(20); //TODO: Get exchange rate from API
   const [selectedCurrency, setSelectedCurrency] = useState<"USD" | "ZIG">(
-    "USD",
+    "USD"
   );
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -50,7 +50,7 @@ export function Shop() {
   const navHeight = useNavHeight();
 
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(query.toLowerCase()),
+    product.name.toLowerCase().includes(query.toLowerCase())
   );
 
   function addItemToCart(product: Product) {
@@ -68,8 +68,8 @@ export function Shop() {
         prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        ),
+            : item
+        )
       );
     } else {
       setCart((prev) => [...prev, { ...product, quantity: 1 }]);
@@ -99,8 +99,8 @@ export function Shop() {
 
     setCart((prev) =>
       prev.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item,
-      ),
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
     );
   }
 
@@ -119,7 +119,7 @@ export function Shop() {
   useEffect(() => {
     const cartTotal = cart.reduce(
       (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
-      0,
+      0
     );
 
     setCartTotal(Money.fromNumber(cartTotal));
@@ -217,21 +217,43 @@ export function Shop() {
         {/* Desktop Checkout Screen Modal */}
         {!isMobile && isChekoutScreenOpen && (
           <div className="fixed inset-0 md:z-50 flex-col p-20">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
+              <CheckoutScreen
+                cart={cart}
+                cartTotal={cartTotal}
+                selectedCurrency={selectedCurrency}
+                exchangeRate={exchangeRate}
+                onChangeSelectedCurrency={setSelectedCurrency}
+                onClose={() => setIsChekoutScreenOpen(false)}
+                onConfirmPayment={handlePayment}
+                onCancelPayment={handleCancelPayment}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Checkout Screen Modal  */}
+        {isMobile && isChekoutScreenOpen && (
+          <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
             <CheckoutScreen
               cart={cart}
               cartTotal={cartTotal}
               selectedCurrency={selectedCurrency}
               exchangeRate={exchangeRate}
               onChangeSelectedCurrency={setSelectedCurrency}
-              onClose={() => setIsChekoutScreenOpen(false)}
+              onClose={() => {
+                setIsChekoutScreenOpen(false);
+                setIsCartOpen(true);
+              }}
               onConfirmPayment={handlePayment}
               onCancelPayment={handleCancelPayment}
+              isMobile={true}
             />
           </div>
         )}
 
         {/* Mobile Floating Cart Button */}
-        {isMobile && cart.length > 0 && !isCartOpen && (
+        {isMobile && cart.length > 0 && !isCartOpen && !isChekoutScreenOpen && (
           <button
             onClick={() => setIsCartOpen(true)}
             className="fixed bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg z-50"
@@ -245,12 +267,7 @@ export function Shop() {
 
         {/* Mobile Cart Modal */}
         {isMobile && isCartOpen && cart.length > 0 && (
-          <div
-            className="fixed inset-0 z-60 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2"
-            style={{
-              top: navHeight,
-            }}
-          >
+          <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
             <Cart
               cart={cart}
               cartItemsCount={cartItemsCount}
@@ -260,7 +277,10 @@ export function Shop() {
               removeItem={removeItemFromCart}
               clearCart={() => setCart([])}
               onClose={() => setIsCartOpen(false)}
-              onCheckout={() => setIsChekoutScreenOpen(false)}
+              onCheckout={() => {
+                setIsCartOpen(false);
+                setIsChekoutScreenOpen(true);
+              }}
             />
           </div>
         )}
