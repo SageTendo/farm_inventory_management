@@ -131,7 +131,7 @@ export function CheckoutScreen({
         </div>
       )}
 
-      <div className="relative w-full overflow-y-auto md:overflow-hidden max-w-7xl xl:max-w-[90%] h-fit md:bg-gray-950 text-white rounded-3xl shadow-2xl border border-gray-800 p-6">
+      <div className="relative w-full overflow-y-auto lg:overflow-hidden max-w-7xl xl:max-w-[90%] h-fit lg:bg-gray-950 text-white rounded-3xl shadow-2xl border border-gray-800 p-6">
         {/*  Desktop Header */}
         {!isMobile && (
           <div className="flex justify-between items-center mb-6">
@@ -150,14 +150,17 @@ export function CheckoutScreen({
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Cart Summary */}
           <div className="flex-1 bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700 shadow-inner h-fit">
+            {/* Summary header */}
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold mb-4">Purchase Summary</h2>
-              <button
-                onClick={() => setShowPurchaseSummary(!showPurchaseSummary)}
-                className="flex mb-2 px-4 py-1 rounded-xl text-sm font-medium border transition"
-              >
-                {showPurchaseSummary ? "Hide" : "Show"}
-              </button>
+              {isMobile && (
+                <button
+                  onClick={() => setShowPurchaseSummary(!showPurchaseSummary)}
+                  className="flex mb-2 px-4 py-1 rounded-xl text-sm font-medium border transition"
+                >
+                  {showPurchaseSummary ? "Hide" : "Show"}
+                </button>
+              )}
             </div>
 
             {/* Table header */}
