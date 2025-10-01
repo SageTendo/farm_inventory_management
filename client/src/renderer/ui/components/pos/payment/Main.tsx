@@ -18,6 +18,7 @@ interface CheckoutScreenProps {
   cartTotal: Money;
   selectedCurrency: "USD" | "ZIG";
   exchangeRate: number;
+  isMobile?: boolean;
   onChangeSelectedCurrency: (currency: "USD" | "ZIG") => void;
   onClose: () => void;
   onCancelPayment: () => void;
@@ -29,6 +30,7 @@ export function CheckoutScreen({
   cartTotal,
   selectedCurrency,
   exchangeRate,
+  isMobile = false,
   onChangeSelectedCurrency,
   onClose,
   onConfirmPayment,
@@ -39,6 +41,7 @@ export function CheckoutScreen({
   const [totalAmount, setTotalAmount] = useState(cartTotal);
   const [paidAmount, setPaidAmount] = useState(Money.fromNumber(0));
   const [changeAmount, setChangeAmount] = useState(Money.fromNumber(0));
+  const [showPurchaseSummary, setShowPurchaseSummary] = useState(true);
 
   // Format numeric values for display
   const numericFormat = (value: string, positiveOnly = false) => {
@@ -112,28 +115,53 @@ export function CheckoutScreen({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
-      <div className="relative w-full max-w-7xl xl:max-w-[90%] h-fit bg-gray-950 text-white rounded-3xl shadow-2xl border border-gray-800 p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <button
-            className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition"
-            onClick={onClose}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-            Back
-          </button>
-          <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
+    <>
+      {/*  Mobile Header */}
+      {isMobile && (
+        <div className="flex justify-between items-center mb-3 mt-3 px-2">
+          <h2 className="font-bold text-white text-3xl">Checkout</h2>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-white font-bold px-3 py-1 border border-white rounded hover:bg-white hover:text-gray-900 transition"
+            >
+              Close
+            </button>
+          )}
         </div>
+      )}
+
+      <div className="relative w-full overflow-y-auto md:overflow-hidden max-w-7xl xl:max-w-[90%] h-fit md:bg-gray-950 text-white rounded-3xl shadow-2xl border border-gray-800 p-6">
+        {/*  Desktop Header */}
+        {!isMobile && (
+          <div className="flex justify-between items-center mb-6">
+            <button
+              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition"
+              onClick={onClose}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+              Back
+            </button>
+            <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Cart Summary */}
           <div className="flex-1 bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700 shadow-inner h-fit">
-            <h2 className="text-xl font-semibold mb-4">Purchase Summary</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold mb-4">Purchase Summary</h2>
+              <button
+                onClick={() => setShowPurchaseSummary(!showPurchaseSummary)}
+                className="flex mb-2 px-4 py-1 rounded-xl text-sm font-medium border transition"
+              >
+                {showPurchaseSummary ? "Hide" : "Show"}
+              </button>
+            </div>
 
             {/* Table header */}
-            <div className="hidden md:flex text-xs font-semibold uppercase tracking-wider text-gray-400 px-2 mb-3">
+            <div className="flex text-xs font-semibold uppercase tracking-wider text-gray-400 px-2 mb-3">
               <span className="w-1/4">Product</span>
               <span className="w-1/4 text-right">Qty</span>
               <span className="w-1/4 text-right">Price</span>
@@ -141,7 +169,9 @@ export function CheckoutScreen({
             </div>
 
             {/* Cart items */}
-            <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-1">
+            <div
+              className={`${showPurchaseSummary ? "" : "hidden"} space-y-2 md:space-y-4 max-h-[50vh] overflow-y-auto pr-1`}
+            >
               {cart.map((item) => {
                 const price =
                   selectedCurrency === "USD"
@@ -255,6 +285,6 @@ export function CheckoutScreen({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
