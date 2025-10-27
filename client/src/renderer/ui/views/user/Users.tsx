@@ -78,8 +78,8 @@ export function Users() {
     console.log(query);
   };
 
-  const labels = ["#", "fullname", "username", "role", "Created At"];
-  const keys = ["id", "fullname", "username", "role", "createdAt"];
+  const labels = ["fullname", "username", "role", "Created At"];
+  const keys = ["fullname", "username", "role", "createdAt"];
 
   return (
     <ListPage
