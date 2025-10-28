@@ -1,15 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CartItem } from "./CartItem";
-import { Item } from "../../../views/pos/Shop";
+import { CartItemDTO } from "../../../../../shared/dto/product";
 
 interface CartProps {
-  cart: Item[];
+  cart: CartItemDTO[];
   cartItemsCount: number;
   cartTotalUSD: string;
   cartTotalZIG: string;
-  changeQuantity: (id: number, delta: number) => void;
-  removeItem: (id: number) => void;
+  changeQuantity: (id: string, delta: number) => void;
+  removeItem: (id: string) => void;
   clearCart: () => void;
   onClose?: () => void; // Optional, used only in mobile modal
   onCheckout: () => void;

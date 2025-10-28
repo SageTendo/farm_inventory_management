@@ -11,10 +11,10 @@ import {
   MoneyParseError,
 } from "../../../../../lib/error";
 import { Money } from "../../../../../lib/money";
-import { Item } from "../../../views/pos/Shop";
+import { CartItemDTO } from "../../../../../shared/dto/product";
 
 interface CheckoutScreenProps {
-  cart: Item[];
+  cart: CartItemDTO[];
   cartTotal: Money;
   selectedCurrency: "USD" | "ZIG";
   exchangeRate: number;

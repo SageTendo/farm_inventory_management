@@ -1,9 +1,9 @@
-import { Product } from "../../../../mock/pos_data";
+import { ProductDTO } from "../../../../../shared/dto/product";
 import { ProductCard } from "./ProductCard";
 
 interface ProductListingProps {
-  products: Product[];
-  addToCart: (product: Product) => void;
+  products: ProductDTO[];
+  addToCart: (product: ProductDTO) => void;
 }
 
 export const ProductsListing = ({

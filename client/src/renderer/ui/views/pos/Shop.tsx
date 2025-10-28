@@ -4,7 +4,6 @@ import {
   faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Product, products } from "../../../mock/pos_data";
 import { useEffect, useState } from "react";
 import { ProductsListing } from "../../components/pos/product/Main";
 import { Cart } from "../../components/pos/cart/Main";
@@ -15,10 +14,9 @@ import {
 import { useNavHeight } from "../../../hooks/useNavHeight";
 import { CheckoutScreen } from "../../components/pos/payment/Main";
 import { Money } from "../../../../lib/money";
-
-export interface Item extends Product {
-  quantity: number;
-}
+import toast from "react-hot-toast";
+import { CartItemDTO, ProductDTO } from "../../../../shared/dto/product";
+import { products } from "../../../../mock/mock";
 
 /**
  * TODO:
@@ -27,15 +25,13 @@ export interface Item extends Product {
  * - Add a failure state
  * - Fetch products from DB
  * - Search products from DB
- * - Move types to a separate file
  * - Add pagination of products
- * - Add a toast for messages (replace alerts)
  * - Implement payment process
  **/
 export function Shop() {
   const [query, setQuery] = useState("");
 
-  const [cart, setCart] = useState<Item[]>([]);
+  const [cart, setCart] = useState<CartItemDTO[]>([]);
   const [cartTotal, setCartTotal] = useState<Money>(Money.fromNumber(0));
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -49,17 +45,23 @@ export function Shop() {
   const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
   const navHeight = useNavHeight();
 
+  // TODO: Fetch from DB
+  // const [products, setProducts] = useState<ProductDTO[]>()
+  useEffect(() => {
+    console.log("Fetching from database");
+  }, []);
+
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  function addItemToCart(product: Product) {
+  function addItemToCart(product: ProductDTO) {
     const cartItem = cart.find((item) => item.id === product.id);
     const quantityInCart = cartItem?.quantity ?? 0;
-    const availableStock = product.stock - quantityInCart;
+    const availableStock = product.quantity - quantityInCart;
 
     if (availableStock <= 0) {
-      alert("Product is out of stock");
+      toast.error(`OUT OF STOCK: ${product.name}`);
       return;
     }
 
@@ -72,11 +74,12 @@ export function Shop() {
         )
       );
     } else {
-      setCart((prev) => [...prev, { ...product, quantity: 1 }]);
+      const newCartItem = CartItemDTO.parse(product)
+      setCart((prev) => [...prev, { ...newCartItem, quantity: 1 }]);
     }
   }
 
-  function changeItemQuantity(productId: number, delta: number) {
+  function changeItemQuantity(productId: string, delta: number) {
     if (delta === 0) return;
 
     const cartItem = cart.find((item) => item.id === productId);
@@ -85,7 +88,7 @@ export function Shop() {
     if (!cartItem || !product) return;
 
     const newQuantity = cartItem.quantity + delta;
-    const maxStock = product.stock;
+    const maxStock = product.quantity;
 
     if (newQuantity < 1) {
       removeItemFromCart(productId);
@@ -93,7 +96,7 @@ export function Shop() {
     }
 
     if (newQuantity > maxStock) {
-      alert("Not enough stock available");
+      toast.error(`NOT ENOUGH STOCK: ${product.name}.`);
       return;
     }
 
@@ -104,7 +107,7 @@ export function Shop() {
     );
   }
 
-  function removeItemFromCart(productId: number) {
+  function removeItemFromCart(productId: string) {
     setCart((prev) => prev.filter((item) => item.id !== productId));
   }
 
@@ -118,7 +121,9 @@ export function Shop() {
   // Update cart total and cart items count
   useEffect(() => {
     const cartTotal = cart.reduce(
-      (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
+      (total, item) =>
+        total +
+        item.sellPrice.multiply(item.quantity).toDollars,
       0
     );
 

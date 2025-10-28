@@ -1,27 +1,28 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { Product } from "../../../../mock/pos_data";
+import { ProductDTO } from "../../../../../shared/dto/product";
+import { Money } from "../../../../../lib/money";
 
 interface ProductCardProps {
-  product: Product;
-  addToCart: (product: Product) => void;
+  product: ProductDTO;
+  addToCart: (product: ProductDTO) => void;
 }
 
 export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const tooltipMessage =
-    product.stock > 30
+    product.quantity > 30
       ? "High stock"
-      : product.stock > 0
+      : product.quantity > 0
         ? "Low stock"
         : "Out of stock";
 
   const stockColor =
-    product.stock > 30
+    product.quantity > 30
       ? "bg-green-600 text-white"
-      : product.stock > 0
+      : product.quantity > 0
         ? "bg-yellow-400 text-black"
         : "bg-red-600 text-white";
 
@@ -31,11 +32,11 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
 
       <div className="mb-2 text-sm">
         <div className="font-bold text-gray-200">
-          USD: {product.sellPrice.read}
+          USD: {Money.fromNumber(product.sellPrice).read}
         </div>
         <div className="font-bold text-gray-200">
           {/* //TODO: Fetch exchange rate */}
-          ZIG: {product.sellPrice.multiply(20).read}
+          ZIG: {Money.fromNumber(product.sellPrice).multiply(20).read}
         </div>
       </div>
 
@@ -45,7 +46,7 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       >
-        Stock: {product.stock}
+        Stock: {product.quantity}
         {showTooltip && (
           <div className="absolute bottom-full mb-2 w-max left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 shadow z-10">
             {tooltipMessage}
