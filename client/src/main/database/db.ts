@@ -7,7 +7,8 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { app } from "electron";
 
 function initDb(path: string = env.DB_PATH, file: string = env.DB_NAME) {
-  console.error(path, file);
+  console.error(process.cwd(), "<<< CWD");
+  console.error(env.DB_MIGRATIONS_PATH, "<<< PATH");
   const inMemory = file === "memory";
   const dbPath = inMemory ? ":memory:" : join(path, file);
 
