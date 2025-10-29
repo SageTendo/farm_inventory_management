@@ -1,4 +1,4 @@
-name: Test
+name: Test Client
 
 on:
   push:
@@ -9,6 +9,7 @@ jobs:
   test:
     name: Setup
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@latest
@@ -21,6 +22,8 @@ jobs:
 
       - name: Install NPM Packages
         run: npm ci
+        working-directory: ./client
 
       - name: Run Tests
         run: npm test
+        working-directory: ./client
