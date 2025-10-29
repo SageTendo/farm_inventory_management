@@ -1,0 +1,30 @@
+name: Test Client
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  test:
+    name: Test Client
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: ./client/package-lock.json
+
+      - name: Install NPM Packages
+        run: npm ci
+        working-directory: ./client
+
+      - name: Run Tests
+        run: npm test
+        working-directory: ./client
