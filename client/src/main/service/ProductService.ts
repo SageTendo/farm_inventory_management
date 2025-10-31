@@ -1,4 +1,4 @@
-import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../../shared/dto/product";
+import { NewProductDTO, ProductDTO, ProductListDTO, UpdateProductDTO } from "../../shared/dto/product";
 import { IProductRepository } from "../database/interfaces/IProductRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
@@ -38,7 +38,7 @@ export class ProductService implements IProductService {
     name?: string,
     limit?: number,
     offset?: number
-  ): Promise<ProductDTO[]> {
+  ): Promise<ProductListDTO> {
     return await this.productRepository.getAll(name, limit, offset);
   }
 

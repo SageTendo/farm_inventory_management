@@ -11,9 +11,9 @@ if (started) {
   app.quit();
 }
 
-const populateInitialData = async () => {
-  const roleService = ServiceRegistry.getInstance().getService("roleService");
-  const userService = ServiceRegistry.getInstance().getService("userService");
+const populateInitialData = () => {
+  const roleService = ServiceRegistry.getInstance().resolve("roleService");
+  const userService = ServiceRegistry.getInstance().resolve("userService");
 
   roleService.populateDefaultRoles();
   userService.populateDefaultAdmin(
@@ -27,9 +27,9 @@ const populateInitialData = async () => {
 };
 
 const populateWithMockData = async () => {
-  const userService = ServiceRegistry.getInstance().getService("userService");
+  const userService = ServiceRegistry.getInstance().resolve("userService");
   const productService =
-    ServiceRegistry.getInstance().getService("productService");
+    ServiceRegistry.getInstance().resolve("productService");
 
   const admin = await userService.getByUsername("admin");
 

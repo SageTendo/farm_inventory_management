@@ -28,6 +28,10 @@ interface ServiceRegister {
   // Add other services here as needed
 }
 
+/**
+ * ServiceRegistry is a singleton class that manages the instantiation and retrieval
+ * of service instances used throughout the application.
+ */
 export class ServiceRegistry {
   private static instance: ServiceRegistry;
   public services: ServiceRegister;
@@ -69,6 +73,10 @@ export class ServiceRegistry {
     };
   }
 
+  /**
+   * Gets the singleton instance of the ServiceRegistry
+   * @returns The ServiceRegistry instance
+   */
   public static getInstance(): ServiceRegistry {
     if (!ServiceRegistry.instance) {
       ServiceRegistry.instance = new ServiceRegistry();
@@ -77,18 +85,22 @@ export class ServiceRegistry {
   }
 
   /**
-   * Get a specific service by name
+   * Resolve a service by its name
+   * @param serviceName The service to resolve
+   * @returns The instance of the requested service
    */
-  public getService<K extends keyof ServiceRegister>(
+  public resolve<K extends keyof ServiceRegister>(
     serviceName: K
   ): ServiceRegister[K] {
     return this.services[serviceName];
   }
 
   /**
-   * Replace a specific service (useful for testing/mocking)
+   * Bind a specific service instance to the registry
+   * @param serviceName The service being bound
+   * @param serviceInstance The instance of the service to bind
    */
-  public setService<K extends keyof ServiceRegister>(
+  public bind<K extends keyof ServiceRegister>(
     serviceName: K,
     serviceInstance: ServiceRegister[K]
   ): void {
