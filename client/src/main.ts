@@ -11,8 +11,8 @@ if (started) {
 }
 
 const populateInitialData = () => {
-  const roleService = ServiceRegistry.getInstance().getService("roleService");
-  const userService = ServiceRegistry.getInstance().getService("userService");
+  const roleService = ServiceRegistry.getInstance().resolve("roleService");
+  const userService = ServiceRegistry.getInstance().resolve("userService");
 
   roleService.populateDefaultRoles();
   userService.populateDefaultAdmin(
