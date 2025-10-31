@@ -68,9 +68,10 @@ test("Get All products", async () => {
     lowStockThreshold: 5,
     addedBy: "some user UUID",
   });
-  const products = await productRepository.getAll();
-  expect(products).toBeDefined();
-  expect(products.length).toBe(2);
+  const productList = await productRepository.getAll();
+  expect(productList).toBeDefined();
+  expect(productList.products)
+  expect(productList.total).toBe(2);
 });
 
 test("Search products", async () => {
@@ -100,9 +101,9 @@ test("Search products", async () => {
     lowStockThreshold: 5,
     addedBy: "some user UUID",
   });
-  const products = await productRepository.getAll("Lays Chips");
-  expect(products.length).toBe(2);
-  expect(products[0].name).toBe("Lays Chips");
+  const productList = await productRepository.getAll("Lays Chips");
+  expect(productList.total).toBe(2);
+  expect(productList.products[0].name).toBe("Lays Chips");
 });
 
 test("Search non-existent product", async () => {
@@ -114,8 +115,8 @@ test("Search non-existent product", async () => {
     lowStockThreshold: 5,
     addedBy: "some user UUID",
   });
-  const products = await productRepository.getAll("Colgate");
-  expect(products.length).toBe(0);
+  const productList = await productRepository.getAll("Colgate");
+  expect(productList.total).toBe(0);
 });
 
 test("Update product", async () => {

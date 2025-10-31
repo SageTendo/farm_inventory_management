@@ -1,4 +1,4 @@
-import { ProductDTO, NewProductDTO, UpdateProductDTO } from "../../../shared/dto/product";
+import { ProductDTO, NewProductDTO, UpdateProductDTO, ProductListDTO } from "../../../shared/dto/product";
 
 /**
  * Interface for product repository
@@ -24,7 +24,7 @@ export interface IProductRepository {
    * @param offset The number of products to skip before retrieving (optional)
    * @returns A promise that resolves to an array of product entities
    */
-  getAll(name?: string, limit?: number, offset?: number): Promise<ProductDTO[]>;
+  getAll(name?: string, limit?: number, offset?: number): Promise<ProductListDTO>;
 
   /**
    * Updates an existing product

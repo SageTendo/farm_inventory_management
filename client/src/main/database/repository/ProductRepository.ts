@@ -1,9 +1,14 @@
-import { and, eq, gt, like, ne } from "drizzle-orm";
+import { and, count, eq, gt, like, ne } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { productTable, stockTable } from "..";
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { NewProductDTO, ProductDTO, UpdateProductDTO } from "../../../shared/dto/product";
+import {
+  NewProductDTO,
+  ProductDTO,
+  ProductListDTO,
+  UpdateProductDTO,
+} from "../../../shared/dto/product";
 import { NewStockDTO } from "../../../shared/dto/stock";
 
 /**
@@ -56,7 +61,7 @@ export class ProductRepository
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
       .where(
-        and(eq(productTable.id, productId), ne(productTable.isDeleted, true)),
+        and(eq(productTable.id, productId), ne(productTable.isDeleted, true))
       )
       .get();
 
@@ -75,28 +80,43 @@ export class ProductRepository
    * @param offset Number of products to skip (default 0)
    * @returns Array of products
    */
-  async getAll(name = "", limit = 10, offset = 0): Promise<ProductDTO[]> {
+  async getAll(name = "", limit = 10, offset = 0): Promise<ProductListDTO> {
+    const filters = and(
+      name ? like(productTable.name, `%${name}%`) : undefined,
+      gt(stockTable.quantity, 0),
+      ne(productTable.isDeleted, true)
+    );
+
     const products = this.dbContext
       .select()
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .where(
-        and(
-          name ? like(productTable.name, `%${name}%`) : undefined,
-          gt(stockTable.quantity, 0),
-          ne(productTable.isDeleted, true),
-        ),
-      )
+      .where(filters)
       .limit(limit)
       .offset(offset)
       .all();
 
-    if (!products) return [];
-    return products.map((result) => ({
-      ...result.product,
-      quantity: result.stock?.quantity,
-      lowStockThreshold: result.stock?.lowStockThreshold,
-    })) as ProductDTO[];
+    const [{ total }] = await this.dbContext
+      .select({ total: count() })
+      .from(productTable)
+      .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
+      .where(filters);
+
+    if (!products) {
+      return {
+        products: [],
+        total: total,
+      };
+    }
+
+    return {
+      products: products.map((result) => ({
+        ...result.product,
+        quantity: result.stock?.quantity,
+        lowStockThreshold: result.stock?.lowStockThreshold,
+      })) as ProductDTO[],
+      total: products.length,
+    };
   }
 
   /**
@@ -107,7 +127,7 @@ export class ProductRepository
    */
   async update(
     productId: string,
-    product: UpdateProductDTO,
+    product: UpdateProductDTO
   ): Promise<ProductDTO | null> {
     let updatedProduct, updatedStock;
 
