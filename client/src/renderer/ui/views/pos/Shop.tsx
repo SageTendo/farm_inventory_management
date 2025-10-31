@@ -14,9 +14,8 @@ import {
 import { useNavHeight } from "../../../hooks/useNavHeight";
 import { CheckoutScreen } from "../../components/pos/payment/Main";
 import { Money } from "../../../../lib/money";
-import toast from "react-hot-toast";
-import { CartItemDTO, ProductDTO } from "../../../../shared/dto/product";
 import { products } from "../../../../mock/mock";
+import { useCart } from "../../../hooks/useCart";
 
 /**
  * TODO:
@@ -30,10 +29,15 @@ import { products } from "../../../../mock/mock";
  **/
 export function Shop() {
   const [query, setQuery] = useState("");
-
-  const [cart, setCart] = useState<CartItemDTO[]>([]);
-  const [cartTotal, setCartTotal] = useState<Money>(Money.fromNumber(0));
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const {
+    cart,
+    cartTotal,
+    cartItemsCount,
+    addCartItem,
+    updateCartItem,
+    removeCartItem,
+    clearCart,
+  } = useCart(products);
 
   const [exchangeRate, setExchangeRate] = useState(20); //TODO: Get exchange rate from API
   const [selectedCurrency, setSelectedCurrency] = useState<"USD" | "ZIG">(
@@ -55,81 +59,12 @@ export function Shop() {
     product.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  function addItemToCart(product: ProductDTO) {
-    const cartItem = cart.find((item) => item.id === product.id);
-    const quantityInCart = cartItem?.quantity ?? 0;
-    const availableStock = product.quantity - quantityInCart;
-
-    if (availableStock <= 0) {
-      toast.error(`OUT OF STOCK: ${product.name}`);
-      return;
-    }
-
-    if (cartItem) {
-      setCart((prev) =>
-        prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-    } else {
-      const newCartItem = CartItemDTO.parse(product)
-      setCart((prev) => [...prev, { ...newCartItem, quantity: 1 }]);
-    }
-  }
-
-  function changeItemQuantity(productId: string, delta: number) {
-    if (delta === 0) return;
-
-    const cartItem = cart.find((item) => item.id === productId);
-    const product = products.find((item) => item.id === productId); // from full list
-
-    if (!cartItem || !product) return;
-
-    const newQuantity = cartItem.quantity + delta;
-    const maxStock = product.quantity;
-
-    if (newQuantity < 1) {
-      removeItemFromCart(productId);
-      return;
-    }
-
-    if (newQuantity > maxStock) {
-      toast.error(`NOT ENOUGH STOCK: ${product.name}.`);
-      return;
-    }
-
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  }
-
-  function removeItemFromCart(productId: string) {
-    setCart((prev) => prev.filter((item) => item.id !== productId));
-  }
-
   // Close cart on mobile if cart is empty or screen size is larger
   useEffect(() => {
     if (!isMobile || cart.length === 0) {
       setIsCartOpen(false);
     }
   }, [isMobile, cart.length]);
-
-  // Update cart total and cart items count
-  useEffect(() => {
-    const cartTotal = cart.reduce(
-      (total, item) =>
-        total +
-        item.sellPrice.multiply(item.quantity).toDollars,
-      0
-    );
-
-    setCartTotal(Money.fromNumber(cartTotal));
-    setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
-  }, [cart]);
 
   function handlePayment(paidAmount: Money, changeAmount: Money): void {
     // TODO: implement payment
@@ -148,9 +83,7 @@ export function Shop() {
   }
 
   function handleCancelPayment(): void {
-    setCart([]);
-    setCartTotal(Money.fromNumber(0));
-    setCartItemsCount(0);
+    clearCart();
     setIsChekoutScreenOpen(false);
   }
 
@@ -198,7 +131,7 @@ export function Shop() {
             <h2 className="font-bold mb-3 text-2xl text-gray-800">Products</h2>
             <ProductsListing
               products={filteredProducts}
-              addToCart={addItemToCart}
+              addToCart={addCartItem}
             />
           </div>
         )}
@@ -211,9 +144,9 @@ export function Shop() {
               cartItemsCount={cartItemsCount}
               cartTotalUSD={cartTotal.read}
               cartTotalZIG={cartTotal.multiply(exchangeRate).read}
-              changeQuantity={changeItemQuantity}
-              removeItem={removeItemFromCart}
-              clearCart={() => setCart([])}
+              changeQuantity={updateCartItem}
+              removeItem={removeCartItem}
+              clearCart={clearCart}
               onCheckout={() => setIsChekoutScreenOpen(true)}
             />
           </div>
@@ -278,9 +211,9 @@ export function Shop() {
               cartItemsCount={cartItemsCount}
               cartTotalUSD={cartTotal.read}
               cartTotalZIG={cartTotal.multiply(exchangeRate).read}
-              changeQuantity={changeItemQuantity}
-              removeItem={removeItemFromCart}
-              clearCart={() => setCart([])}
+              changeQuantity={updateCartItem}
+              removeItem={removeCartItem}
+              clearCart={clearCart}
               onClose={() => setIsCartOpen(false)}
               onCheckout={() => {
                 setIsCartOpen(false);

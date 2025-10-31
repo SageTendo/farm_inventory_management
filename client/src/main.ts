@@ -34,7 +34,7 @@ const populateWithMockData = async () => {
   const admin = await userService.getByUsername("admin");
 
   // Mock Product data
-  if ((await productService.getAll()).length !== 0) {
+  if ((await productService.getAll()).total === 0) {
     const mockProducts = generateProducts(admin.id);
     mockProducts.forEach((product) => {
       productService.create(product);
