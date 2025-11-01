@@ -3,7 +3,7 @@ import { Money } from "../lib/money";
 import { NewProductDTO, ProductDTO } from "../shared/dto/product";
 
 export const products: ProductDTO[] = [];
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 1000; i++) {
   products.push({
     id: faker.string.uuid(),
     name: faker.commerce.productName(),

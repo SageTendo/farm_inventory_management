@@ -16,6 +16,9 @@ import { CheckoutScreen } from "../../components/pos/payment/Main";
 import { Money } from "../../../../lib/money";
 import { products } from "../../../../mock/mock";
 import { useCart } from "../../../hooks/useCart";
+import { useCurrency } from "../../../hooks/useCurrency";
+import { useProducts } from "../../../hooks/useProducts";
+import Pagination from "../../components/shared/Pagination";
 
 /**
  * TODO:
@@ -28,7 +31,16 @@ import { useCart } from "../../../hooks/useCart";
  * - Implement payment process
  **/
 export function Shop() {
-  const [query, setQuery] = useState("");
+  const {
+    productList,
+    searchQuery,
+    queryLimit,
+    currentPage,
+    totalPages,
+    handleSearch, //TODO: Setup searching
+    setQueryLimit,
+    setCurrentPage,
+  } = useProducts();
   const {
     cart,
     cartTotal,
@@ -38,11 +50,7 @@ export function Shop() {
     removeCartItem,
     clearCart,
   } = useCart(products);
-
-  const [exchangeRate, setExchangeRate] = useState(20); //TODO: Get exchange rate from API
-  const [selectedCurrency, setSelectedCurrency] = useState<"USD" | "ZIG">(
-    "USD"
-  );
+  const { exchangeRate, selectedCurrency, setCurrency } = useCurrency();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useState(false);
@@ -55,16 +63,12 @@ export function Shop() {
     console.log("Fetching from database");
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(query.toLowerCase())
-  );
-
   // Close cart on mobile if cart is empty or screen size is larger
   useEffect(() => {
-    if (!isMobile || cart.length === 0) {
+    if (!isMobile || cartItemsCount === 0) {
       setIsCartOpen(false);
     }
-  }, [isMobile, cart.length]);
+  }, [isMobile, cartItemsCount]);
 
   function handlePayment(paidAmount: Money, changeAmount: Money): void {
     // TODO: implement payment
@@ -87,20 +91,6 @@ export function Shop() {
     setIsChekoutScreenOpen(false);
   }
 
-  function handlePreviousPage(): void {
-    // TODO: implement pagination
-    // - Get previous page of products from API
-    // - Update products list
-    throw new Error("Function not implemented.");
-  }
-
-  function handleNextPage(): void {
-    // TODO: implement pagination
-    // - Get next page of products from API
-    // - Update products list
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="flex flex-col h-full overflow-hidden pt-4 px-4">
       {/* Header */}
@@ -115,8 +105,8 @@ export function Shop() {
           type="text"
           placeholder="Search for products..."
           className="flex-grow px-1 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
         />
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
           <FontAwesomeIcon icon={faSearch} />
@@ -130,7 +120,7 @@ export function Shop() {
           <div className="flex flex-col flex-1 overflow-y-auto pr-1">
             <h2 className="font-bold mb-3 text-2xl text-gray-800">Products</h2>
             <ProductsListing
-              products={filteredProducts}
+              products={productList.products}
               addToCart={addCartItem}
             />
           </div>
@@ -161,7 +151,7 @@ export function Shop() {
                 cartTotal={cartTotal}
                 selectedCurrency={selectedCurrency}
                 exchangeRate={exchangeRate}
-                onChangeSelectedCurrency={setSelectedCurrency}
+                onChangeSelectedCurrency={setCurrency}
                 onClose={() => setIsChekoutScreenOpen(false)}
                 onConfirmPayment={handlePayment}
                 onCancelPayment={handleCancelPayment}
@@ -178,7 +168,7 @@ export function Shop() {
               cartTotal={cartTotal}
               selectedCurrency={selectedCurrency}
               exchangeRate={exchangeRate}
-              onChangeSelectedCurrency={setSelectedCurrency}
+              onChangeSelectedCurrency={setCurrency}
               onClose={() => {
                 setIsChekoutScreenOpen(false);
                 setIsCartOpen(true);
@@ -223,6 +213,18 @@ export function Shop() {
           </div>
         )}
       </div>
+
+      <Pagination
+        page={currentPage}
+        totalPages={totalPages}
+        limit={queryLimit}
+        onSetLimit={setQueryLimit}
+        onStartPage={() => setCurrentPage(1)}
+        onEndPage={() => setCurrentPage(totalPages)}
+        onNextPage={() => setCurrentPage(currentPage + 1)}
+        onPreviousPage={() => setCurrentPage(currentPage - 1)}
+        onSetPage={setCurrentPage}
+      />
     </div>
   );
 }
