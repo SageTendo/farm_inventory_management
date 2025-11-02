@@ -5,21 +5,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { ProductsListing } from "../../components/pos/product/Main";
-import { Cart } from "../../components/pos/cart/Main";
+import { ProductsListing } from "../components/pos/product/Main";
+import { Cart } from "../components/pos/cart/Main";
 import {
   SCREEN_SIZE,
   useDetectScreenType,
-} from "../../../hooks/useDetectScreenType";
-import { useNavHeight } from "../../../hooks/useNavHeight";
-import { CheckoutScreen } from "../../components/pos/payment/Main";
-import { Money } from "../../../../lib/money";
-import { products } from "../../../../mock/mock";
-import { useCart } from "../../../hooks/useCart";
-import { useCurrency } from "../../../hooks/useCurrency";
-import { useProducts } from "../../../hooks/useProducts";
-import { SearchBar } from "../../components/shared/SearchBar";
-import { Pagination } from "../../components/shared/Pagination";
+} from "../../hooks/useDetectScreenType";
+import { useNavHeight } from "../../hooks/useNavHeight";
+import { CheckoutScreen } from "../components/pos/payment/Main";
+import { Money } from "../../../lib/money";
+import { products } from "../../../mock/mock";
+import { useCart } from "../../hooks/useCart";
+import { useCurrency } from "../../hooks/useCurrency";
+import { useProducts } from "../../hooks/useProducts";
+import { SearchBar } from "../components/shared/SearchBar";
+import { Pagination } from "../components/shared/Pagination";
 
 /**
  * TODO:
