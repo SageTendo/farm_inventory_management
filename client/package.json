@@ -76,6 +76,7 @@
     "drizzle-orm": "^0.41.0",
     "electron-squirrel-startup": "^1.0.1",
     "electron-trpc": "^0.7.1",
+    "jotai": "^2.15.1",
     "mock-aws-s3": "^4.0.2",
     "nock": "^14.0.10",
     "react": "^19.1.1",
