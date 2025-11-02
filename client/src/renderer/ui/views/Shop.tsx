@@ -7,7 +7,7 @@ import {
   SCREEN_SIZE,
   useDetectScreenType,
 } from "../../hooks/useDetectScreenType";
-import { CheckoutScreen } from "../components/pos/payment/Main";
+import { CheckoutScreen } from "../components/pos/checkout/Main";
 import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
 import { useCurrency } from "../../hooks/useCurrency";
