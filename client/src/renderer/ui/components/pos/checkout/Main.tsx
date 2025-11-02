@@ -12,13 +12,13 @@ import {
 } from "../../../../../lib/error";
 import { Money } from "../../../../../lib/money";
 import { CartItemDTO } from "../../../../../shared/dto/product";
+import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 
 interface CheckoutScreenProps {
   cart: CartItemDTO[];
   cartTotal: Money;
   selectedCurrency: "USD" | "ZIG";
   exchangeRate: number;
-  isMobile?: boolean;
   onChangeSelectedCurrency: (currency: "USD" | "ZIG") => void;
   onClose: () => void;
   onCancelPayment: () => void;
@@ -30,12 +30,12 @@ export function CheckoutScreen({
   cartTotal,
   selectedCurrency,
   exchangeRate,
-  isMobile = false,
   onChangeSelectedCurrency,
   onClose,
   onConfirmPayment,
   onCancelPayment,
 }: CheckoutScreenProps) {
+  const isMobile = useDetectScreenType();
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");
   const [totalAmount, setTotalAmount] = useState(cartTotal);

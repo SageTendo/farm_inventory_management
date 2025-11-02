@@ -2,6 +2,9 @@ import { faTrash, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CartItemDTO } from "../../../../../shared/dto/product";
 import { CartItem } from "./CartItem";
+import { useSetAtom } from "jotai";
+import { cartOpenAtom } from "../../../../atoms/shop.atom";
+import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 
 interface CartProps {
   cart: CartItemDTO[];
@@ -11,7 +14,6 @@ interface CartProps {
   changeQuantity: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
-  onClose?: () => void; // Optional, used only in mobile modal
   onCheckout: () => void;
 }
 
@@ -23,17 +25,19 @@ export function Cart({
   removeItem,
   cartItemsCount,
   clearCart,
-  onClose,
   onCheckout,
 }: CartProps) {
+  const isMobile = useDetectScreenType();
+  const setIsCartOpen = useSetAtom(cartOpenAtom);
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex justify-between items-center mb-3 mt-3 px-2">
         <h2 className="font-bold text-white text-3xl">Cart</h2>
-        {onClose && (
+        {isMobile && (
           <button
-            onClick={onClose}
+            onClick={() => setIsCartOpen(false)}
             className="text-white font-bold px-3 py-1 border border-white rounded hover:bg-white hover:text-gray-900 transition"
           >
             Close

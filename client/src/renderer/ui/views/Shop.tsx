@@ -1,12 +1,8 @@
 import { faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
 import { ProductsListing } from "../components/pos/product/Main";
 import { CartPanel } from "../components/pos/cart/Main";
-import {
-  SCREEN_SIZE,
-  useDetectScreenType,
-} from "../../hooks/useDetectScreenType";
+import { useDetectScreenType } from "../../hooks/useDetectScreenType";
 import { CheckoutScreen } from "../components/pos/checkout/Main";
 import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
@@ -14,6 +10,8 @@ import { useCurrency } from "../../hooks/useCurrency";
 import { useProducts } from "../../hooks/useProducts";
 import { SearchBar } from "../components/shared/SearchBar";
 import { Pagination } from "../components/shared/Pagination";
+import { useAtom, useSetAtom } from "jotai";
+import { cartOpenAtom, checkoutScreenOpenAtom } from "../../atoms/shop.atom";
 
 /**
  * TODO:
@@ -44,24 +42,13 @@ export function Shop() {
     removeCartItem,
     clearCart,
   } = useCart(products);
+  const isMobile = useDetectScreenType();
+
   const { exchangeRate, selectedCurrency, setCurrency } = useCurrency();
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useState(false);
-  const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
-
-  // TODO: Fetch from DB
-  // const [products, setProducts] = useState<ProductDTO[]>()
-  useEffect(() => {
-    console.log("Fetching from database");
-  }, []);
-
-  // Close cart on mobile if cart is empty or screen size is larger
-  useEffect(() => {
-    if (!isMobile || cartItemsCount === 0) {
-      setIsCartOpen(false);
-    }
-  }, [isMobile, cartItemsCount]);
+  const setIsCartOpen = useSetAtom(cartOpenAtom);
+  const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useAtom(
+    checkoutScreenOpenAtom
+  );
 
   function handlePayment(paidAmount: Money, changeAmount: Money): void {
     // TODO: implement payment
@@ -91,25 +78,16 @@ export function Shop() {
         <FontAwesomeIcon icon={faStore} className="text-blue-900" />
         Shop
       </h1>
-
-      {/* Search Bar */}
       <SearchBar onSearch={handleSearch} />
 
       {/* Main layout: product list + cart */}
       <div className="flex flex-1 gap-4 overflow-hidden">
-        {/* Product List */}
-        {!isCartOpen && (
-          <ProductsListing products={products} onAddToCart={addCartItem} />
-        )}
-
-        {/* Cart */}
+        <ProductsListing products={products} onAddToCart={addCartItem} />
         <CartPanel
           cart={cart}
           cartItemsCount={cartItemsCount}
           cartTotalUSD={cartTotal.read}
           cartTotalZIG={cartTotal.multiply(exchangeRate).read}
-          isCheckoutScreenOpen={isChekoutScreenOpen}
-          isMobile={isMobile}
           onChangeQuantity={updateCartItem}
           onRemoveItem={removeCartItem}
           clearCart={clearCart}
@@ -149,7 +127,6 @@ export function Shop() {
               }}
               onConfirmPayment={handlePayment}
               onCancelPayment={handleCancelPayment}
-              isMobile={true}
             />
           </div>
         )}

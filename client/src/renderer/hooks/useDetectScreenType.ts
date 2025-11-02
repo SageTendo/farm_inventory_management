@@ -8,7 +8,9 @@ export const SCREEN_SIZE = {
   XXLARGE: 1536,
 };
 
-export function useDetectScreenType(screenSize: number): boolean {
+export function useDetectScreenType(
+  screenSize: number = SCREEN_SIZE.LARGE
+): boolean {
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < screenSize;
