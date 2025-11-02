@@ -2,9 +2,9 @@ import { faker } from "@faker-js/faker";
 import { Money } from "../lib/money";
 import { NewProductDTO, ProductDTO } from "../shared/dto/product";
 
-export const products: ProductDTO[] = [];
+export const mockProducts: ProductDTO[] = [];
 for (let i = 0; i < 1000; i++) {
-  products.push({
+  mockProducts.push({
     id: faker.string.uuid(),
     name: faker.commerce.productName(),
     buyPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 }))

@@ -1,20 +1,14 @@
-import {
-  faCartShopping,
-  faSearch,
-  faStore,
-} from "@fortawesome/free-solid-svg-icons";
+import { faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { ProductsListing } from "../components/pos/product/Main";
-import { Cart } from "../components/pos/cart/Main";
+import { CartPanel } from "../components/pos/cart/Main";
 import {
   SCREEN_SIZE,
   useDetectScreenType,
 } from "../../hooks/useDetectScreenType";
-import { useNavHeight } from "../../hooks/useNavHeight";
 import { CheckoutScreen } from "../components/pos/payment/Main";
 import { Money } from "../../../lib/money";
-import { products } from "../../../mock/mock";
 import { useCart } from "../../hooks/useCart";
 import { useCurrency } from "../../hooks/useCurrency";
 import { useProducts } from "../../hooks/useProducts";
@@ -33,7 +27,7 @@ import { Pagination } from "../components/shared/Pagination";
  **/
 export function Shop() {
   const {
-    productList,
+    products,
     queryLimit,
     currentPage,
     totalPages,
@@ -55,7 +49,6 @@ export function Shop() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useState(false);
   const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
-  const navHeight = useNavHeight();
 
   // TODO: Fetch from DB
   // const [products, setProducts] = useState<ProductDTO[]>()
@@ -106,30 +99,22 @@ export function Shop() {
       <div className="flex flex-1 gap-4 overflow-hidden">
         {/* Product List */}
         {!isCartOpen && (
-          <div className="flex flex-col flex-1 overflow-y-auto pr-1">
-            <h2 className="font-bold mb-3 text-2xl text-gray-800">Products</h2>
-            <ProductsListing
-              products={productList.products}
-              addToCart={addCartItem}
-            />
-          </div>
+          <ProductsListing products={products} onAddToCart={addCartItem} />
         )}
 
-        {/* Desktop Cart */}
-        {!isMobile && cart.length > 0 && (
-          <div className="w-full max-w-sm xl:max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
-            <Cart
-              cart={cart}
-              cartItemsCount={cartItemsCount}
-              cartTotalUSD={cartTotal.read}
-              cartTotalZIG={cartTotal.multiply(exchangeRate).read}
-              changeQuantity={updateCartItem}
-              removeItem={removeCartItem}
-              clearCart={clearCart}
-              onCheckout={() => setIsChekoutScreenOpen(true)}
-            />
-          </div>
-        )}
+        {/* Cart */}
+        <CartPanel
+          cart={cart}
+          cartItemsCount={cartItemsCount}
+          cartTotalUSD={cartTotal.read}
+          cartTotalZIG={cartTotal.multiply(exchangeRate).read}
+          isCheckoutScreenOpen={isChekoutScreenOpen}
+          isMobile={isMobile}
+          onChangeQuantity={updateCartItem}
+          onRemoveItem={removeCartItem}
+          clearCart={clearCart}
+          onCheckout={() => setIsChekoutScreenOpen(true)}
+        />
 
         {/* Desktop Checkout Screen Modal */}
         {!isMobile && isChekoutScreenOpen && (
@@ -165,39 +150,6 @@ export function Shop() {
               onConfirmPayment={handlePayment}
               onCancelPayment={handleCancelPayment}
               isMobile={true}
-            />
-          </div>
-        )}
-
-        {/* Mobile Floating Cart Button */}
-        {isMobile && cart.length > 0 && !isCartOpen && !isChekoutScreenOpen && (
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="fixed bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg z-50"
-          >
-            <FontAwesomeIcon icon={faCartShopping} size="xl" />
-            <span className="absolute top-0 right-0 -mt-3 -mr-1 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-              {cart.length}
-            </span>
-          </button>
-        )}
-
-        {/* Mobile Cart Modal */}
-        {isMobile && isCartOpen && cart.length > 0 && (
-          <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
-            <Cart
-              cart={cart}
-              cartItemsCount={cartItemsCount}
-              cartTotalUSD={cartTotal.read}
-              cartTotalZIG={cartTotal.multiply(exchangeRate).read}
-              changeQuantity={updateCartItem}
-              removeItem={removeCartItem}
-              clearCart={clearCart}
-              onClose={() => setIsCartOpen(false)}
-              onCheckout={() => {
-                setIsCartOpen(false);
-                setIsChekoutScreenOpen(true);
-              }}
             />
           </div>
         )}

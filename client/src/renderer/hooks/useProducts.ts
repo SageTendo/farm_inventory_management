@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { ProductListDTO } from "../../shared/dto/product";
-import { products } from "../../mock/mock";
+import { ProductDTO } from "../../shared/dto/product";
+import { mockProducts } from "../../mock/mock";
 import { SCREEN_SIZE, useDetectScreenType } from "./useDetectScreenType";
 
 // TODO: Products Hook
 export function useProducts() {
   const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
-  const [productList, setProductList] = useState<ProductListDTO>({
-    products: products,
-    total: 0,
-  });
+  const [products, setProducts] = useState<ProductDTO[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [queryLimit, _setQueryLimit] = useState(isMobile ? 25 : 10);
   const [currentPage, _setCurrentPage] = useState(1);
@@ -17,21 +15,19 @@ export function useProducts() {
 
   // TODO: Fetch products from backend
   useEffect(() => {
-    let filtered = products;
+    let filtered = mockProducts;
     const queryOffset = (currentPage - 1) * queryLimit;
 
     if (searchQuery !== "") {
-      filtered = products.filter((product) =>
+      filtered = mockProducts.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     filtered = filtered.slice(queryOffset, queryOffset + queryLimit);
-    setTotalPages(Math.max(1, Math.ceil(products.length / queryLimit)));
-    setProductList({
-      products: filtered,
-      total: products.length,
-    });
+    setTotalPages(Math.max(1, Math.ceil(mockProducts.length / queryLimit)));
+    setProducts(filtered);
+    setTotalProducts(mockProducts.length);
   }, [searchQuery, queryLimit, currentPage]);
 
   function handleSearch(query: string) {
@@ -41,7 +37,7 @@ export function useProducts() {
   function setQueryLimit(limit: number, limitOptions: number[]) {
     let validLimit = 10;
     if (limitOptions.includes(limit)) {
-      validLimit = Math.min(limit, productList.total);
+      validLimit = Math.min(limit, totalProducts);
     }
     _setQueryLimit(validLimit);
   }
@@ -53,7 +49,8 @@ export function useProducts() {
   }
 
   return {
-    productList,
+    products,
+    totalProducts,
     searchQuery,
     queryLimit,
     currentPage,
