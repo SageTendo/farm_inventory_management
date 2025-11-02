@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../shared/dto/product";
 import { mockProducts } from "../../mock/mock";
-import { SCREEN_SIZE, useDetectScreenType } from "./useDetectScreenType";
+import { useDetectScreenType } from "./useDetectScreenType";
 
 // TODO: Products Hook
 export function useProducts() {
-  const isMobile = useDetectScreenType(SCREEN_SIZE.LARGE);
+  const isMobile = useDetectScreenType();
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,6 +29,10 @@ export function useProducts() {
     setProducts(filtered);
     setTotalProducts(mockProducts.length);
   }, [searchQuery, queryLimit, currentPage]);
+
+  useEffect(() => {
+    _setQueryLimit(isMobile ? 25 : 10);
+  }, [isMobile]);
 
   function handleSearch(query: string) {
     setSearchQuery(query);
