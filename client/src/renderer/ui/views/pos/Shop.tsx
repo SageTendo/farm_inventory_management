@@ -18,7 +18,8 @@ import { products } from "../../../../mock/mock";
 import { useCart } from "../../../hooks/useCart";
 import { useCurrency } from "../../../hooks/useCurrency";
 import { useProducts } from "../../../hooks/useProducts";
-import Pagination from "../../components/shared/Pagination";
+import { SearchBar } from "../../components/shared/SearchBar";
+import { Pagination } from "../../components/shared/Pagination";
 
 /**
  * TODO:
@@ -33,11 +34,10 @@ import Pagination from "../../components/shared/Pagination";
 export function Shop() {
   const {
     productList,
-    searchQuery,
     queryLimit,
     currentPage,
     totalPages,
-    handleSearch, //TODO: Setup searching
+    handleSearch,
     setQueryLimit,
     setCurrentPage,
   } = useProducts();
@@ -100,18 +100,7 @@ export function Shop() {
       </h1>
 
       {/* Search Bar */}
-      <div className="flex w-full mb-4 shadow-sm rounded-lg overflow-hidden">
-        <input
-          type="text"
-          placeholder="Search for products..."
-          className="flex-grow px-1 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
-          <FontAwesomeIcon icon={faSearch} />
-        </button>
-      </div>
+      <SearchBar onSearch={handleSearch} />
 
       {/* Main layout: product list + cart */}
       <div className="flex flex-1 gap-4 overflow-hidden">
