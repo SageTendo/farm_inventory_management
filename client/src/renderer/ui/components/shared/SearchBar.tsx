@@ -23,7 +23,9 @@ export function SearchBar({ onSearch }: SearchBarProps) {
       />
       <button
         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg"
-        onClick={() => onSearch(query)}
+        onClick={() => {
+          if (!query.startsWith(" ")) onSearch(query);
+        }}
       >
         <FontAwesomeIcon icon={faSearch} />
       </button>
