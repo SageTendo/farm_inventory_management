@@ -6,12 +6,11 @@ import { useDetectScreenType } from "../../hooks/useDetectScreenType";
 import { CheckoutScreen } from "../components/pos/checkout/Main";
 import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
-import { useCurrency } from "../../hooks/useCurrency";
 import { useProducts } from "../../hooks/useProducts";
 import { SearchBar } from "../components/shared/SearchBar";
 import { Pagination } from "../components/shared/Pagination";
 import { useAtom, useSetAtom } from "jotai";
-import { cartOpenAtom, checkoutScreenOpenAtom } from "../../atoms/shop.atom";
+import { cartOpenAtom, checkoutOpenAtom } from "../../atoms/shop.atom";
 
 /**
  * TODO:
@@ -33,22 +32,13 @@ export function Shop() {
     setQueryLimit,
     setCurrentPage,
   } = useProducts();
-  const {
-    cart,
-    cartTotal,
-    cartItemsCount,
-    addCartItem,
-    updateCartItem,
-    removeCartItem,
-    clearCart,
-  } = useCart(products);
+  const { addCartItem, updateCartItem, removeCartItem, clearCart } =
+    useCart(products);
   const isMobile = useDetectScreenType();
 
-  const { exchangeRate, selectedCurrency, setCurrency } = useCurrency();
   const setIsCartOpen = useSetAtom(cartOpenAtom);
-  const [isChekoutScreenOpen, setIsChekoutScreenOpen] = useAtom(
-    checkoutScreenOpenAtom
-  );
+  const [isChekoutScreenOpen, setIsChekoutScreenOpen] =
+    useAtom(checkoutOpenAtom);
 
   function handlePayment(paidAmount: Money, changeAmount: Money): void {
     // TODO: implement payment
@@ -60,7 +50,7 @@ export function Shop() {
     // - Generate receipt and export to PDF ??
     // - Update products list ??
     // - If payment is not complete, show error message
-    console.log("Total amount:", cartTotal.toDollars);
+    // console.log("Total amount:", cartTotal.toDollars);
     console.log("Payment received:", paidAmount.toDollars);
     console.log("Change amount:", changeAmount.toDollars);
     throw new Error("Function not implemented.");
@@ -84,10 +74,6 @@ export function Shop() {
       <div className="flex flex-1 gap-4 overflow-hidden">
         <ProductsListing products={products} onAddToCart={addCartItem} />
         <CartPanel
-          cart={cart}
-          cartItemsCount={cartItemsCount}
-          cartTotalUSD={cartTotal.read}
-          cartTotalZIG={cartTotal.multiply(exchangeRate).read}
           onChangeQuantity={updateCartItem}
           onRemoveItem={removeCartItem}
           clearCart={clearCart}
@@ -99,11 +85,6 @@ export function Shop() {
           <div className="fixed inset-0 md:z-50 flex-col p-20">
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
               <CheckoutScreen
-                cart={cart}
-                cartTotal={cartTotal}
-                selectedCurrency={selectedCurrency}
-                exchangeRate={exchangeRate}
-                onChangeSelectedCurrency={setCurrency}
                 onClose={() => setIsChekoutScreenOpen(false)}
                 onConfirmPayment={handlePayment}
                 onCancelPayment={handleCancelPayment}
@@ -116,11 +97,6 @@ export function Shop() {
         {isMobile && isChekoutScreenOpen && (
           <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
             <CheckoutScreen
-              cart={cart}
-              cartTotal={cartTotal}
-              selectedCurrency={selectedCurrency}
-              exchangeRate={exchangeRate}
-              onChangeSelectedCurrency={setCurrency}
               onClose={() => {
                 setIsChekoutScreenOpen(false);
                 setIsCartOpen(true);

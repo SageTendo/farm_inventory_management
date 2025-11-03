@@ -1,12 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { CartItemDTO, ProductDTO } from "../../shared/dto/product";
 import { Money } from "../../lib/money";
 import toast from "react-hot-toast";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  cartAtom,
+  cartItemsCountAtom,
+  cartTotalAtom,
+} from "../atoms/shop.atom";
 
 export function useCart(products: ProductDTO[]) {
-  const [cart, setCart] = useState<CartItemDTO[]>([]);
-  const [cartTotal, setCartTotal] = useState(Money.fromNumber(0));
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [cart, setCart] = useAtom(cartAtom);
+  const setCartTotal = useSetAtom(cartTotalAtom);
+  const setCartItemsCount = useSetAtom(cartItemsCountAtom);
 
   // Compute cart total and item count
   useEffect(() => {
@@ -79,9 +85,6 @@ export function useCart(products: ProductDTO[]) {
   }
 
   return {
-    cart,
-    cartTotal,
-    cartItemsCount,
     addCartItem,
     updateCartItem,
     removeCartItem,

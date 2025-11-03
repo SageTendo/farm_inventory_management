@@ -1,20 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { CartItemDTO } from "../../../../../shared/dto/product";
 import { Cart } from "./Cart";
 import { useAtom, useAtomValue } from "jotai";
 import {
+  cartAtom,
+  cartItemsCountAtom,
   cartOpenAtom,
-  checkoutScreenOpenAtom,
+  checkoutOpenAtom,
 } from "../../../../atoms/shop.atom";
 import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 import { useEffect } from "react";
 
 interface CartProps {
-  cart: CartItemDTO[];
-  cartItemsCount: number;
-  cartTotalUSD: string;
-  cartTotalZIG: string;
   onChangeQuantity: (id: string, delta: number) => void;
   onRemoveItem: (id: string) => void;
   clearCart: () => void;
@@ -22,18 +19,16 @@ interface CartProps {
 }
 
 export const CartPanel = ({
-  cart,
-  cartTotalUSD,
-  cartTotalZIG,
   onChangeQuantity,
   onRemoveItem,
-  cartItemsCount,
   clearCart,
   onCheckout,
 }: CartProps) => {
   const isMobile = useDetectScreenType();
   const [isCartOpen, setIsCartOpen] = useAtom(cartOpenAtom);
-  const isCheckoutScreenOpen = useAtomValue(checkoutScreenOpenAtom);
+  const isCheckoutScreenOpen = useAtomValue(checkoutOpenAtom);
+  const cart = useAtomValue(cartAtom);
+  const cartItemsCount = useAtomValue(cartItemsCountAtom);
 
   useEffect(() => {
     if (cartItemsCount === 0) {
@@ -46,10 +41,6 @@ export const CartPanel = ({
       {!isMobile && cart.length > 0 ? (
         <div className="w-full max-w-sm xl:max-w-lg bg-gray-900 text-white p-2.5 rounded-lg shadow-md flex flex-col h-full">
           <Cart
-            cart={cart}
-            cartItemsCount={cartItemsCount}
-            cartTotalUSD={cartTotalUSD}
-            cartTotalZIG={cartTotalZIG}
             changeQuantity={onChangeQuantity}
             removeItem={onRemoveItem}
             clearCart={clearCart}
@@ -76,10 +67,6 @@ export const CartPanel = ({
           {isMobile && isCartOpen && cart.length > 0 && (
             <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
               <Cart
-                cart={cart}
-                cartItemsCount={cartItemsCount}
-                cartTotalUSD={cartTotalUSD}
-                cartTotalZIG={cartTotalZIG}
                 changeQuantity={onChangeQuantity}
                 removeItem={onRemoveItem}
                 clearCart={clearCart}

@@ -11,31 +11,27 @@ import {
   MoneyParseError,
 } from "../../../../../lib/error";
 import { Money } from "../../../../../lib/money";
-import { CartItemDTO } from "../../../../../shared/dto/product";
 import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
+import { useAtomValue } from "jotai";
+import { cartAtom, cartTotalAtom } from "../../../../atoms/shop.atom";
+import { useCurrency } from "../../../../hooks/useCurrency";
 
 interface CheckoutScreenProps {
-  cart: CartItemDTO[];
-  cartTotal: Money;
-  selectedCurrency: "USD" | "ZIG";
-  exchangeRate: number;
-  onChangeSelectedCurrency: (currency: "USD" | "ZIG") => void;
   onClose: () => void;
   onCancelPayment: () => void;
   onConfirmPayment: (paid: Money, change: Money) => void;
 }
 
 export function CheckoutScreen({
-  cart,
-  cartTotal,
-  selectedCurrency,
-  exchangeRate,
-  onChangeSelectedCurrency,
   onClose,
   onConfirmPayment,
   onCancelPayment,
 }: CheckoutScreenProps) {
   const isMobile = useDetectScreenType();
+  const cart = useAtomValue(cartAtom);
+  const cartTotal = useAtomValue(cartTotalAtom);
+  const { exchangeRate, selectedCurrency, setCurrency } = useCurrency();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");
   const [totalAmount, setTotalAmount] = useState(cartTotal);
@@ -75,7 +71,7 @@ export function CheckoutScreen({
 
   useEffect(() => {
     // Call this in return to make sure it is unregistered when component unmount
-    return registerCursorTracker({ input: inputRef.current!, delimiter: "*" });
+    return registerCursorTracker({ input: inputRef.current, delimiter: "*" });
   }, []);
 
   // Update total amount (visual) when selected currency changes and clear inputs
@@ -87,7 +83,7 @@ export function CheckoutScreen({
     }
 
     // Clear paid amount when selected currency changes
-    inputRef.current!.value = "";
+    inputRef.current.value = "";
     setPaidAmount(Money.fromNumber(0));
     setInputValue("");
   }, [selectedCurrency]);
@@ -220,7 +216,7 @@ export function CheckoutScreen({
                 <button
                   key={curr}
                   onClick={() =>
-                    onChangeSelectedCurrency(curr as "USD" | "ZIG")
+                    setCurrency(curr as "USD" | "ZIG")
                   }
                   className={`flex-1 py-2 rounded-xl text-sm font-medium border transition ${
                     selectedCurrency === curr

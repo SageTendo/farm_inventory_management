@@ -1,16 +1,17 @@
 import { faTrash, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CartItemDTO } from "../../../../../shared/dto/product";
 import { CartItem } from "./CartItem";
-import { useSetAtom } from "jotai";
-import { cartOpenAtom } from "../../../../atoms/shop.atom";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  cartAtom,
+  cartItemsCountAtom,
+  cartOpenAtom,
+  cartTotalAtom,
+} from "../../../../atoms/shop.atom";
 import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
+import { useCurrency } from "../../../../hooks/useCurrency";
 
 interface CartProps {
-  cart: CartItemDTO[];
-  cartItemsCount: number;
-  cartTotalUSD: string;
-  cartTotalZIG: string;
   changeQuantity: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
@@ -18,17 +19,19 @@ interface CartProps {
 }
 
 export function Cart({
-  cart,
-  cartTotalUSD,
-  cartTotalZIG,
   changeQuantity,
   removeItem,
-  cartItemsCount,
   clearCart,
   onCheckout,
 }: CartProps) {
   const isMobile = useDetectScreenType();
   const setIsCartOpen = useSetAtom(cartOpenAtom);
+
+  const { exchangeRate } = useCurrency();
+  const cart = useAtomValue(cartAtom);
+  const cartItemsCount = useAtomValue(cartItemsCountAtom);
+  const cartTotalUSD = useAtomValue(cartTotalAtom);
+  const cartTotalZIG = cartTotalUSD.multiply(exchangeRate);
 
   return (
     <div className="flex flex-col h-full">
@@ -65,8 +68,8 @@ export function Cart({
         <div className="flex justify-between mb-3">
           <span>Items: {cartItemsCount}</span>
           <div className="text-right">
-            <div>USD: {cartTotalUSD}</div>
-            <div>ZIG: {cartTotalZIG}</div>
+            <div>USD: {cartTotalUSD.read}</div>
+            <div>ZIG: {cartTotalZIG.read}</div>
           </div>
         </div>
 
