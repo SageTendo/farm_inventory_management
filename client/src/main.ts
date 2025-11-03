@@ -4,6 +4,7 @@ import started from "electron-squirrel-startup";
 import { ServiceRegistry } from "./main/service";
 import { env } from "./config";
 import { attachWindow, detachWindow } from "./main/setupRPC";
+import { generateProducts } from "./mock/mock";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -11,8 +12,8 @@ if (started) {
 }
 
 const populateInitialData = () => {
-  const roleService = ServiceRegistry.getInstance().getService("roleService");
-  const userService = ServiceRegistry.getInstance().getService("userService");
+  const roleService = ServiceRegistry.getInstance().resolve("roleService");
+  const userService = ServiceRegistry.getInstance().resolve("userService");
 
   roleService.populateDefaultRoles();
   userService.populateDefaultAdmin(
@@ -20,6 +21,25 @@ const populateInitialData = () => {
     env.DB_ADMIN_USERNAME,
     env.DB_ADMIN_PASSWORD
   );
+
+  // TODO: Remove mocking in prod
+  populateWithMockData();
+};
+
+const populateWithMockData = async () => {
+  const userService = ServiceRegistry.getInstance().resolve("userService");
+  const productService =
+    ServiceRegistry.getInstance().resolve("productService");
+
+  const admin = await userService.getByUsername("admin");
+
+  // Mock Product data
+  if ((await productService.getAll()).total === 0) {
+    const mockProducts = generateProducts(admin.id);
+    mockProducts.forEach((product) => {
+      productService.create(product);
+    });
+  }
 };
 
 const createWindow = () => {

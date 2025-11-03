@@ -7,10 +7,10 @@ import { Users } from "../ui/views/user/Users";
 import { NewUser } from "../ui/views/user/NewUser";
 import { ManageUser } from "../ui/views/user/ManageUser";
 import { SettingsPage } from "../ui/views/user/SettingsPage";
-import LoginComponent from "../ui/views/auth/Login";
+import LoginComponent from "../ui/views/Login";
 import { Layout } from "../ui/components/shared/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import { Shop } from "../ui/views/pos/Shop";
+import { Shop } from "../ui/views/Shop";
 
 // Using const assertion to make these strings readonly types
 export const paths = {

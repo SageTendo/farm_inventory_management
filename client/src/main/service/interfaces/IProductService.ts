@@ -1,6 +1,7 @@
 import {
   NewProductDTO,
   ProductDTO,
+  ProductListDTO,
   UpdateProductDTO,
 } from "../../../shared/dto/product";
 
@@ -27,7 +28,7 @@ export interface IProductService {
    * Retrieves all products from the database.
    * @returns A promise that resolves to an array of product entities.
    */
-  getAll(name?: string, limit?: number, offset?: number): Promise<ProductDTO[]>;
+  getAll(name?: string, limit?: number, offset?: number): Promise<ProductListDTO>;
 
   /**
    * Updates an existing product in the database.

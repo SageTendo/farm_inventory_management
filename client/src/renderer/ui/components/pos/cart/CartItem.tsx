@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Item } from "../../../views/pos/Shop";
+import { CartItemDTO } from "../../../../../shared/dto/product";
 
 interface CartItemProps {
-  item: Item;
-  changeQuantity: (id: number, quantity: number) => void;
-  removeItem: (id: number) => void;
+  item: CartItemDTO;
+  changeQuantity: (id: string, quantity: number) => void;
+  removeItem: (id: string) => void;
 }
 
 export const CartItem = ({
