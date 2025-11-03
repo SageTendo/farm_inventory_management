@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../shared/dto/product";
 import { mockProducts } from "../../mock/mock";
-import { useDetectScreenType } from "./useDetectScreenType";
+import { useAtomValue } from "jotai";
+import { isMobileAtom } from "../atoms";
 
 // TODO: Products Hook
 export function useProducts() {
-  const isMobile = useDetectScreenType();
+  const isMobile = useAtomValue(isMobileAtom);
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");

@@ -11,7 +11,6 @@ import {
   MoneyParseError,
 } from "../../../../../lib/error";
 import { Money } from "../../../../../lib/money";
-import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 import { useAtomValue } from "jotai";
 import {
   cartAtom,
@@ -19,7 +18,7 @@ import {
   selectedCurrencyAtom,
 } from "../../../../atoms/shop.atom";
 import { CurrencyToggle } from "./CurrencyToggle";
-import { exchangeRateAtom } from "../../../../atoms";
+import { exchangeRateAtom, isMobileAtom } from "../../../../atoms";
 
 interface CheckoutScreenProps {
   onClose: () => void;
@@ -32,7 +31,7 @@ export function CheckoutScreen({
   onConfirmPayment,
   onCancelPayment,
 }: CheckoutScreenProps) {
-  const isMobile = useDetectScreenType();
+  const isMobile = useAtomValue(isMobileAtom);
   const cart = useAtomValue(cartAtom);
   const cartTotal = useAtomValue(cartTotalAtom);
   const selectedCurrency = useAtomValue(selectedCurrencyAtom);

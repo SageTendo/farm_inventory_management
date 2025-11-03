@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
+import { isMobileAtom } from "../atoms";
 
 export const SCREEN_SIZE = {
   SMALL: 640,
@@ -11,12 +13,7 @@ export const SCREEN_SIZE = {
 export function useDetectScreenType(
   screenSize: number = SCREEN_SIZE.LARGE
 ): boolean {
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.innerWidth < screenSize;
-    }
-    return false;
-  });
+  const [isMobile, setIsMobile] = useAtom(isMobileAtom);
 
   useEffect(() => {
     const handleResize = () => {

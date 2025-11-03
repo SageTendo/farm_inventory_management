@@ -2,15 +2,15 @@ import { faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProductsListing } from "../components/pos/product/Main";
 import { CartPanel } from "../components/pos/cart/Main";
-import { useDetectScreenType } from "../../hooks/useDetectScreenType";
 import { CheckoutScreen } from "../components/pos/checkout/Main";
 import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
 import { useProducts } from "../../hooks/useProducts";
 import { SearchBar } from "../components/shared/SearchBar";
 import { Pagination } from "../components/shared/Pagination";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { cartOpenAtom, checkoutOpenAtom } from "../../atoms/shop.atom";
+import { isMobileAtom } from "../../atoms";
 
 /**
  * TODO:
@@ -34,8 +34,7 @@ export function Shop() {
   } = useProducts();
   const { addCartItem, updateCartItem, removeCartItem, clearCart } =
     useCart(products);
-  const isMobile = useDetectScreenType();
-
+  const isMobile = useAtomValue(isMobileAtom);
   const setIsCartOpen = useSetAtom(cartOpenAtom);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] =
     useAtom(checkoutOpenAtom);

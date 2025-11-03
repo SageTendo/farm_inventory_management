@@ -8,8 +8,8 @@ import {
   cartOpenAtom,
   checkoutOpenAtom,
 } from "../../../../atoms/shop.atom";
-import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 import { useEffect } from "react";
+import { isMobileAtom } from "../../../../atoms";
 
 interface CartProps {
   onChangeQuantity: (id: string, delta: number) => void;
@@ -24,7 +24,7 @@ export const CartPanel = ({
   clearCart,
   onCheckout,
 }: CartProps) => {
-  const isMobile = useDetectScreenType();
+  const isMobile = useAtomValue(isMobileAtom);
   const [isCartOpen, setIsCartOpen] = useAtom(cartOpenAtom);
   const isCheckoutScreenOpen = useAtomValue(checkoutOpenAtom);
   const cart = useAtomValue(cartAtom);
