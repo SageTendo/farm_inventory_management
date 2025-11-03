@@ -13,8 +13,13 @@ import {
 import { Money } from "../../../../../lib/money";
 import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
 import { useAtomValue } from "jotai";
-import { cartAtom, cartTotalAtom } from "../../../../atoms/shop.atom";
-import { useCurrency } from "../../../../hooks/useCurrency";
+import {
+  cartAtom,
+  cartTotalAtom,
+  selectedCurrencyAtom,
+} from "../../../../atoms/shop.atom";
+import { CurrencyToggle } from "./CurrencyToggle";
+import { exchangeRateAtom } from "../../../../atoms";
 
 interface CheckoutScreenProps {
   onClose: () => void;
@@ -30,7 +35,8 @@ export function CheckoutScreen({
   const isMobile = useDetectScreenType();
   const cart = useAtomValue(cartAtom);
   const cartTotal = useAtomValue(cartTotalAtom);
-  const { exchangeRate, selectedCurrency, setCurrency } = useCurrency();
+  const selectedCurrency = useAtomValue(selectedCurrencyAtom);
+  const exchangeRate = useAtomValue(exchangeRateAtom);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");
@@ -211,23 +217,7 @@ export function CheckoutScreen({
             <h2 className="text-xl font-semibold">Payment</h2>
 
             {/* Currency toggle */}
-            <div className="flex gap-3">
-              {["USD", "ZIG"].map((curr) => (
-                <button
-                  key={curr}
-                  onClick={() =>
-                    setCurrency(curr as "USD" | "ZIG")
-                  }
-                  className={`flex-1 py-2 rounded-xl text-sm font-medium border transition ${
-                    selectedCurrency === curr
-                      ? "bg-blue-600 text-white hover:bg-blue-700 border-blue-400"
-                      : "border-white text-white hover:bg-white hover:text-black"
-                  }`}
-                >
-                  {curr}
-                </button>
-              ))}
-            </div>
+            <CurrencyToggle />
 
             <input
               ref={inputRef}

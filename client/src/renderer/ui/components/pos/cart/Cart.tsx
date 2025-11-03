@@ -9,7 +9,7 @@ import {
   cartTotalAtom,
 } from "../../../../atoms/shop.atom";
 import { useDetectScreenType } from "../../../../hooks/useDetectScreenType";
-import { useCurrency } from "../../../../hooks/useCurrency";
+import { exchangeRateAtom } from "../../../../atoms";
 
 interface CartProps {
   changeQuantity: (id: string, delta: number) => void;
@@ -27,7 +27,7 @@ export function Cart({
   const isMobile = useDetectScreenType();
   const setIsCartOpen = useSetAtom(cartOpenAtom);
 
-  const { exchangeRate } = useCurrency();
+  const exchangeRate = useAtomValue(exchangeRateAtom);
   const cart = useAtomValue(cartAtom);
   const cartItemsCount = useAtomValue(cartItemsCountAtom);
   const cartTotalUSD = useAtomValue(cartTotalAtom);
