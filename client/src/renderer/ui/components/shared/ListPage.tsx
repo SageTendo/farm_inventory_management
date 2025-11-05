@@ -3,35 +3,42 @@ import { Table } from "./Table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { Pagination } from "./Pagination";
+import { SearchBar } from "./SearchBar";
 
 interface ListPageProps {
   title: string;
   icon: IconProp;
   addRoute: string;
   searchPlaceholder?: string;
-  query?: string;
-  onQueryChange: (query: string) => void;
-  onSearch?: () => void;
+  onSearch?: (query: string) => void;
   entity: string;
-  data: Record<string, any>[];
+  data: any[];
   labels: string[];
   keys: string[];
   actionable?: boolean;
+  paginationProps?: {
+    page: number;
+    totalPages: number;
+    onStartPage: () => void;
+    onEndPage: () => void;
+    onNextPage: () => void;
+    onPreviousPage: () => void;
+    onSetPage: (page: number) => void;
+  };
 }
 
 export function ListPage({
   title,
   icon,
   addRoute,
-  searchPlaceholder,
-  query,
-  onQueryChange,
   onSearch,
   entity,
   data,
   labels,
   keys,
   actionable,
+  paginationProps,
 }: ListPageProps) {
   return (
     <div className="flex flex-col h-full overflow-hidden pt-4 px-4 pb-2 md:pb-0">
@@ -40,18 +47,7 @@ export function ListPage({
         <span className="mx-2">{title} Management</span>
       </h1>
 
-      <div className="flex rounded-md shadow-sm mb-4">
-        <input
-          type="text"
-          placeholder={searchPlaceholder}
-          className="w-full px-3 py-2 border rounded"
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-        />
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-r-lg" onClick={onSearch}>
-          Search
-        </button>
-      </div>
+      <SearchBar onSearch={onSearch} />
 
       <div className="flex justify-end mb-3">
         <Link to={addRoute} className="no-underline">
@@ -62,7 +58,7 @@ export function ListPage({
         </Link>
       </div>
 
-      <div className="overflow-auto">
+      <div className="h-fit overflow-auto">
         <Table
           entity={entity}
           labels={labels}
@@ -71,6 +67,17 @@ export function ListPage({
           actionable={actionable}
         />
       </div>
+
+      <Pagination
+        page={paginationProps.page}
+        totalPages={paginationProps.totalPages}
+        onSetLimit={() => console.log("set limit")}
+        onStartPage={paginationProps.onStartPage}
+        onEndPage={paginationProps.onEndPage}
+        onNextPage={paginationProps.onNextPage}
+        onPreviousPage={paginationProps.onPreviousPage}
+        onSetPage={paginationProps.onSetPage}
+      />
     </div>
   );
 }

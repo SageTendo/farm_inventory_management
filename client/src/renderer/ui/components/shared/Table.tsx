@@ -7,10 +7,8 @@ import {
   faSortUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import {
-  SCREEN_SIZE,
-  useDetectScreenType,
-} from "../../../hooks/useDetectScreenType";
+import { isMobileAtom } from "../../../atoms";
+import { useAtomValue } from "jotai";
 
 interface Props {
   entity: string;
@@ -35,7 +33,7 @@ export function Table({
 }: Props) {
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NONE);
-  const isMobile = useDetectScreenType(SCREEN_SIZE.MEDIUM);
+  const isMobile = useAtomValue(isMobileAtom);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   function handleSort(key: string) {
@@ -70,71 +68,69 @@ export function Table({
 
   const desktopTableView = () => {
     return (
-      <div className="h-full w-full rounded-xl border border-gray-700 bg-gray-900">
-        <table className="min-w-full md:text-sm lg:text:md text-left text-white">
-          <thead className="bg-gray-800 sticky top-0 z-60">
-            <tr>
-              {labels.map((label, i) => {
-                const key = keys[i];
-                const isSorted = sortKey === key;
+      <table className="h-full min-w-full md:text-sm lg:text:md text-left text-white rounded-xl bg-gray-900 border-gray-700">
+        <thead className="bg-blue-950 sticky top-0 z-60">
+          <tr>
+            {labels.map((label, i) => {
+              const key = keys[i];
+              const isSorted = sortKey === key;
 
-                return (
-                  <th
-                    key={key}
-                    className={`px-4 py-3 cursor-pointer select-none ${isSorted ? "text-yellow-500" : ""} 
-                  hover:bg-gray-700 hover:text-yellow-500 transition sticky top-0 bg-gray-800 z-20`}
-                    onClick={() => handleSort(key)}
-                  >
-                    <div className="flex items-center justify-between">
-                      {label}
-                      <span className="ml-2">
-                        {isSorted ? (
-                          sortOrder === SortOrder.ASC ? (
-                            <FontAwesomeIcon icon={faSortUp} />
-                          ) : sortOrder === SortOrder.DESC ? (
-                            <FontAwesomeIcon icon={faSortDown} />
-                          ) : (
-                            <FontAwesomeIcon icon={faSort} />
-                          )
+              return (
+                <th
+                  key={key}
+                  className={`px-4 py-3 cursor-pointer select-none ${isSorted ? "text-yellow-500" : ""} 
+                  hover:bg-gray-700 hover:text-yellow-500 transition sticky top-0 z-20`}
+                  onClick={() => handleSort(key)}
+                >
+                  <div className="flex items-center justify-between">
+                    {label}
+                    <span className="ml-2">
+                      {isSorted ? (
+                        sortOrder === SortOrder.ASC ? (
+                          <FontAwesomeIcon icon={faSortUp} />
+                        ) : sortOrder === SortOrder.DESC ? (
+                          <FontAwesomeIcon icon={faSortDown} />
                         ) : (
                           <FontAwesomeIcon icon={faSort} />
-                        )}
-                      </span>
-                    </div>
-                  </th>
-                );
-              })}
-              {actionable && (
-                <th className="px-4 py-3 text-right sticky top-0 bg-gray-800 z-20">
-                  Actions
+                        )
+                      ) : (
+                        <FontAwesomeIcon icon={faSort} />
+                      )}
+                    </span>
+                  </div>
                 </th>
+              );
+            })}
+            {actionable && (
+              <th className="px-4 py-3 text-right sticky top-0 z-20">
+                Actions
+              </th>
+            )}
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-gray-800">
+          {sortedData.map((item, idx) => (
+            <tr key={item.id || idx} className="hover:bg-gray-800">
+              {keys.map((key, keyIdx) => (
+                <td key={keyIdx} className="px-4 py-3">
+                  {item[key]}
+                </td>
+              ))}
+              {actionable && (
+                <td className="px-4 py-3 text-right">
+                  <Link to={`/${entity}/${item.id}/manage`}>
+                    <button className="bg-yellow-400 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400 transition text-sm inline-flex items-center gap-1">
+                      <FontAwesomeIcon icon={faEdit} />
+                      Manage
+                    </button>
+                  </Link>
+                </td>
               )}
             </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-800">
-            {sortedData.map((item, idx) => (
-              <tr key={item.id || idx} className="hover:bg-gray-800">
-                {keys.map((key, keyIdx) => (
-                  <td key={keyIdx} className="px-4 py-3">
-                    {item[key]}
-                  </td>
-                ))}
-                {actionable && (
-                  <td className="px-4 py-3 text-right">
-                    <Link to={`/${entity}/${item.id}/manage`}>
-                      <button className="bg-yellow-400 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400 transition text-sm inline-flex items-center gap-1">
-                        <FontAwesomeIcon icon={faEdit} />
-                        Manage
-                      </button>
-                    </Link>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     );
   };
 
