@@ -39,7 +39,7 @@ export function Pagination({
     "
     >
       {/* Items per page selector */}
-      {!limit || !onSetLimit ? (
+      {limit && onSetLimit ? (
         <div className="hidden md:flex flex-wrap items-center gap-2 justify-center sm:justify-start">
           <span className="text-black text-base">Items per page</span>
           <select
