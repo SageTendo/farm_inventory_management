@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../shared/dto/product";
-import { mockProducts } from "../../mock/mock";
+import { fetchProducts } from "../../mock/mock";
 import { useAtomValue } from "jotai";
 import { isMobileAtom } from "../atoms";
 
@@ -16,20 +16,24 @@ export function useProducts() {
 
   // TODO: Fetch products from backend
   useEffect(() => {
-    let filtered = mockProducts;
     const queryOffset = (currentPage - 1) * queryLimit;
-
-    if (_searchQuery !== "") {
-      filtered = mockProducts.filter((product) =>
-        product.name.toLowerCase().includes(_searchQuery.toLowerCase())
+    const handleFetchProducts = async () => {
+      const productsList = await fetchProducts(
+        _searchQuery,
+        queryLimit,
+        queryOffset
       );
-    }
+      setProducts(productsList.products);
+      setTotalProducts(productsList.total);
+      setTotalPages(Math.max(1, Math.ceil(productsList.total / queryLimit)));
+    };
 
-    filtered = filtered.slice(queryOffset, queryOffset + queryLimit);
-    setTotalPages(Math.max(1, Math.ceil(mockProducts.length / queryLimit)));
-    setProducts(filtered);
-    setTotalProducts(mockProducts.length);
+    handleFetchProducts();
   }, [_searchQuery, queryLimit, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [_searchQuery, queryLimit]);
 
   useEffect(() => {
     _setQueryLimit(isMobile ? 25 : 10);

@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { Money } from "../lib/money";
-import { NewProductDTO, ProductDTO } from "../shared/dto/product";
+import { NewProductDTO, ProductDTO, ProductListDTO } from "../shared/dto/product";
 
-export const mockProducts: ProductDTO[] = [];
+const mockProducts: ProductDTO[] = [];
 for (let i = 0; i < 1000; i++) {
   mockProducts.push({
     id: faker.string.uuid(),
@@ -18,6 +18,26 @@ for (let i = 0; i < 1000; i++) {
     lowStockThreshold: faker.number.int({ min: 5, max: 15 }),
   });
 }
+
+export const fetchProducts = async (
+  query: string,
+  limit: number,
+  offset: number
+) : Promise<ProductListDTO> => {
+  let result = mockProducts;
+  if (query.trim() !== "") {
+    result = result.filter((product) =>
+      product.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  result = result.filter((product) => product.quantity > 0);
+  return {
+    products: result
+    .slice(offset, offset + limit),
+    total: result.length,
+    }
+};
 
 export const generateProducts = (userId: string) => {
   const products: NewProductDTO[] = [];
