@@ -10,8 +10,8 @@ export const QUERY_LIMIT_OPTIONS = [10, 25, 50, 100];
 export interface PaginationProps {
   page: number;
   totalPages: number;
-  limit: number;
-  onSetLimit: (limit: number, limitOptions: number[]) => void;
+  limit?: number;
+  onSetLimit?: (limit: number, limitOptions: number[]) => void;
   onSetPage: (pageNumber: number) => void;
   onStartPage: () => void;
   onPreviousPage: () => void;
@@ -39,22 +39,26 @@ export function Pagination({
     "
     >
       {/* Items per page selector */}
-      <div className="hidden md:flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-        <span className="text-black text-base">Items per page</span>
-        <select
-          value={limit}
-          onChange={(e) =>
-            onSetLimit(Number(e.target.value), QUERY_LIMIT_OPTIONS)
-          }
-          className="bg-white border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200"
-        >
-          {QUERY_LIMIT_OPTIONS.map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-      </div>
+      {!limit || !onSetLimit ? (
+        <div className="hidden md:flex flex-wrap items-center gap-2 justify-center sm:justify-start">
+          <span className="text-black text-base">Items per page</span>
+          <select
+            value={limit}
+            onChange={(e) =>
+              onSetLimit(Number(e.target.value), QUERY_LIMIT_OPTIONS)
+            }
+            className="bg-white border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-blue-200"
+          >
+            {QUERY_LIMIT_OPTIONS.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       {/* Pagination controls */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
