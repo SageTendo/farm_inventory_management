@@ -10,7 +10,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
   return (
-    <div className="flex w-full mb-4 shadow-sm rounded-lg overflow-hidden">
+    <div className="flex w-full mb-4 shadow-sm rounded-lg">
       <input
         type="text"
         placeholder="Search for products..."
