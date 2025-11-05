@@ -8,8 +8,8 @@ import { isMobileAtom } from "../atoms";
 export function useProducts() {
   const isMobile = useAtomValue(isMobileAtom);
   const [products, setProducts] = useState<ProductDTO[]>([]);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [_totalProducts, setTotalProducts] = useState(0);
+  const [_searchQuery, setSearchQuery] = useState("");
   const [queryLimit, _setQueryLimit] = useState(isMobile ? 25 : 10);
   const [currentPage, _setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -19,9 +19,9 @@ export function useProducts() {
     let filtered = mockProducts;
     const queryOffset = (currentPage - 1) * queryLimit;
 
-    if (searchQuery !== "") {
+    if (_searchQuery !== "") {
       filtered = mockProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name.toLowerCase().includes(_searchQuery.toLowerCase())
       );
     }
 
@@ -29,7 +29,7 @@ export function useProducts() {
     setTotalPages(Math.max(1, Math.ceil(mockProducts.length / queryLimit)));
     setProducts(filtered);
     setTotalProducts(mockProducts.length);
-  }, [searchQuery, queryLimit, currentPage]);
+  }, [_searchQuery, queryLimit, currentPage]);
 
   useEffect(() => {
     _setQueryLimit(isMobile ? 25 : 10);
@@ -42,7 +42,7 @@ export function useProducts() {
   function setQueryLimit(limit: number, limitOptions: number[]) {
     let validLimit = 10;
     if (limitOptions.includes(limit)) {
-      validLimit = Math.min(limit, totalProducts);
+      validLimit = Math.min(limit, _totalProducts);
     }
     _setQueryLimit(validLimit);
   }
@@ -55,8 +55,6 @@ export function useProducts() {
 
   return {
     products,
-    totalProducts,
-    searchQuery,
     queryLimit,
     currentPage,
     totalPages,
