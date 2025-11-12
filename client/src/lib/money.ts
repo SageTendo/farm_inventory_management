@@ -80,6 +80,10 @@ export class Money {
     return this.toDollars.toFixed(2);
   }
 
+  public toString() {
+    return this.read;
+  }
+
   /**
    * Create a Money object from a number
    * @param value The number to convert to a Money object
