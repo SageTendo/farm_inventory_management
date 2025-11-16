@@ -3,6 +3,8 @@ import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { ProductDTO } from "../../../../../shared/dto/product";
 import { Money } from "../../../../../lib/money";
+import { useAtomValue } from "jotai";
+import { exchangeRateAtom } from "../../../../atoms";
 
 interface ProductCardProps {
   product: ProductDTO;
@@ -10,6 +12,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
+  const exchangeRate = useAtomValue(exchangeRateAtom);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const tooltipMessage =
@@ -31,12 +34,9 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
       <h5 className="text-1xl font-extrabold mb-2">{product.name}</h5>
 
       <div className="mb-2 text-sm">
+        <div className="font-bold text-gray-200">USD: {product.sellPrice}</div>
         <div className="font-bold text-gray-200">
-          USD: {Money.fromNumber(product.sellPrice).read}
-        </div>
-        <div className="font-bold text-gray-200">
-          {/* //TODO: Fetch exchange rate */}
-          ZIG: {Money.fromNumber(product.sellPrice).multiply(20).read}
+          ZIG: {Money.fromNumber(product.sellPrice).multiply(exchangeRate).read}
         </div>
       </div>
 

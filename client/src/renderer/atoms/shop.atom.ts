@@ -3,6 +3,9 @@ import { CartItemDTO } from "../../shared/dto/product";
 import { Money } from "../../lib/money";
 import { CurrencyType } from "../../shared/types";
 
+//TODO: Fetch exchange rate from backend
+export const exchangeRateAtom = atom(20.0);
+
 // Cart State
 export const cartOpenAtom = atom(false);
 export const cartAtom = atom<CartItemDTO[]>([]);
