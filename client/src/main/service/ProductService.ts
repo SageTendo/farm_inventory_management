@@ -1,4 +1,9 @@
-import { NewProductDTO, ProductDTO, ProductListDTO, UpdateProductDTO } from "../../shared/dto/product";
+import {
+  NewProductDTO,
+  ProductDTO,
+  ProductListDTO,
+  UpdateProductDTO,
+} from "../../shared/dto/product";
 import { IProductRepository } from "../database/interfaces/IProductRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";

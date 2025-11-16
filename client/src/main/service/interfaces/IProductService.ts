@@ -28,7 +28,11 @@ export interface IProductService {
    * Retrieves all products from the database.
    * @returns A promise that resolves to an array of product entities.
    */
-  getAll(name?: string, limit?: number, offset?: number): Promise<ProductListDTO>;
+  getAll(
+    name?: string,
+    limit?: number,
+    offset?: number
+  ): Promise<ProductListDTO>;
 
   /**
    * Updates an existing product in the database.
