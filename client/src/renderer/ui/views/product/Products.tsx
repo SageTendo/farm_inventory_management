@@ -1,18 +1,26 @@
 import { faBox } from "@fortawesome/free-solid-svg-icons";
 import { ListPage } from "../../components/shared/ListPage";
 import { useProducts } from "../../../hooks/useProducts";
-import { Money } from "../../../../lib/money";
+import { ProductDTO } from "../../../../shared/dto/product";
 
 export function Products() {
   const { products, currentPage, totalPages, setCurrentPage, handleSearch } =
     useProducts();
 
-  products.forEach((product) => {
-    product.buyPrice = Money.fromNumber(product.buyPrice).toDollars;
-    product.sellPrice = Money.fromNumber(product.buyPrice).toDollars;
-  });
-  const labels = ["Name", "Buy Price (USD)", "Sell Price (USD)", "Stock", "Low Stock Threshold"];
-  const keys = ["name", "buyPrice", "sellPrice", "quantity", "lowStockThreshold"];
+  const labels = [
+    "Name",
+    "Buy Price (USD)",
+    "Sell Price (USD)",
+    "Stock",
+    "Low Stock Threshold",
+  ];
+  const keys: (keyof ProductDTO)[] = [
+    "name",
+    "buyPrice",
+    "sellPrice",
+    "quantity",
+    "lowStockThreshold",
+  ];
 
   return (
     <ListPage

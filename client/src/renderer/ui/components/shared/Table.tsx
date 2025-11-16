@@ -77,7 +77,7 @@ export function Table({
 
               return (
                 <th
-                  key={key}
+                  key={String(key)}
                   className={`px-4 py-3 cursor-pointer select-none ${isSorted ? "text-yellow-500" : ""} 
                   hover:bg-gray-700 hover:text-yellow-500 transition sticky top-0 z-20`}
                   onClick={() => handleSort(key)}
@@ -174,7 +174,7 @@ export function Table({
                     </li>
                     {keys.map((key, idx) => (
                       <li
-                        key={key}
+                        key={String(key)}
                         className={`px-3 py-2 hover:bg-gray-700 cursor-pointer ${
                           sortKey === key ? "text-yellow-400" : "text-white"
                         }`}
