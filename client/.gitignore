@@ -92,8 +92,8 @@ typings/
 out/
 
 # Editor directories and files
-.VSCodeCounter/*
-.vscode/*
+.VSCodeCounter/
+.vscode/
 !.vscode/extensions.json
 .idea
 .DS_Store
