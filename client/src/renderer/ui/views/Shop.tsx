@@ -1,8 +1,8 @@
 import { faStore } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ProductsListing } from "../components/pos/product/Main";
-import { CartPanel } from "../components/pos/cart/Main";
-import { CheckoutScreen } from "../components/pos/checkout/Main";
+import { ProductsListing } from "../components/shop/product/Main";
+import { CartPanel } from "../components/shop/cart/Main";
+import { CheckoutScreen } from "../components/shop/checkout/Main";
 import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
 import { useProducts } from "../../hooks/useProducts";
@@ -19,7 +19,6 @@ import { isMobileAtom } from "../../atoms";
  * - Add a failure state
  * - Fetch products from DB
  * - Search products from DB
- * - Add pagination of products
  * - Implement payment process
  **/
 export function Shop() {
