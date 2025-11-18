@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../shared/dto/product";
-import { fetchProducts } from "../../mock/mock";
-import { useAtomValue } from "jotai";
-import { isMobileAtom } from "../atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { isMobileAtom, productsAtom } from "../atoms";
+import { trpcClient } from "../../shared/trpc/client";
 
-// TODO: Products Hook
 export function useProducts() {
   const isMobile = useAtomValue(isMobileAtom);
-  const [products, setProducts] = useState<ProductDTO[]>([]);
+  const [products, setProducts] = useAtom<ProductDTO[]>(productsAtom);
   const [_totalProducts, setTotalProducts] = useState(0);
   const [_searchQuery, setSearchQuery] = useState("");
   const [queryLimit, _setQueryLimit] = useState(isMobile ? 25 : 10);
@@ -18,11 +17,11 @@ export function useProducts() {
   useEffect(() => {
     const queryOffset = (currentPage - 1) * queryLimit;
     const handleFetchProducts = async () => {
-      const productsList = await fetchProducts(
-        _searchQuery,
-        queryLimit,
-        queryOffset
-      );
+      const productsList = await trpcClient.product.getAll.query({
+        searchTerm: _searchQuery,
+        limit: queryLimit,
+        offset: queryOffset,
+      });
       setProducts(productsList.products);
       setTotalProducts(productsList.total);
       setTotalPages(Math.max(1, Math.ceil(productsList.total / queryLimit)));
@@ -32,7 +31,7 @@ export function useProducts() {
   }, [_searchQuery, queryLimit, currentPage]);
 
   useEffect(() => {
-    setCurrentPage(1);
+    _setCurrentPage(1);
   }, [_searchQuery, queryLimit]);
 
   useEffect(() => {
@@ -40,7 +39,7 @@ export function useProducts() {
   }, [isMobile]);
 
   function handleSearch(query: string) {
-    setSearchQuery(query);
+    setSearchQuery(query.trim());
   }
 
   function setQueryLimit(limit: number, limitOptions: number[]) {
@@ -52,8 +51,8 @@ export function useProducts() {
   }
 
   function setCurrentPage(page: number) {
-    if (page < 1) _setCurrentPage(1);
-    if (page > totalPages) _setCurrentPage(totalPages);
+    if (page < 1) return _setCurrentPage(1);
+    if (page > totalPages) return _setCurrentPage(totalPages);
     _setCurrentPage(page);
   }
 
