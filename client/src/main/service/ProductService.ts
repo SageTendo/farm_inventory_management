@@ -8,6 +8,7 @@ import { IProductRepository } from "../database/interfaces/IProductRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IProductService } from "./interfaces/IProductService";
+import { Money } from "../../lib/money";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
@@ -32,11 +33,21 @@ export class ProductService implements IProductService {
     if (!hasPermission) {
       throw new Error("You do not have permission to add products!");
     }
-    return await this.productRepository.create(product);
+    return await this.productRepository.create({
+      ...product,
+      buyPrice: Money.fromDollars(product.buyPrice).toCents,
+      sellPrice: Money.fromDollars(product.sellPrice).toCents,
+    });
   }
 
   async getById(productId: string): Promise<ProductDTO | null> {
-    return await this.productRepository.getById(productId);
+    const product = await this.productRepository.getById(productId);
+    if (!product) return null;
+    return ProductDTO.parse({
+      ...product,
+      buyPrice: Money.fromCents(product.buyPrice).toDollars,
+      sellPrice: Money.fromCents(product.sellPrice).toDollars,
+    });
   }
 
   async getAll(
@@ -44,7 +55,24 @@ export class ProductService implements IProductService {
     limit?: number,
     offset?: number
   ): Promise<ProductListDTO> {
-    return await this.productRepository.getAll(name, limit, offset);
+    const productsList = await this.productRepository.getAll(
+      name,
+      limit,
+      offset
+    );
+
+    const products = productsList.products.map((product) =>
+      ProductDTO.parse({
+        ...product,
+        buyPrice: Money.fromCents(product.buyPrice).toDollars,
+        sellPrice: Money.fromCents(product.sellPrice).toDollars,
+      })
+    );
+
+    return {
+      products,
+      total: productsList.total,
+    };
   }
 
   async update(

@@ -41,6 +41,8 @@ describe("ExchangeRateService", () => {
     updatePassword: vi.fn(),
     updateRole: vi.fn(),
     hasRequiredRole: vi.fn(),
+    signSession: vi.fn(),
+    validateSession: vi.fn(),
   });
 
   const exchangeRateService = new ExchangeRateService(
@@ -60,6 +62,7 @@ describe("ExchangeRateService", () => {
     const rate = await exchangeRateService.set({
       rate: 1.2,
       updatedBy: "user UUID",
+      updatedAt: new Date(),
     });
 
     expect(rate).toBeDefined();

@@ -88,13 +88,26 @@ export class Money {
    * Create a Money object from a number
    * @param value The number to convert to a Money object
    */
-  static fromNumber(value: number): Money {
+  static fromDollars(value: number): Money {
     if (!isFinite(value)) throw new Error(`Invalid money value: ${value}`);
     if (Math.abs(value) > Number.MAX_SAFE_INTEGER / 100) {
       throw new UnsafeMonetaryValueError(`Money value too large: ${value}`);
     }
     const valueAsCents = Money.convertToCents(value);
     return new Money(valueAsCents);
+  }
+
+  /**
+   * Create a Money object from cents value
+   * @param value The number of cents to convert to a Money object
+   */
+  static fromCents(value: number): Money {
+    if (!Number.isInteger(value)) throw new Error(`Invalid money value: ${value}`);
+    if (!isFinite(value)) throw new Error(`Infinite money value: ${value}`);
+    if (Math.abs(value) > Number.MAX_SAFE_INTEGER) {
+      throw new UnsafeMonetaryValueError(`Money value too large: ${value}`);
+    }
+    return new Money(value);
   }
 
   /**
@@ -107,7 +120,7 @@ export class Money {
     if (isNaN(parsed)) {
       throw new MoneyParseError(`Invalid money value: ${value}`);
     }
-    return Money.fromNumber(parsed);
+    return Money.fromDollars(parsed);
   }
 }
 

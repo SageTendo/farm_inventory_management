@@ -43,6 +43,8 @@ describe("ProductService", () => {
     updatePassword: vi.fn(),
     updateRole: vi.fn(),
     hasRequiredRole: vi.fn(),
+    signSession: vi.fn(),
+    validateSession: vi.fn(),
   });
 
   const productService = new ProductService(
@@ -108,7 +110,10 @@ describe("ProductService", () => {
   });
 
   test("Get All products", async () => {
-    mockProductRepository.getAll.mockResolvedValue([]);
+    mockProductRepository.getAll.mockResolvedValue({
+      products: [],
+      total: 0,
+    });
     const products = await productService.getAll();
     expect(products).toBeDefined();
   });
@@ -116,49 +121,57 @@ describe("ProductService", () => {
   test("Search products", async () => {
     mockProductRepository.getAll.mockImplementation(async (name) => {
       if (name === "Lays Chips") {
-        return [
-          {
-            id: "UUID",
-            name: "Lays Chips",
-            buyPrice: 100,
-            sellPrice: 120,
-            addedBy: "user UUID",
-            isDeleted: false,
-            createdAt: new Date(),
-            quantity: 10,
-            lowStockThreshold: 5,
-          },
-        ];
+        return {
+          products: [
+            {
+              id: "UUID",
+              name: "Lays Chips",
+              buyPrice: 100,
+              sellPrice: 120,
+              addedBy: "user UUID",
+              isDeleted: false,
+              createdAt: new Date(),
+              quantity: 10,
+              lowStockThreshold: 5,
+            },
+          ],
+          total: 1,
+        };
       }
-      return [];
     });
 
-    const products = await productService.getAll("Lays Chips");
-    expect(products.length).toBeGreaterThan(0);
-    expect(products[0].name).toBe("Lays Chips");
+    const productsList = await productService.getAll("Lays Chips");
+    expect(productsList.total).toBeGreaterThan(0);
+    expect(productsList.products[0].name).toBe("Lays Chips");
   });
 
   test("Search non-existent product", async () => {
     mockProductRepository.getAll.mockImplementation(async (name) => {
       if (name === "Lays Chips") {
-        return [
-          {
-            id: "UUID",
-            name: "Lays Chips",
-            buyPrice: 100,
-            sellPrice: 120,
-            addedBy: "user UUID",
-            isDeleted: false,
-            createdAt: new Date(),
-            quantity: 10,
-            lowStockThreshold: 5,
-          },
-        ];
+        return {
+          products: [
+            {
+              id: "UUID",
+              name: "Lays Chips",
+              buyPrice: 100,
+              sellPrice: 120,
+              addedBy: "user UUID",
+              isDeleted: false,
+              createdAt: new Date(),
+              quantity: 10,
+              lowStockThreshold: 5,
+            },
+          ],
+          total: 1,
+        };
       }
-      return [];
+      return {
+        products: [],
+        total: 0,
+      };
     });
     const products = await productService.getAll("Colgate");
-    expect(products.length).toBe(0);
+    expect(products.total).toBe(0);
   });
 
   test("Update product", async () => {

@@ -42,6 +42,8 @@ describe("StockService", () => {
     updatePassword: vi.fn(),
     updateRole: vi.fn(),
     hasRequiredRole: vi.fn(),
+    signSession: vi.fn(),
+    validateSession: vi.fn(),
   });
 
   const stockService = new StockService(mockAuthService, mockStockRepository);

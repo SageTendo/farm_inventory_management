@@ -105,7 +105,7 @@ export class ProductRepository
     if (!products) {
       return {
         products: [],
-        total: total,
+        total: 0,
       };
     }
 
@@ -115,7 +115,7 @@ export class ProductRepository
         quantity: result.stock?.quantity,
         lowStockThreshold: result.stock?.lowStockThreshold,
       })) as ProductDTO[],
-      total: products.length,
+      total: total,
     };
   }
 

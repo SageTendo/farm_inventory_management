@@ -10,7 +10,7 @@ export const exchangeRateAtom = atom(20.0);
 export const cartOpenAtom = atom(false);
 export const cartAtom = atom<CartItemDTO[]>([]);
 export const cartItemsCountAtom = atom(0);
-export const cartTotalAtom = atom(Money.fromNumber(0));
+export const cartTotalAtom = atom(Money.fromDollars(0));
 
 // Checkout Screen State
 export const checkoutOpenAtom = atom(false);

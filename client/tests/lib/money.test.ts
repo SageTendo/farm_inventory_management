@@ -42,39 +42,86 @@ describe("Banker's Rounding", () => {
 });
 
 describe("Money", () => {
-  it("should create a Money object from an integer (in cents)", () => {
-    const m = Money.fromNumber(1.335);
+  it("should create a Money object and ensure that its cents value is an integer", () => {
+    const m = Money.fromDollars(1.335);
+    expect(Number.isInteger(m.toDollars)).toBe(false);
     expect(Number.isInteger(m.toCents)).toBe(true);
-
-    expect(Money.fromNumber(0).toCents).toBe(0);
-    expect(Money.fromNumber(1).toCents).toBe(100);
-    expect(Money.fromNumber(10).toCents).toBe(1000);
-    expect(Money.fromNumber(105).toCents).toBe(10500);
-    expect(Money.fromNumber(150).toCents).toBe(15000);
-    expect(Money.fromNumber(2).toCents).toBe(200);
-
-    expect(Money.fromNumber(0).toDollars).toBe(0);
-    expect(Money.fromNumber(1).toDollars).toBe(1);
-    expect(Money.fromNumber(10).toDollars).toBe(10);
-    expect(Money.fromNumber(105).toDollars).toBe(105);
-    expect(Money.fromNumber(150).toDollars).toBe(150);
-    expect(Money.fromNumber(2).toDollars).toBe(2);
   });
 
-  it("should create a Money object from a float (in cents)", () => {
-    expect(Money.fromNumber(0.0).toCents).toBe(0);
-    expect(Money.fromNumber(0.01).toCents).toBe(1);
-    expect(Money.fromNumber(0.1).toCents).toBe(10);
-    expect(Money.fromNumber(1.0).toCents).toBe(100);
-    expect(Money.fromNumber(1.05).toCents).toBe(105);
-    expect(Money.fromNumber(1.5).toCents).toBe(150);
+  it("should create a Money object from a float string and return its value as cents", () => {
+    const m = Money.fromString("1.335");
+    expect(Number.isInteger(m.toDollars)).toBe(false);
+    expect(Number.isInteger(m.toCents)).toBe(true);
+  });
 
-    expect(Money.fromNumber(0.0).toDollars).toBe(0);
-    expect(Money.fromNumber(0.01).toDollars).toBe(0.01);
-    expect(Money.fromNumber(0.1).toDollars).toBe(0.1);
-    expect(Money.fromNumber(1.0).toDollars).toBe(1);
-    expect(Money.fromNumber(1.05).toDollars).toBe(1.05);
-    expect(Money.fromNumber(1.5).toDollars).toBe(1.5);
+  it("should create a Money object from an integer dollar value and return its value as cents", () => {
+    expect(Money.fromDollars(0).toCents).toBe(0);
+    expect(Money.fromDollars(1).toCents).toBe(100);
+    expect(Money.fromDollars(10).toCents).toBe(1000);
+    expect(Money.fromDollars(105).toCents).toBe(10500);
+    expect(Money.fromDollars(150).toCents).toBe(15000);
+    expect(Money.fromDollars(2).toCents).toBe(200);
+  });
+
+  it("should create a Money object from an integer dollar value and return its value as dollars", () => {
+    expect(Money.fromDollars(0).toDollars).toBe(0);
+    expect(Money.fromDollars(1).toDollars).toBe(1);
+    expect(Money.fromDollars(10).toDollars).toBe(10);
+    expect(Money.fromDollars(105).toDollars).toBe(105);
+    expect(Money.fromDollars(150).toDollars).toBe(150);
+    expect(Money.fromDollars(2).toDollars).toBe(2);
+  });
+
+  it("should create a Money object from a float dollar value and return its value as cents", () => {
+    expect(Money.fromDollars(0.0).toCents).toBe(0);
+    expect(Money.fromDollars(0.01).toCents).toBe(1);
+    expect(Money.fromDollars(0.1).toCents).toBe(10);
+    expect(Money.fromDollars(1.0).toCents).toBe(100);
+    expect(Money.fromDollars(1.05).toCents).toBe(105);
+    expect(Money.fromDollars(1.5).toCents).toBe(150);
+  });
+
+  it("should create a Money object from a float dollar value and return its value as dollars", () => {
+    expect(Money.fromDollars(0.0).toDollars).toBe(0);
+    expect(Money.fromDollars(0.01).toDollars).toBe(0.01);
+    expect(Money.fromDollars(0.1).toDollars).toBe(0.1);
+    expect(Money.fromDollars(1.0).toDollars).toBe(1);
+    expect(Money.fromDollars(1.05).toDollars).toBe(1.05);
+    expect(Money.fromDollars(1.5).toDollars).toBe(1.5);
+  });
+
+  it("should create a Money object from an integer cent value and return its value as cents", () => {
+    expect(Money.fromCents(0).toCents).toBe(0);
+    expect(Money.fromCents(1).toCents).toBe(1);
+    expect(Money.fromCents(10).toCents).toBe(10);
+    expect(Money.fromCents(105).toCents).toBe(105);
+    expect(Money.fromCents(150).toCents).toBe(150);
+    expect(Money.fromCents(2).toCents).toBe(2);
+  });
+
+  it("should create a Money object from an integer cent value and return its value as dollars", () => {
+    expect(Money.fromCents(0).toDollars).toBe(0);
+    expect(Money.fromCents(1).toDollars).toBe(0.01);
+    expect(Money.fromCents(10).toDollars).toBe(0.1);
+    expect(Money.fromCents(105).toDollars).toBe(1.05);
+    expect(Money.fromCents(150).toDollars).toBe(1.5);
+    expect(Money.fromCents(2).toDollars).toBe(0.02);
+  });
+
+  it("should throw an error when creating a Money object from an invalid cent value", () => {
+    expect(() => Money.fromCents(0.01)).toThrowError();
+    expect(() => Money.fromCents(0.1)).toThrowError();
+    expect(() => Money.fromCents(1.05)).toThrowError();
+    expect(() => Money.fromCents(1.5)).toThrowError();
+    expect(() => Money.fromCents(9.99999999999999)).toThrowError();
+    expect(() => Money.fromCents(-0.01)).toThrowError();
+    expect(() => Money.fromCents(-0.1)).toThrowError();
+    expect(() => Money.fromCents(-1.05)).toThrowError();
+    expect(() => Money.fromCents(-1.5)).toThrowError();
+    expect(() => Money.fromCents(-9.99999999999999)).toThrowError();
+    expect(() => Money.fromCents(NaN)).toThrowError();
+    expect(() => Money.fromCents(Infinity)).toThrowError();
+    expect(() => Money.fromCents(-Infinity)).toThrowError();
   });
 
   it("should parse a string as a Money object (in cents)", () => {
@@ -120,29 +167,29 @@ describe("Money", () => {
     expect(Money.fromString("-1.00").toDollars).toBe(-1);
     expect(Money.fromString("-1.5").toDollars).toBe(-1.5);
 
-    const x = Money.fromNumber(10);
-    const y = Money.fromNumber(20);
+    const x = Money.fromDollars(10);
+    const y = Money.fromDollars(20);
     expect(x.subtract(y).toCents).toBe(-1000);
     expect(x.subtract(y).toDollars).toBe(-10);
   });
 
   it("Should add two Money objects together", () => {
-    const x = Money.fromNumber(100);
-    const y = Money.fromNumber(100);
+    const x = Money.fromDollars(100);
+    const y = Money.fromDollars(100);
     expect(x.add(y).toCents).toBe(20000);
     expect(x.add(y).toDollars).toBe(200);
   });
 
   it("Should subtract two Money objects", () => {
-    const x = Money.fromNumber(100);
-    const y = Money.fromNumber(100);
+    const x = Money.fromDollars(100);
+    const y = Money.fromDollars(100);
     expect(x.subtract(y).toCents).toBe(0);
     expect(x.subtract(y).toDollars).toBe(0);
     expect(x.subtract(y).isZero()).toBe(true);
   });
 
   it("Should multiply a Money object by a number", () => {
-    const x = Money.fromNumber(100);
+    const x = Money.fromDollars(100);
     expect(x.multiply(2).toCents).toBe(20000);
     expect(x.multiply(2).toDollars).toBe(200);
     expect(x.multiply(0.5).toCents).toBe(5000);
@@ -160,45 +207,45 @@ describe("Money", () => {
     expect(x.multiply(-0).toDollars).toBe(0);
     expect(x.multiply(-0).isZero()).toBe(true);
 
-    const y = Money.fromNumber(1);
+    const y = Money.fromDollars(1);
     expect(y.multiply(0.333).toCents).toBe(33);
   });
 
   it("Should convert a Money object to a readable string", () => {
-    expect(Money.fromNumber(0).read).toBe("0.00");
-    expect(Money.fromNumber(-0).read).toBe("0.00");
-    expect(Money.fromNumber(-0.5).read).toBe("-0.50");
-    expect(Money.fromNumber(-0.51).read).toBe("-0.51");
-    expect(Money.fromNumber(-0.555).read).toBe("-0.56");
-    expect(Money.fromNumber(100).read).toBe("100.00");
-    expect(Money.fromNumber(100.5).read).toBe("100.50");
-    expect(Money.fromNumber(100.51).read).toBe("100.51");
-    expect(Money.fromNumber(100.555).read).toBe("100.56");
-    expect(Money.fromNumber(-100).read).toBe("-100.00");
-    expect(Money.fromNumber(-100.5).read).toBe("-100.50");
-    expect(Money.fromNumber(-100.51).read).toBe("-100.51");
-    expect(Money.fromNumber(-100.555).read).toBe("-100.56");
-    expect(Money.fromNumber(1.125).read).toBe("1.12");
-    expect(Money.fromNumber(1.513).read).toBe("1.51");
-    expect(Money.fromNumber(1.557).read).toBe("1.56");
+    expect(Money.fromDollars(0).read).toBe("0.00");
+    expect(Money.fromDollars(-0).read).toBe("0.00");
+    expect(Money.fromDollars(-0.5).read).toBe("-0.50");
+    expect(Money.fromDollars(-0.51).read).toBe("-0.51");
+    expect(Money.fromDollars(-0.555).read).toBe("-0.56");
+    expect(Money.fromDollars(100).read).toBe("100.00");
+    expect(Money.fromDollars(100.5).read).toBe("100.50");
+    expect(Money.fromDollars(100.51).read).toBe("100.51");
+    expect(Money.fromDollars(100.555).read).toBe("100.56");
+    expect(Money.fromDollars(-100).read).toBe("-100.00");
+    expect(Money.fromDollars(-100.5).read).toBe("-100.50");
+    expect(Money.fromDollars(-100.51).read).toBe("-100.51");
+    expect(Money.fromDollars(-100.555).read).toBe("-100.56");
+    expect(Money.fromDollars(1.125).read).toBe("1.12");
+    expect(Money.fromDollars(1.513).read).toBe("1.51");
+    expect(Money.fromDollars(1.557).read).toBe("1.56");
   });
 });
 
 describe("Money - Additional Edge Cases", () => {
   describe("Input Validation Edge Cases", () => {
     it("should handle invalid number inputs", () => {
-      expect(() => Money.fromNumber(NaN)).toThrow("Invalid money value");
-      expect(() => Money.fromNumber(Infinity)).toThrow(
-        "Invalid money value: Infinity",
+      expect(() => Money.fromDollars(NaN)).toThrow("Invalid money value");
+      expect(() => Money.fromDollars(Infinity)).toThrow(
+        "Invalid money value: Infinity"
       );
-      expect(() => Money.fromNumber(-Infinity)).toThrow(
-        "Invalid money value: -Infinity",
+      expect(() => Money.fromDollars(-Infinity)).toThrow(
+        "Invalid money value: -Infinity"
       );
     });
 
     it("should handle invalid string inputs", () => {
       expect(() => Money.fromString("not a number")).toThrow(
-        "Invalid money value",
+        "Invalid money value"
       );
       expect(() => Money.fromString("")).toThrow("Invalid money value");
       expect(() => Money.fromString("   ")).toThrow("Invalid money value");
@@ -207,34 +254,34 @@ describe("Money - Additional Edge Cases", () => {
 
     it("should handle floating-point precision issues", () => {
       // JavaScript's 0.1 + 0.2 = 0.30000000000000004
-      const result = Money.fromNumber(0.1 + 0.2);
+      const result = Money.fromDollars(0.1 + 0.2);
       expect(result.toCents).toBe(30); // Should round correctly to 30 cents
       expect(result.toDollars).toBe(0.3);
     });
 
     it("should handle very small values correctly", () => {
-      expect(Money.fromNumber(0.001).toCents).toBe(0); // Rounds down
-      expect(Money.fromNumber(0.004).toCents).toBe(0); // Rounds down
-      expect(Money.fromNumber(0.005).toCents).toBe(0); // Banker's rounding to even (0)
-      expect(Money.fromNumber(0.006).toCents).toBe(1); // Rounds up
-      expect(Money.fromNumber(0.015).toCents).toBe(2); // Banker's rounding to even (2)
+      expect(Money.fromDollars(0.001).toCents).toBe(0); // Rounds down
+      expect(Money.fromDollars(0.004).toCents).toBe(0); // Rounds down
+      expect(Money.fromDollars(0.005).toCents).toBe(0); // Banker's rounding to even (0)
+      expect(Money.fromDollars(0.006).toCents).toBe(1); // Rounds up
+      expect(Money.fromDollars(0.015).toCents).toBe(2); // Banker's rounding to even (2)
     });
   });
 
   describe("Multiplication Edge Cases", () => {
     it("should handle multiplication by invalid numbers", () => {
-      const money = Money.fromNumber(10);
+      const money = Money.fromDollars(10);
       expect(() => money.multiply(NaN)).toThrow("Invalid multiplier: NaN");
       expect(() => money.multiply(Infinity)).toThrow(
-        "Invalid multiplier: Infinity",
+        "Invalid multiplier: Infinity"
       );
       expect(() => money.multiply(-Infinity)).toThrow(
-        "Invalid multiplier: -Infinity",
+        "Invalid multiplier: -Infinity"
       );
     });
 
     it("should handle banker's rounding in multiplication", () => {
-      const penny = Money.fromNumber(0.01);
+      const penny = Money.fromDollars(0.01);
       expect(penny.multiply(2.5).toCents).toBe(2); // 2.5 cents -> 2 cents (round to even)
       expect(penny.multiply(3.5).toCents).toBe(4); // 3.5 cents -> 4 cents (round to even)
       expect(penny.multiply(4.5).toCents).toBe(4); // 4.5 cents -> 4 cents (round to even)
@@ -242,18 +289,18 @@ describe("Money - Additional Edge Cases", () => {
     });
 
     it("should handle large multiplication results", () => {
-      const large = Money.fromNumber(50000000); // $50M
+      const large = Money.fromDollars(50000000); // $50M
       // This should be close to the limit but not exceed it
       expect(() => large.multiply(100)).not.toThrow();
 
       // This should exceed MAX_SAFE_INTEGER and throw
       expect(() => large.multiply(10000000000)).toThrow(
-        "Multiplication result exceeds safe integer range",
+        "Multiplication result exceeds safe integer range"
       );
     });
 
     it("should handle negative zero correctly", () => {
-      const money = Money.fromNumber(100);
+      const money = Money.fromDollars(100);
       const result1 = money.multiply(-0);
       const result2 = money.multiply(0);
 
@@ -266,10 +313,10 @@ describe("Money - Additional Edge Cases", () => {
 
   describe("Comparison Edge Cases", () => {
     it("should handle comparisons with zero values", () => {
-      const zero1 = Money.fromNumber(0);
-      const zero2 = Money.fromNumber(-0);
-      const positive = Money.fromNumber(0.01);
-      const negative = Money.fromNumber(-0.01);
+      const zero1 = Money.fromDollars(0);
+      const zero2 = Money.fromDollars(-0);
+      const positive = Money.fromDollars(0.01);
+      const negative = Money.fromDollars(-0.01);
 
       expect(zero1.equals(zero2)).toBe(true);
       expect(zero1.greaterThan(negative)).toBe(true);
@@ -279,8 +326,8 @@ describe("Money - Additional Edge Cases", () => {
     });
 
     it("should handle very close values", () => {
-      const money1 = Money.fromNumber(1.005); // Rounds to 1.00
-      const money2 = Money.fromNumber(1.004); // Rounds to 1.00
+      const money1 = Money.fromDollars(1.005); // Rounds to 1.00
+      const money2 = Money.fromDollars(1.004); // Rounds to 1.00
 
       expect(money1.equals(money2)).toBe(true);
       expect(money1.greaterThan(money2)).toBe(false);
@@ -290,9 +337,9 @@ describe("Money - Additional Edge Cases", () => {
 
   describe("isPositive/isNegative Edge Cases", () => {
     it("should correctly identify positive, negative, and zero", () => {
-      const zero = Money.fromNumber(0);
-      const positive = Money.fromNumber(0.01);
-      const negative = Money.fromNumber(-0.01);
+      const zero = Money.fromDollars(0);
+      const positive = Money.fromDollars(0.01);
+      const negative = Money.fromDollars(-0.01);
 
       expect(zero.isPositive()).toBe(false); // Zero is not positive
       expect(zero.isNegative()).toBe(false); // Zero is not negative
@@ -310,21 +357,21 @@ describe("Money - Additional Edge Cases", () => {
 
   describe("String Representation Edge Cases", () => {
     it("should handle very small rounded values in string representation", () => {
-      expect(Money.fromNumber(0.001).read).toBe("0.00");
-      expect(Money.fromNumber(-0.001).read).toBe("0.00");
-      expect(Money.fromNumber(0.005).read).toBe("0.00"); // Banker's rounding
-      expect(Money.fromNumber(0.015).read).toBe("0.02"); // Banker's rounding
+      expect(Money.fromDollars(0.001).read).toBe("0.00");
+      expect(Money.fromDollars(-0.001).read).toBe("0.00");
+      expect(Money.fromDollars(0.005).read).toBe("0.00"); // Banker's rounding
+      expect(Money.fromDollars(0.015).read).toBe("0.02"); // Banker's rounding
     });
 
     it("should handle large values in string representation", () => {
-      expect(Money.fromNumber(999999.99).read).toBe("999999.99");
-      expect(Money.fromNumber(-999999.99).read).toBe("-999999.99");
+      expect(Money.fromDollars(999999.99).read).toBe("999999.99");
+      expect(Money.fromDollars(-999999.99).read).toBe("-999999.99");
     });
   });
 
   describe("Arithmetic with Rounded Values", () => {
     it("should maintain consistency when chaining operations", () => {
-      const base = Money.fromNumber(10.666); // Rounds to 10.67
+      const base = Money.fromDollars(10.666); // Rounds to 10.67
       const multiplied = base.multiply(3); // 10.67 * 3 = 32.01
       const divided = multiplied.multiply(1 / 3); // Should get back close to original
 
@@ -335,8 +382,8 @@ describe("Money - Additional Edge Cases", () => {
     });
 
     it("should handle addition and subtraction with rounded values", () => {
-      const money1 = Money.fromNumber(1.005); // Rounds to 1.00
-      const money2 = Money.fromNumber(0.995); // Rounds to 1.00
+      const money1 = Money.fromDollars(1.005); // Rounds to 1.00
+      const money2 = Money.fromDollars(0.995); // Rounds to 1.00
 
       expect(money1.add(money2).toCents).toBe(200); // 1.00 + 1.00 = 2.00
       expect(money1.subtract(money2).toCents).toBe(0); // 1.00 - 1.00 = 0.00
@@ -347,7 +394,7 @@ describe("Money - Additional Edge Cases", () => {
     it("should reject non-integer values in constructor", () => {
       // These would be called internally, but testing the validation
       expect(() => {
-        Money.fromNumber(NaN);
+        Money.fromDollars(NaN);
       }).toThrow("Invalid money value");
     });
   });
