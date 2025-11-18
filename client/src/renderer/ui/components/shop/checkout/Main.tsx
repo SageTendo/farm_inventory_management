@@ -11,28 +11,23 @@ import {
   MoneyParseError,
 } from "../../../../../lib/error";
 import { Money } from "../../../../../lib/money";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   cartAtom,
   cartTotalAtom,
+  checkoutOpenAtom,
   selectedCurrencyAtom,
 } from "../../../../atoms/shop.atom";
 import { CurrencyToggle } from "./CurrencyToggle";
 import { exchangeRateAtom, isMobileAtom } from "../../../../atoms";
+import { useCart } from "../../../../hooks/useCart";
 
-interface CheckoutScreenProps {
-  onClose: () => void;
-  onCancelPayment: () => void;
-  onConfirmPayment: (paid: Money, change: Money) => void;
-}
-
-export function CheckoutScreen({
-  onClose,
-  onConfirmPayment,
-  onCancelPayment,
-}: CheckoutScreenProps) {
+export function CheckoutScreen() {
   const isMobile = useAtomValue(isMobileAtom);
+  const setIsChekoutScreenOpen = useSetAtom(checkoutOpenAtom);
+
   const cart = useAtomValue(cartAtom);
+  const { clearCart, checkout } = useCart();
   const cartTotal = useAtomValue(cartTotalAtom);
   const selectedCurrency = useAtomValue(selectedCurrencyAtom);
   const exchangeRate = useAtomValue(exchangeRateAtom);
@@ -40,8 +35,8 @@ export function CheckoutScreen({
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");
   const [totalAmount, setTotalAmount] = useState(cartTotal);
-  const [paidAmount, setPaidAmount] = useState(Money.fromNumber(0));
-  const [changeAmount, setChangeAmount] = useState(Money.fromNumber(0));
+  const [paidAmount, setPaidAmount] = useState(Money.fromDollars(0));
+  const [changeAmount, setChangeAmount] = useState(Money.fromDollars(0));
   const [showPurchaseSummary, setShowPurchaseSummary] = useState(true);
 
   // Format numeric values for display
@@ -63,10 +58,17 @@ export function CheckoutScreen({
     }
   }, []);
 
+  // Close when cart is cleared
+  useEffect(() => {
+    if (cart.length === 0) {
+      setIsChekoutScreenOpen(false);
+    }
+  }, [cart]);
+
   // Update change amount when paid amount changes
   useEffect(() => {
     if (paidAmount.toCents === 0) {
-      setChangeAmount(Money.fromNumber(0));
+      setChangeAmount(Money.fromDollars(0));
       return;
     }
 
@@ -89,7 +91,7 @@ export function CheckoutScreen({
 
     // Clear paid amount when selected currency changes
     inputRef.current.value = "";
-    setPaidAmount(Money.fromNumber(0));
+    setPaidAmount(Money.fromDollars(0));
     setInputValue("");
   }, [selectedCurrency]);
 
@@ -98,7 +100,7 @@ export function CheckoutScreen({
     setInputValue(rawValue);
 
     try {
-      if (rawValue === "") return setPaidAmount(Money.fromNumber(0));
+      if (rawValue === "") return setPaidAmount(Money.fromDollars(0));
       setPaidAmount(Money.fromString(rawValue));
     } catch (error) {
       if (error instanceof UnsafeMonetaryValueError) {
@@ -121,14 +123,14 @@ export function CheckoutScreen({
       {isMobile && (
         <div className="flex justify-between items-center mb-3 mt-3 px-2">
           <h2 className="font-bold text-white text-3xl">Checkout</h2>
-          {onClose && (
+          {
             <button
-              onClick={onClose}
+              onClick={() => setIsChekoutScreenOpen(false)}
               className="text-white font-bold px-3 py-1 border border-white rounded hover:bg-white hover:text-gray-900 transition"
             >
               Close
             </button>
-          )}
+          }
         </div>
       )}
 
@@ -138,7 +140,7 @@ export function CheckoutScreen({
           <div className="flex justify-between items-center mb-6">
             <button
               className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition"
-              onClick={onClose}
+              onClick={() => setIsChekoutScreenOpen(false)}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
               Back
@@ -258,14 +260,14 @@ export function CheckoutScreen({
             <div className="flex gap-4 mt-2">
               <button
                 className="flex-1 py-3 border border-red-500 text-red-500 rounded-xl hover:bg-red-600 hover:text-white transition font-medium"
-                onClick={onCancelPayment}
+                onClick={() => clearCart()}
               >
                 Cancel
               </button>
               <button
                 className="flex-1 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={paidAmount.isZero() || changeAmount.isNegative()}
-                onClick={() => onConfirmPayment(paidAmount, changeAmount)}
+                onClick={() => checkout(paidAmount, changeAmount)}
               >
                 Confirm
               </button>

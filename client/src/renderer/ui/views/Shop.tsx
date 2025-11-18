@@ -3,13 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProductsListing } from "../components/shop/product/Main";
 import { CartPanel } from "../components/shop/cart/Main";
 import { CheckoutScreen } from "../components/shop/checkout/Main";
-import { Money } from "../../../lib/money";
 import { useCart } from "../../hooks/useCart";
 import { useProducts } from "../../hooks/useProducts";
 import { SearchBar } from "../components/shared/SearchBar";
 import { Pagination } from "../components/shared/Pagination";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { cartOpenAtom, checkoutOpenAtom } from "../../atoms/shop.atom";
+import { useAtom, useAtomValue } from "jotai";
+import { checkoutOpenAtom } from "../../atoms/shop.atom";
 import { isMobileAtom } from "../../atoms";
 
 /**
@@ -31,33 +30,10 @@ export function Shop() {
     setQueryLimit,
     setCurrentPage,
   } = useProducts();
-  const { addCartItem, updateCartItem, removeCartItem, clearCart } =
-    useCart(products);
+  const { addCartItem, updateCartItem, removeCartItem, clearCart } = useCart();
   const isMobile = useAtomValue(isMobileAtom);
-  const setIsCartOpen = useSetAtom(cartOpenAtom);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] =
     useAtom(checkoutOpenAtom);
-
-  function handlePayment(paidAmount: Money, changeAmount: Money): void {
-    // TODO: implement payment
-    // Things to do:
-    // - Update stock in database
-    // - Verify stock availability
-    // - When inventory update is complete, clear cart and close checkout screen
-    // - If payment is complete, show success message
-    // - Generate receipt and export to PDF ??
-    // - Update products list ??
-    // - If payment is not complete, show error message
-    // console.log("Total amount:", cartTotal.toDollars);
-    console.log("Payment received:", paidAmount.toDollars);
-    console.log("Change amount:", changeAmount.toDollars);
-    throw new Error("Function not implemented.");
-  }
-
-  function handleCancelPayment(): void {
-    clearCart();
-    setIsChekoutScreenOpen(false);
-  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden pt-4 px-4">
@@ -82,26 +58,15 @@ export function Shop() {
         {!isMobile && isChekoutScreenOpen && (
           <div className="fixed inset-0 md:z-50 flex-col p-20">
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
-              <CheckoutScreen
-                onClose={() => setIsChekoutScreenOpen(false)}
-                onConfirmPayment={handlePayment}
-                onCancelPayment={handleCancelPayment}
-              />
+              <CheckoutScreen />
             </div>
           </div>
         )}
 
-        {/* Mobile Checkout Screen Modal  */}
+        {/* Mobile Checkout Screen Modal */}
         {isMobile && isChekoutScreenOpen && (
           <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
-            <CheckoutScreen
-              onClose={() => {
-                setIsChekoutScreenOpen(false);
-                setIsCartOpen(true);
-              }}
-              onConfirmPayment={handlePayment}
-              onCancelPayment={handleCancelPayment}
-            />
+            <CheckoutScreen />
           </div>
         )}
       </div>

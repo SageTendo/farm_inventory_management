@@ -36,7 +36,7 @@ export const ProductCard = ({ product, addToCart }: ProductCardProps) => {
       <div className="mb-2 text-sm">
         <div className="font-bold text-gray-200">USD: {product.sellPrice}</div>
         <div className="font-bold text-gray-200">
-          ZIG: {Money.fromNumber(product.sellPrice).multiply(exchangeRate).read}
+          ZIG: {Money.fromDollars(product.sellPrice).multiply(exchangeRate).read}
         </div>
       </div>
 

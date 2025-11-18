@@ -8,7 +8,7 @@ export const ProductDTO = z.object({
   sellPrice: z.number(),
   addedBy: z.string(),
   isDeleted: z.boolean(),
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   quantity: z.number(),
   lowStockThreshold: z.number(),
 });
@@ -33,8 +33,8 @@ export const ProductListDTO = z.object({
 
 export const CartItemDTO = ProductDTO.transform((data) => ({
   ...data,
-  buyPrice: Money.fromNumber(data.buyPrice),
-  sellPrice: Money.fromNumber(data.sellPrice),
+  buyPrice: Money.fromDollars(data.buyPrice),
+  sellPrice: Money.fromDollars(data.sellPrice),
 }));
 
 export type ProductDTO = z.infer<typeof ProductDTO>;

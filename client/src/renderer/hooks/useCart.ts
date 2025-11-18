@@ -8,8 +8,9 @@ import {
   cartItemsCountAtom,
   cartTotalAtom,
 } from "../atoms/shop.atom";
+import { trpcClient } from "../../shared/trpc/client";
 
-export function useCart(products: ProductDTO[]) {
+export function useCart() {
   const [cart, setCart] = useAtom(cartAtom);
   const setCartTotal = useSetAtom(cartTotalAtom);
   const setCartItemsCount = useSetAtom(cartItemsCountAtom);
@@ -20,7 +21,7 @@ export function useCart(products: ProductDTO[]) {
       (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
       0
     );
-    setCartTotal(Money.fromNumber(cartTotal));
+    setCartTotal(Money.fromDollars(cartTotal));
     setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
   }, [cart]);
 
@@ -48,11 +49,13 @@ export function useCart(products: ProductDTO[]) {
     }
   }
 
-  function updateCartItem(productId: string, delta: number) {
+  async function updateCartItem(productId: string, delta: number) {
     if (delta === 0) return;
 
     const cartItem = cart.find((item) => item.id === productId);
-    const product = products.find((item) => item.id === productId); // from full list
+    const product = await trpcClient.product.getById.query({
+      id: productId,
+    });
 
     if (!cartItem || !product) return;
 
@@ -84,10 +87,27 @@ export function useCart(products: ProductDTO[]) {
     setCart([]);
   }
 
+  function checkout(paidAmount: Money, changeAmount: Money): void {
+    // TODO: implement payment
+    // Things to do:
+    // - Update stock in database
+    // - Verify stock availability
+    // - When inventory update is complete, clear cart and close checkout screen
+    // - If payment is complete, show success message
+    // - Generate receipt and export to PDF ??
+    // - Update products list ??
+    // - If payment is not complete, show error message
+    // console.log("Total amount:", cartTotal.toDollars);
+    console.log("Payment received:", paidAmount.toDollars);
+    console.log("Change amount:", changeAmount.toDollars);
+    throw new Error("Function not implemented.");
+  }
+
   return {
     addCartItem,
     updateCartItem,
     removeCartItem,
     clearCart,
+    checkout,
   };
 }
