@@ -5,6 +5,7 @@ import { ServiceRegistry } from "./main/service";
 import { env } from "./config";
 import { attachWindow, detachWindow } from "./main/setupRPC";
 import { generateProducts } from "./mock/mock";
+import { ProductDTO } from "./shared/dto/product";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -36,7 +37,7 @@ const populateWithMockData = async () => {
   // Mock Product data
   if ((await productService.getAll()).total === 0) {
     const mockProducts = generateProducts(admin.id);
-    mockProducts.forEach((product) => {
+    mockProducts.forEach((product: ProductDTO) => {
       productService.create(product);
     });
   }
@@ -45,8 +46,8 @@ const populateWithMockData = async () => {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
