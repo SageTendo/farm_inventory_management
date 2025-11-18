@@ -1,65 +1,30 @@
 import { faker } from "@faker-js/faker";
-import { Money } from "../lib/money";
-import { NewProductDTO, ProductDTO, ProductListDTO } from "../shared/dto/product";
-
-const mockProducts: ProductDTO[] = [];
-for (let i = 0; i < 1000; i++) {
-  mockProducts.push({
-    id: faker.string.uuid(),
-    name: faker.commerce.productName(),
-    buyPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 }))
-      .toCents,
-    sellPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 }))
-      .toCents,
-    quantity: faker.number.int({ min: 0, max: 100 }),
-    addedBy: faker.string.uuid(),
-    isDeleted: false,
-    createdAt: faker.date.past(),
-    lowStockThreshold: faker.number.int({ min: 5, max: 15 }),
-  });
-}
-
-export const fetchProducts = async (
-  query: string,
-  limit: number,
-  offset: number
-) : Promise<ProductListDTO> => {
-  let result = mockProducts;
-  if (query.trim() !== "") {
-    result = result.filter((product) =>
-      product.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }
-
-  result = result.filter((product) => product.quantity > 0);
-  return {
-    products: result
-    .slice(offset, offset + limit),
-    total: result.length,
-    }
-};
+import { NewProductDTO, ProductDTO } from "../shared/dto/product";
 
 export const generateProducts = (userId: string) => {
   const products: NewProductDTO[] = [];
-  const names: string[] = [];
+  const names: Set<string> = new Set();
   let productName;
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 2000; i++) {
     productName = faker.commerce.productName();
-    while (names.includes(productName)) {
+    while (names.has(productName)) {
       productName = faker.commerce.productName();
     }
-    names.push();
+    names.add(productName);
 
-    products.push({
-      name: productName,
-      buyPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 }))
-        .toCents,
-      sellPrice: Money.fromString(faker.commerce.price({ min: 1, max: 100 }))
-        .toCents,
-      quantity: faker.number.int({ min: 0, max: 100 }),
-      addedBy: userId,
-      lowStockThreshold: faker.number.int({ min: 5, max: 15 }),
-    });
+    products.push(
+      ProductDTO.parse({
+        id: faker.string.uuid(),
+        name: productName,
+        buyPrice: faker.number.float({ min: 1, max: 100 }),
+        sellPrice: faker.number.float({ min: 1, max: 100 }),
+        quantity: faker.number.int({ min: 0, max: 100 }),
+        isDeleted: false,
+        createdAt: faker.date.past(),
+        addedBy: userId,
+        lowStockThreshold: faker.number.int({ min: 5, max: 15 }),
+      })
+    );
   }
   return products;
 };
