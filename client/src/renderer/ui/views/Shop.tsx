@@ -16,8 +16,6 @@ import { isMobileAtom } from "../../atoms";
  * - Add a loading state
  * - Add a success state
  * - Add a failure state
- * - Fetch products from DB
- * - Search products from DB
  * - Implement payment process
  **/
 export function Shop() {
@@ -56,10 +54,8 @@ export function Shop() {
 
         {/* Desktop Checkout Screen Modal */}
         {!isMobile && isChekoutScreenOpen && (
-          <div className="fixed inset-0 md:z-50 flex-col p-20">
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
-              <CheckoutScreen />
-            </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
+            <CheckoutScreen />
           </div>
         )}
 
