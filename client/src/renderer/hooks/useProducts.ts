@@ -13,7 +13,6 @@ export function useProducts() {
   const [currentPage, _setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  // TODO: Fetch products from backend
   useEffect(() => {
     const queryOffset = (currentPage - 1) * queryLimit;
     const handleFetchProducts = async () => {
