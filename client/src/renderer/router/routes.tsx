@@ -20,12 +20,12 @@ export const paths = {
   pos: "/pos",
   products: "/products",
   newProduct: "/products/new",
-  manageProduct: "/products/:id/manage",
+  manageProduct: "/products/:productId/manage",
   stock: "/stock",
   sales: "/sales",
   users: "/users",
   newUser: "/users/new",
-  manageUser: "/users/:id/manage",
+  manageUser: "/users/:userId/manage",
   settings: "/settings",
 } as const;
 
