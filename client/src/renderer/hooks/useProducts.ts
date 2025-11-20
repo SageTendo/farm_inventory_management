@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../../shared/dto/product";
-import { useAtom, useAtomValue } from "jotai";
-import { isMobileAtom, productsAtom } from "../atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { isFetchingProductsAtom, isMobileAtom, productsAtom } from "../atoms";
 import { trpcClient } from "../../shared/trpc/client";
 
 export function useProducts() {
   const isMobile = useAtomValue(isMobileAtom);
+  const setIsFetchingProducts = useSetAtom(isFetchingProductsAtom);
   const [products, setProducts] = useAtom<ProductDTO[]>(productsAtom);
   const [_totalProducts, setTotalProducts] = useState(0);
   const [_searchQuery, setSearchQuery] = useState("");
@@ -16,6 +17,7 @@ export function useProducts() {
   useEffect(() => {
     const queryOffset = (currentPage - 1) * queryLimit;
     const handleFetchProducts = async () => {
+      setIsFetchingProducts(true);
       const productsList = await trpcClient.product.getAll.query({
         searchTerm: _searchQuery,
         limit: queryLimit,
@@ -24,6 +26,7 @@ export function useProducts() {
       setProducts(productsList.products);
       setTotalProducts(productsList.total);
       setTotalPages(Math.max(1, Math.ceil(productsList.total / queryLimit)));
+      setIsFetchingProducts(false);
     };
 
     handleFetchProducts();
