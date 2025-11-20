@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { trpcClient } from "../../../../shared/trpc/client";
 import { ProductDTO } from "../../../../shared/dto/product";
-import { Money } from "../../../../lib/money";
 import { ConfirmDialog } from "../../components/shared/ConfirmDialog";
+import { Spinner } from "../../components/shared/Spinner";
 
 // TODO: Do I need to include the details about who added the product?
 // TODO: Need user id to be able to delete and update products
 // TODO: Handle deletion and updates
 export function ManageProduct() {
-  const [isLoading, setIsLoading] = useState(true);
-  const { productId } = useParams();
   const navigate = useNavigate();
+  const { productId } = useParams();
+
+  const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState<ProductDTO>(null);
-  const [name, setName] = useState<string>("");
-  const [buyPrice, setBuyPrice] = useState<number>(0);
-  const [sellPrice, setSellPrice] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(-1);
+  const [name, setName] = useState<string>(null);
+  const [buyPrice, setBuyPrice] = useState<number>(null);
+  const [sellPrice, setSellPrice] = useState<number>(null);
+  const [quantity, setQuantity] = useState<number>(null);
 
   const [showDeleteProductDialog, setShowDeleteProductDialog] = useState(false);
   const [showSaveChangesDialog, setShowSaveChangesDialog] = useState(false);
@@ -27,12 +28,12 @@ export function ManageProduct() {
     const getProduct = async () => {
       if (!productId) navigate("404");
 
-      setIsLoading(true);
       await trpcClient.product.getById
         .query({
           id: productId,
         })
         .then((product) => {
+          setIsLoading(true);
           if (!product) navigate("404");
           setProduct(product);
           setIsLoading(false);
@@ -43,9 +44,7 @@ export function ManageProduct() {
   }, [productId]);
 
   const isFormChanged = () => {
-    return (
-      name.trim() !== "" || buyPrice !== 0 || sellPrice !== 0 || quantity !== -1
-    );
+    return name || buyPrice || sellPrice || quantity;
   };
 
   const formatDate = (date: Date) => {
@@ -68,13 +67,7 @@ export function ManageProduct() {
   };
 
   return isLoading ? (
-    <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
-      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-12 sm:px-10">
-        <div className="flex items-center justify-center h-full">
-          <FontAwesomeIcon icon={faSpinner} spin />
-        </div>
-      </div>
-    </div>
+    <Spinner />
   ) : (
     <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
       {/* Sticky Header */}
@@ -96,6 +89,7 @@ export function ManageProduct() {
             <label className="block mb-1 font-medium">Product Name</label>
             <input
               type="text"
+              value={name ?? ""}
               className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
               placeholder={product.name}
               onChange={(e) => setName(e.target.value)}
@@ -108,8 +102,9 @@ export function ManageProduct() {
               <label className="block mb-1 font-medium">Buy Price (USD)</label>
               <input
                 type="number"
+                value={buyPrice ?? ""}
                 className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-                placeholder={Money.fromDollars(product.buyPrice).read}
+                placeholder={product.buyPrice.toFixed(2)}
                 onChange={(e) => setBuyPrice(parseFloat(e.target.value))}
               />
             </div>
@@ -117,8 +112,9 @@ export function ManageProduct() {
               <label className="block mb-1 font-medium">Sell Price (USD)</label>
               <input
                 type="number"
+                value={sellPrice ?? ""}
                 className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-                placeholder={Money.fromDollars(product.sellPrice).read}
+                placeholder={product.sellPrice.toFixed(2)}
                 onChange={(e) => setSellPrice(parseFloat(e.target.value))}
               />
             </div>
@@ -129,6 +125,7 @@ export function ManageProduct() {
             <label className="block mb-1 font-medium">Quantity</label>
             <input
               type="number"
+              value={quantity ?? ""}
               className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
               placeholder={product.quantity.toString()}
               onChange={(e) => setQuantity(parseInt(e.target.value))}
