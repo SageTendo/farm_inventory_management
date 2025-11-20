@@ -9,11 +9,11 @@ import { SearchBar } from "../components/shared/SearchBar";
 import { Pagination } from "../components/shared/Pagination";
 import { useAtom, useAtomValue } from "jotai";
 import { checkoutOpenAtom } from "../../atoms/shop.atom";
-import { isMobileAtom } from "../../atoms";
+import { isFetchingProductsAtom, isMobileAtom } from "../../atoms";
+import { Spinner } from "../components/shared/Spinner";
 
 /**
  * TODO:
- * - Add a loading state
  * - Add a success state
  * - Add a failure state
  * - Implement payment process
@@ -28,6 +28,7 @@ export function Shop() {
     setQueryLimit,
     setCurrentPage,
   } = useProducts();
+  const isFetchingProducts = useAtomValue(isFetchingProductsAtom);
   const { addCartItem, updateCartItem, removeCartItem, clearCart } = useCart();
   const isMobile = useAtomValue(isMobileAtom);
   const [isChekoutScreenOpen, setIsChekoutScreenOpen] =
@@ -43,41 +44,47 @@ export function Shop() {
       <SearchBar onSearch={handleSearch} />
 
       {/* Main layout: product list + cart */}
-      <div className="flex flex-1 gap-4 overflow-hidden">
-        <ProductsListing products={products} onAddToCart={addCartItem} />
-        <CartPanel
-          onChangeQuantity={updateCartItem}
-          onRemoveItem={removeCartItem}
-          clearCart={clearCart}
-          onCheckout={() => setIsChekoutScreenOpen(true)}
-        />
+      {isFetchingProducts ? (
+        <Spinner />
+      ) : (
+        <>
+          <div className="flex flex-1 gap-4 overflow-hidden">
+            <ProductsListing products={products} onAddToCart={addCartItem} />
+            <CartPanel
+              onChangeQuantity={updateCartItem}
+              onRemoveItem={removeCartItem}
+              clearCart={clearCart}
+              onCheckout={() => setIsChekoutScreenOpen(true)}
+            />
 
-        {/* Desktop Checkout Screen Modal */}
-        {!isMobile && isChekoutScreenOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
-            <CheckoutScreen />
+            {/* Desktop Checkout Screen Modal */}
+            {!isMobile && isChekoutScreenOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-6">
+                <CheckoutScreen />
+              </div>
+            )}
+
+            {/* Mobile Checkout Screen Modal */}
+            {isMobile && isChekoutScreenOpen && (
+              <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
+                <CheckoutScreen />
+              </div>
+            )}
           </div>
-        )}
 
-        {/* Mobile Checkout Screen Modal */}
-        {isMobile && isChekoutScreenOpen && (
-          <div className="fixed inset-0 z-50 md:z-50 bg-gray-900 text-white flex flex-col px-3 py-2">
-            <CheckoutScreen />
-          </div>
-        )}
-      </div>
-
-      <Pagination
-        page={currentPage}
-        totalPages={totalPages}
-        limit={queryLimit}
-        onSetLimit={setQueryLimit}
-        onStartPage={() => setCurrentPage(1)}
-        onEndPage={() => setCurrentPage(totalPages)}
-        onNextPage={() => setCurrentPage(currentPage + 1)}
-        onPreviousPage={() => setCurrentPage(currentPage - 1)}
-        onSetPage={setCurrentPage}
-      />
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            limit={queryLimit}
+            onSetLimit={setQueryLimit}
+            onStartPage={() => setCurrentPage(1)}
+            onEndPage={() => setCurrentPage(totalPages)}
+            onNextPage={() => setCurrentPage(currentPage + 1)}
+            onPreviousPage={() => setCurrentPage(currentPage - 1)}
+            onSetPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 }
