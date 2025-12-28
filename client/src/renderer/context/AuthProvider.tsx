@@ -13,6 +13,7 @@ type SessionValidationResult = {
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  user: AuthDataDTO;
   login: (username: string, password: string) => Promise<AuthResult>;
   validateSession: () => Promise<SessionValidationResult>;
   logout: () => void;
@@ -26,6 +27,7 @@ const enum constants {
 const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<AuthDataDTO | null>(null);
 
   const validateSession = async (): Promise<SessionValidationResult> => {
     const authDataRaw = localStorage.getItem(constants.AUTH_DATA);
@@ -65,6 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       };
     }
     setIsAuthenticated(true);
+    setUser(parsedData);
     return {};
   };
 
@@ -112,7 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, login, logout, validateSession }}
+      value={{ isAuthenticated, user, login, logout, validateSession }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,6 +1,6 @@
 import { and, count, eq, gt, like, ne } from "drizzle-orm";
 import { BaseRepository } from ".";
-import { productTable, stockTable } from "..";
+import { productTable, stockTable, userTable } from "..";
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import {
@@ -10,6 +10,7 @@ import {
   UpdateProductDTO,
 } from "../../../shared/dto/product";
 import { NewStockDTO } from "../../../shared/dto/stock";
+import { CRUDError } from "../../../lib/error";
 
 /**
  * Repository class to handle CRUD operations for product entities.
@@ -27,7 +28,7 @@ export class ProductRepository
     return this.dbContext.transaction((tx: BetterSQLite3Database) => {
       // Insert product
       const product = tx.insert(productTable).values(data).returning().get();
-      if (!product) throw new Error("Failed to insert product");
+      if (!product) throw new CRUDError("Failed to insert product");
 
       // Insert stock
       const stock = tx
@@ -40,7 +41,7 @@ export class ProductRepository
         } as NewStockDTO)
         .returning()
         .get();
-      if (!stock) throw new Error("Failed to insert stock");
+      if (!stock) throw new CRUDError("Failed to insert stock");
 
       return {
         ...product,
@@ -56,10 +57,11 @@ export class ProductRepository
    * @returns The product if found, or null
    */
   async getById(productId: string): Promise<ProductDTO | null> {
-    const product = await this.dbContext
+    const product = this.dbContext
       .select()
       .from(productTable)
       .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
+      .leftJoin(userTable, eq(productTable.addedBy, userTable.id))
       .where(
         and(eq(productTable.id, productId), ne(productTable.isDeleted, true))
       )
@@ -70,6 +72,7 @@ export class ProductRepository
       ...product.product,
       quantity: product.stock?.quantity,
       lowStockThreshold: product.stock?.lowStockThreshold,
+      addedBy: product.user?.username,
     } as ProductDTO;
   }
 

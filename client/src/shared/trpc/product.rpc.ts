@@ -1,7 +1,12 @@
 import { z } from "zod";
-import { router, publicProcedure } from ".";
+import { router, publicProcedure, handleError } from ".";
 import { IProductService } from "../../main/service/interfaces/IProductService";
-import { NewProductDTO, ProductDTO, ProductListDTO, UpdateProductDTO } from "../dto/product";
+import {
+  NewProductDTO,
+  ProductDTO,
+  ProductListDTO,
+  UpdateProductDTO,
+} from "../dto/product";
 
 export const productRouter = (productService: IProductService) =>
   router({
@@ -28,7 +33,13 @@ export const productRouter = (productService: IProductService) =>
     create: publicProcedure
       .input(NewProductDTO)
       .output(ProductDTO)
-      .mutation(({ input }) => productService.create(input)),
+      .mutation(async ({ input }) => {
+        try {
+          return await productService.create(input);
+        } catch (err) {
+          handleError(err);
+        }
+      }),
 
     update: publicProcedure
       .input(
@@ -39,9 +50,13 @@ export const productRouter = (productService: IProductService) =>
         })
       )
       .output(ProductDTO.nullable())
-      .mutation(({ input }) =>
-        productService.update(input.userId, input.id, input.entity)
-      ),
+      .mutation(({ input }) => {
+        try {
+          return productService.update(input.userId, input.id, input.entity);
+        } catch (err) {
+          handleError(err);
+        }
+      }),
 
     delete: publicProcedure
       .input(
@@ -50,5 +65,11 @@ export const productRouter = (productService: IProductService) =>
           id: z.string(),
         })
       )
-      .mutation(({ input }) => productService.delete(input.userId, input.id)),
+      .mutation(({ input }) => {
+        try {
+          return productService.delete(input.userId, input.id);
+        } catch (err) {
+          handleError(err);
+        }
+      }),
   });

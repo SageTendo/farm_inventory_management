@@ -3,6 +3,7 @@ import { IStockRepository } from "../database/interfaces/IStockRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IStockService } from "./interfaces/IStockService";
+import { ForbiddenError } from "../../lib/error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
@@ -33,7 +34,7 @@ export class StockService implements IStockService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to update the quantity!");
+      throw new ForbiddenError("You do not have permission to update the quantity!");
     return await this.stockRepository.update(stockId, entity);
   }
 
@@ -47,7 +48,7 @@ export class StockService implements IStockService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error(
+      throw new ForbiddenError(
         "You do not have permission to update the low stock threshold!"
       );
     return await this.stockRepository.update(stockId, entity);
@@ -74,7 +75,7 @@ export class StockService implements IStockService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to delete this stock!");
+      throw new ForbiddenError("You do not have permission to delete this stock!");
     return this.stockRepository.delete(stockId);
   }
 }

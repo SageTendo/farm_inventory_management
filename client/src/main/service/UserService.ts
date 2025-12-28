@@ -4,6 +4,7 @@ import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import bcrypt from "bcrypt";
 import { env } from "../../config";
 import { UserResponseDTO, UpdateUserDTO } from "../../shared/dto/user";
+import { NotFoundError } from "../../lib/error";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;
@@ -30,7 +31,7 @@ export class UserService implements IUserService {
 
     const adminRole = await this.roleRepository.getByType("ADMIN");
     if (!adminRole) {
-      throw new Error("Admin role not found. Please populate roles first.");
+      throw new NotFoundError("Admin role not found. Please populate roles first.");
     }
 
     const passwordHash = await bcrypt.hash(adminPassword, env.SALT_ROUNDS);

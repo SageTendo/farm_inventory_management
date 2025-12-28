@@ -8,6 +8,7 @@ import { UserRoleType } from "../../shared/types";
 import { AuthResponseDTO, AuthDataDTO } from "../../shared/dto/auth";
 import { NewUserDTO, UserResponseDTO } from "../../shared/dto/user";
 import crypto from "crypto";
+import { ForbiddenError, NotFoundError } from "../../lib/error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN"];
 
@@ -139,17 +140,19 @@ export class AuthService implements IAuthService {
     );
     console.log(hasRequiredRole);
     if (!hasRequiredRole) {
-      throw new Error("You do not have permission to update user roles");
+      throw new ForbiddenError(
+        "You do not have permission to update user roles"
+      );
     }
 
     const existingUser = await this.userRepository.getById(userId);
     if (!existingUser) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
 
     const role = await this.roleRepository.getById(roleID);
     if (!role) {
-      throw new Error("Invalid role ID");
+      throw new NotFoundError("Invalid role ID");
     }
     return await this.userRepository.update(userId, { roleID });
   }
@@ -160,12 +163,12 @@ export class AuthService implements IAuthService {
     password: string
   ): Promise<UserResponseDTO | null> {
     if (!(await this.hasRequiredRole(adminId, PERMITTED_ROLES))) {
-      throw new Error("You do not have permission to update user passwords");
+      throw new ForbiddenError("You do not have permission to update user passwords");
     }
 
     const existingUser = await this.userRepository.getById(userId);
     if (!existingUser) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
 
     if (!password.trim()) {

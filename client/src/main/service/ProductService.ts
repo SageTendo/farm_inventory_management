@@ -9,6 +9,7 @@ import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IProductService } from "./interfaces/IProductService";
 import { Money } from "../../lib/money";
+import { ForbiddenError, NotFoundError } from "../../lib/error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
@@ -31,8 +32,9 @@ export class ProductService implements IProductService {
     );
 
     if (!hasPermission) {
-      throw new Error("You do not have permission to add products!");
+      throw new ForbiddenError("You do not have permission to add products!");
     }
+
     return await this.productRepository.create({
       ...product,
       buyPrice: Money.fromDollars(product.buyPrice).toCents,
@@ -85,12 +87,28 @@ export class ProductService implements IProductService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to update products!");
+      throw new ForbiddenError(
+        "You do not have permission to update products!"
+      );
 
     const productExists = this.productRepository.getById(productId);
     if (!productExists)
-      throw Error("You cannot modify a product which does not exist!");
-    return await this.productRepository.update(productId, entity);
+      throw new NotFoundError(
+        "You cannot modify a product which does not exist!"
+      );
+
+    const updatedProduct = await this.productRepository.update(productId, {
+      ...entity,
+      buyPrice: Money.fromDollars(entity.buyPrice).toCents,
+      sellPrice: Money.fromDollars(entity.sellPrice).toCents,
+    });
+
+    if (!updatedProduct) return null;
+    return ProductDTO.parse({
+      ...updatedProduct,
+      buyPrice: Money.fromCents(updatedProduct.buyPrice).toDollars,
+      sellPrice: Money.fromCents(updatedProduct.sellPrice).toDollars,
+    });
   }
 
   async delete(userId: string, productId: string): Promise<void> {
@@ -99,7 +117,9 @@ export class ProductService implements IProductService {
       PERMITTED_ROLES
     );
     if (!hasPermission)
-      throw new Error("You do not have permission to delete products!");
+      throw new ForbiddenError(
+        "You do not have permission to delete products!"
+      );
     return await this.productRepository.delete(productId);
   }
 }

@@ -147,27 +147,27 @@ describe("ProductService", () => {
 
   test("Search non-existent product", async () => {
     mockProductRepository.getAll.mockImplementation(async (name) => {
-      if (name === "Lays Chips") {
+      if (name !== "Lays Chips")
         return {
-          products: [
-            {
-              id: "UUID",
-              name: "Lays Chips",
-              buyPrice: 100,
-              sellPrice: 120,
-              addedBy: "user UUID",
-              isDeleted: false,
-              createdAt: new Date(),
-              quantity: 10,
-              lowStockThreshold: 5,
-            },
-          ],
-          total: 1,
+          products: [],
+          total: 0,
         };
-      }
+
       return {
-        products: [],
-        total: 0,
+        products: [
+          {
+            id: "UUID",
+            name: "Lays Chips",
+            buyPrice: 100,
+            sellPrice: 120,
+            addedBy: "user UUID",
+            isDeleted: false,
+            createdAt: new Date(),
+            quantity: 10,
+            lowStockThreshold: 5,
+          },
+        ],
+        total: 1,
       };
     });
     const products = await productService.getAll("Colgate");
@@ -176,20 +176,18 @@ describe("ProductService", () => {
 
   test("Update product", async () => {
     mockProductRepository.getById.mockImplementation(async (id) => {
-      if (id === "UUID") {
-        return {
-          id: "UUID",
-          name: "Lays Salted Chips",
-          buyPrice: 100,
-          sellPrice: 130,
-          addedBy: "user UUID",
-          isDeleted: false,
-          createdAt: new Date(),
-          quantity: 10,
-          lowStockThreshold: 5,
-        };
-      }
-      return null;
+      if (id !== "UUID") return null;
+      return {
+        id: "UUID",
+        name: "Lays Salted Chips",
+        buyPrice: 120,
+        sellPrice: 150,
+        addedBy: "user UUID",
+        isDeleted: false,
+        createdAt: new Date(),
+        quantity: 10,
+        lowStockThreshold: 5,
+      };
     });
 
     mockAuthService.hasRequiredRole.mockResolvedValue(true);
@@ -212,8 +210,8 @@ describe("ProductService", () => {
     });
 
     expect(product?.name).toBe("Lays Salted Chips");
-    expect(product?.buyPrice).toBe(100);
-    expect(product?.sellPrice).toBe(130);
+    expect(product?.buyPrice).toBe(1);
+    expect(product?.sellPrice).toBe(1.3);
   });
 
   test("Delete product", async () => {
