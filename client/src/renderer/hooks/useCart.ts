@@ -87,7 +87,7 @@ export function useCart() {
     setCart([]);
   }
 
-  function checkout(paidAmount: Money, changeAmount: Money): void {
+  async function checkout(paidAmount: Money, changeAmount: Money): Promise<void> {
     // TODO: implement payment
     // Things to do:
     // - Update stock in database
