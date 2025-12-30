@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faBoxesStacked,
-  faWarehouse,
   faChartLine,
   faUsers,
   faBars,
@@ -24,7 +23,6 @@ const navItems = [
   { to: "/dashboard", icon: faHome, label: "Dashboard" },
   { to: "/pos", icon: faStore, label: "Shop" },
   { to: "/products", icon: faBoxesStacked, label: "Products" },
-  { to: "/stock", icon: faWarehouse, label: "Stock" },
   { to: "/sales", icon: faChartLine, label: "Sales" },
   { to: "/users", icon: faUsers, label: "Users" },
   { to: "/settings", icon: faUser, label: "Settings" },

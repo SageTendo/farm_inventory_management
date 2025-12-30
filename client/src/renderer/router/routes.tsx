@@ -21,7 +21,7 @@ export const paths = {
   products: "/products",
   newProduct: "/products/new",
   manageProduct: "/products/:productId/manage",
-  stock: "/stock",
+  manageStock: "/products/:productId/stock",
   sales: "/sales",
   users: "/users",
   newUser: "/users/new",
@@ -44,7 +44,8 @@ const protectedRoutes: RouteObject[] = [
           { path: paths.products, element: <Products /> },
           { path: paths.newProduct, element: <NewProduct /> },
           { path: paths.manageProduct, element: <ManageProduct /> },
-          { path: paths.stock, element: <div>Stock</div> },
+          // TODO: Implement stock management
+          { path: paths.manageStock, element: <div>Stock</div> },
           { path: paths.sales, element: <div>Sales</div> },
           { path: paths.users, element: <Users /> },
           { path: paths.newUser, element: <NewUser /> },
