@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { relations, SQL, sql } from "drizzle-orm";
 import {
   sqliteTable,
   text,
@@ -6,6 +6,7 @@ import {
   check,
   real,
   index,
+  AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
 import { userRoleTypes } from "../../shared/types";
 import { v4 as uuidv4 } from "uuid";
@@ -240,3 +241,7 @@ export const stockRelations = relations(stockTable, ({ one }) => ({
     references: [productTable.id],
   }),
 }));
+
+export function lower(email: AnySQLiteColumn): SQL {
+  return sql`lower(${email})`;
+}

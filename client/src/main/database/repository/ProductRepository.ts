@@ -1,6 +1,6 @@
 import { and, count, eq, gt, like, ne } from "drizzle-orm";
 import { BaseRepository } from ".";
-import { productTable, stockTable, userTable } from "..";
+import { lower, productTable, stockTable, userTable } from "..";
 import { IProductRepository } from "../interfaces/IProductRepository";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import {
@@ -9,8 +9,8 @@ import {
   ProductListDTO,
   UpdateProductDTO,
 } from "../../../shared/dto/product";
+import { ConflictError, CRUDError } from "../../error";
 import { NewStockDTO } from "../../../shared/dto/stock";
-import { CRUDError } from "../../../lib/error";
 
 /**
  * Repository class to handle CRUD operations for product entities.
@@ -85,7 +85,9 @@ export class ProductRepository
    */
   async getAll(name = "", limit = 10, offset = 0): Promise<ProductListDTO> {
     const filters = and(
-      name ? like(productTable.name, `%${name}%`) : undefined,
+      name
+        ? like(lower(productTable.name), `%${name.toLowerCase()}%`)
+        : undefined,
       gt(stockTable.quantity, 0),
       ne(productTable.isDeleted, true)
     );
@@ -132,10 +134,32 @@ export class ProductRepository
     productId: string,
     product: UpdateProductDTO
   ): Promise<ProductDTO | null> {
-    let updatedProduct, updatedStock;
+    let updatedProduct;
+
+    // Check for conflicts
+    if (product.name !== undefined) {
+      const nameConflict = this.dbContext
+        .select()
+        .from(productTable)
+        .where(
+          and(
+            ne(productTable.id, productId),
+            eq(lower(productTable.name), product.name.toLowerCase())
+          )
+        )
+        .get();
+      if (nameConflict)
+        throw new ConflictError(
+          `A product with this name: ${product.name} already exists.`
+        );
+    }
 
     // Update product fields
-    if (product.name || product.buyPrice || product.sellPrice) {
+    if (
+      product.name !== undefined ||
+      product.buyPrice !== undefined ||
+      product.sellPrice !== undefined
+    ) {
       updatedProduct = this.dbContext
         .update(productTable)
         .set({
@@ -150,30 +174,7 @@ export class ProductRepository
         .get();
     }
 
-    // Update stock fields if provided
-    if (
-      product.quantity !== undefined ||
-      product.lowStockThreshold !== undefined
-    ) {
-      updatedStock = this.dbContext
-        .update(stockTable)
-        .set({
-          ...(product.quantity !== undefined && { quantity: product.quantity }),
-          ...(product.lowStockThreshold !== undefined && {
-            lowStockThreshold: product.lowStockThreshold,
-          }),
-        })
-        .where(eq(stockTable.productID, productId))
-        .returning()
-        .get();
-    }
-
-    if (!updatedProduct && !updatedStock) return null;
-    return {
-      ...updatedProduct,
-      quantity: updatedStock?.quantity,
-      lowStockThreshold: updatedStock?.lowStockThreshold,
-    } as ProductDTO;
+    return updatedProduct;
   }
 
   /**
