@@ -15,6 +15,7 @@ import { AuthService } from "../../src/main/service/AuthService";
 import bcrypt from "bcrypt";
 import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
 import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
+import { AuthDataDTO } from "../../src/shared/dto/auth";
 
 let db: BetterSQLite3Database<Record<string, never>>;
 
@@ -244,5 +245,32 @@ describe("AuthService", () => {
     mockUserRepository.getById.mockResolvedValue(null);
     const result = await authService.hasRequiredRole("user UUID", ["ADMIN"]);
     expect(result).toBe(false);
+  });
+
+  test("Signs session token", async () => {
+    const authData: AuthDataDTO = {
+      id: "user UUID",
+      username: "test",
+      role: "ADMIN",
+    };
+
+    const result = await authService.signSession(authData);
+    expect(result).toBe("f9688edfa3774233b2abae7bffea2e428b5964b87c7509dba90ba15020078194");
+  });
+
+  test("Validates session token", async () => {
+    vi.spyOn(authService, "signSession").mockResolvedValue("sessionToken");
+
+    const authData: AuthDataDTO = {
+      id: "user UUID",
+      username: "test",
+      role: "ADMIN",
+    };
+
+    const result = await authService.validateSession(
+      "sessionToken",
+      authData
+    );
+    expect(result).toBe(true);
   });
 });
