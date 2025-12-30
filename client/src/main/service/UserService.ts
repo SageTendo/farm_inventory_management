@@ -4,7 +4,7 @@ import { IRoleRepository } from "../database/interfaces/IRoleRepository";
 import bcrypt from "bcrypt";
 import { env } from "../../config";
 import { UserResponseDTO, UpdateUserDTO } from "../../shared/dto/user";
-import { NotFoundError } from "../../lib/error";
+import { NotFoundError } from "../error";
 
 export class UserService implements IUserService {
   protected userRepository: IUserRepository;

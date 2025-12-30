@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bankersRounding, Money } from "../../src/lib/money";
+import { bankersRounding, Money } from "../../src/shared/lib/money";
 
 describe("Banker's Rounding", () => {
   it("should round to the nearest even number", () => {

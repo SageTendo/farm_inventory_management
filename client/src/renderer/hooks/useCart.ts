@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { CartItemDTO, ProductDTO } from "../../shared/dto/product";
-import { Money } from "../../lib/money";
+import { Money } from "../../shared/lib/money";
 import toast from "react-hot-toast";
 import { useAtom, useSetAtom } from "jotai";
 import {

@@ -8,7 +8,7 @@ import { UserRoleType } from "../../shared/types";
 import { AuthResponseDTO, AuthDataDTO } from "../../shared/dto/auth";
 import { NewUserDTO, UserResponseDTO } from "../../shared/dto/user";
 import crypto from "crypto";
-import { ForbiddenError, NotFoundError } from "../../lib/error";
+import { ForbiddenError, NotFoundError } from "../error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN"];
 

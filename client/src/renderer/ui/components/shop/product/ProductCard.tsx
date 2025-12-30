@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { ProductDTO } from "../../../../../shared/dto/product";
-import { Money } from "../../../../../lib/money";
+import { Money } from "../../../../../shared/lib/money";
 import { useAtomValue } from "jotai";
 import { exchangeRateAtom } from "../../../../atoms";
 

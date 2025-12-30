@@ -1,16 +1,16 @@
 import { z } from "zod";
-import { Money } from "../../lib/money";
+import { Money } from "../lib/money";
 
 export const ProductDTO = z.object({
   id: z.string(),
   name: z.string(),
   buyPrice: z.number(),
   sellPrice: z.number(),
-  addedBy: z.string(),
   isDeleted: z.boolean(),
   createdAt: z.coerce.date(),
-  quantity: z.number(),
-  lowStockThreshold: z.number(),
+  addedBy: z.string(),
+  quantity: z.number().optional(),
+  lowStockThreshold: z.number().optional(),
 });
 
 export const NewProductDTO = ProductDTO.omit({

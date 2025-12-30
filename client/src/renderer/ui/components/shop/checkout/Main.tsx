@@ -9,8 +9,8 @@ import {
 import {
   UnsafeMonetaryValueError,
   MoneyParseError,
-} from "../../../../../lib/error";
-import { Money } from "../../../../../lib/money";
+} from "../../../../../main/error";
+import { Money } from "../../../../../shared/lib/money";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
   cartAtom,

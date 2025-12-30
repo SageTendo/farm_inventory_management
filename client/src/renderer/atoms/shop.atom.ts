@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { CartItemDTO } from "../../shared/dto/product";
-import { Money } from "../../lib/money";
+import { Money } from "../../shared/lib/money";
 import { CurrencyType } from "../../shared/types";
 
 //TODO: Fetch exchange rate from backend

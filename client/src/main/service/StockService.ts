@@ -3,7 +3,7 @@ import { IStockRepository } from "../database/interfaces/IStockRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IStockService } from "./interfaces/IStockService";
-import { ForbiddenError } from "../../lib/error";
+import { ForbiddenError } from "../error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 

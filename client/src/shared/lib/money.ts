@@ -1,4 +1,4 @@
-import { UnsafeMonetaryValueError, MoneyParseError } from "./error";
+import { UnsafeMonetaryValueError, MoneyParseError } from "../../main/error";
 
 /**
  * Money class for handling monetary values

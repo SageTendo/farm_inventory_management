@@ -8,8 +8,8 @@ import { IProductRepository } from "../database/interfaces/IProductRepository";
 import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IProductService } from "./interfaces/IProductService";
-import { Money } from "../../lib/money";
-import { ForbiddenError, NotFoundError } from "../../lib/error";
+import { Money } from "../../shared/lib/money";
+import { ForbiddenError, NotFoundError } from "../error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
@@ -116,6 +116,7 @@ export class ProductService implements IProductService {
       userId,
       PERMITTED_ROLES
     );
+
     if (!hasPermission)
       throw new ForbiddenError(
         "You do not have permission to delete products!"

@@ -3,7 +3,12 @@ import { ServiceRegistry } from "../../main/service";
 import { authRouter } from "./auth.rpc";
 import { userRouter } from "./user.rpc";
 import { productRouter } from "./product.rpc";
-import { ForbiddenError, NotFoundError, UnauthorizedError, ConflictError } from "../../lib/error";
+import {
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+  ConflictError,
+} from "../../main/error";
 
 const serviceRegistry = ServiceRegistry.getInstance();
 
