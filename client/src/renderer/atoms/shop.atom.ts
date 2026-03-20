@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { CartItemDTO } from "../../shared/dto/product";
 import { Money } from "../../shared/lib/money";
 import { CurrencyType } from "../../shared/types";
@@ -8,7 +9,7 @@ export const exchangeRateAtom = atom(20.0);
 
 // Cart State
 export const cartOpenAtom = atom(false);
-export const cartAtom = atom<CartItemDTO[]>([]);
+export const cartAtom = atomWithStorage('cart', [] as CartItemDTO[]);
 export const cartItemsCountAtom = atom(0);
 export const cartTotalAtom = atom(Money.fromDollars(0));
 

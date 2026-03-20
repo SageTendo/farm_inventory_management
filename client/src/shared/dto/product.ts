@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Money } from "../lib/money";
 
 export const ProductDTO = z.object({
   id: z.string(),
@@ -31,12 +30,12 @@ export const ProductListDTO = z.object({
   total: z.number(),
 });
 
-export const CartItemDTO = ProductDTO.transform((data) => ({
-  ...data,
-  buyPrice: Money.fromDollars(data.buyPrice),
-  sellPrice: Money.fromDollars(data.sellPrice),
-}));
-
+export const CartItemDTO = ProductDTO.omit({
+  isDeleted: true,
+  createdAt: true,
+  addedBy: true,
+  lowStockThreshold: true,
+});
 export type ProductDTO = z.infer<typeof ProductDTO>;
 export type NewProductDTO = z.infer<typeof NewProductDTO>;
 export type UpdateProductDTO = z.infer<typeof UpdateProductDTO>;

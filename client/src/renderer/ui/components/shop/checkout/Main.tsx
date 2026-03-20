@@ -182,8 +182,11 @@ export function CheckoutScreen() {
                 const price =
                   selectedCurrency === "USD"
                     ? item.sellPrice
-                    : item.sellPrice.multiply(exchangeRate);
-                const subtotal = price.multiply(item.quantity);
+                    : Money.fromDollars(item.sellPrice).multiply(exchangeRate)
+                        .toDollars;
+                const subtotal = Money.fromDollars(price).multiply(
+                  item.quantity,
+                );
                 return (
                   <div
                     key={item.id}
@@ -193,7 +196,7 @@ export function CheckoutScreen() {
                     <span className="w-1/4 text-right">x{item.quantity}</span>
                     <span className="w-1/4 text-right">
                       {selectedCurrency === "USD" ? "$" : "Z$"}{" "}
-                      {numericFormat(price.read)}
+                      {numericFormat(price.toFixed(2))}
                     </span>
                     <span className="w-1/4 text-right font-semibold text-green-400">
                       {selectedCurrency === "USD" ? "$" : "Z$"}{" "}

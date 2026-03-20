@@ -18,8 +18,10 @@ export function useCart() {
   // Compute cart total and item count
   useEffect(() => {
     const cartTotal = cart.reduce(
-      (total, item) => total + item.sellPrice.multiply(item.quantity).toDollars,
-      0
+      (total, item) =>
+        total +
+        Money.fromDollars(item.sellPrice).multiply(item.quantity).toDollars,
+      0,
     );
     setCartTotal(Money.fromDollars(cartTotal));
     setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
@@ -40,8 +42,8 @@ export function useCart() {
         prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+            : item,
+        ),
       );
     } else {
       const newCartItem = CartItemDTO.parse(product);
@@ -74,8 +76,8 @@ export function useCart() {
 
     setCart((prev) =>
       prev.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      )
+        item.id === productId ? { ...item, quantity: newQuantity } : item,
+      ),
     );
   }
 
@@ -87,7 +89,10 @@ export function useCart() {
     setCart([]);
   }
 
-  async function checkout(paidAmount: Money, changeAmount: Money): Promise<void> {
+  async function checkout(
+    paidAmount: Money,
+    changeAmount: Money,
+  ): Promise<void> {
     // TODO: implement payment
     // Things to do:
     // - Update stock in database

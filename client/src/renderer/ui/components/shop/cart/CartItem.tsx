@@ -19,7 +19,7 @@ export const CartItem = ({
       <div className="p-2 pr-6">
         <h5 className="font-bold mb-1">{item.name}</h5>
         <div className="text-sm text-gray-300">
-          Price: ${item.sellPrice.read}
+          Price: ${item.sellPrice.toFixed(2)}
         </div>
         <div className="text-sm text-gray-300">Quantity: {item.quantity}</div>
       </div>
