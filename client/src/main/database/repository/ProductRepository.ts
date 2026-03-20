@@ -9,7 +9,7 @@ import {
   ProductListDTO,
   UpdateProductDTO,
 } from "../../../shared/dto/product";
-import { ConflictError, CRUDError } from "../../error";
+import { DBError, UniqueConstraintError } from "../../error";
 import { NewStockDTO } from "../../../shared/dto/stock";
 
 /**
@@ -27,21 +27,33 @@ export class ProductRepository
   async create(data: NewProductDTO): Promise<ProductDTO> {
     return this.dbContext.transaction((tx: BetterSQLite3Database) => {
       // Insert product
-      const product = tx.insert(productTable).values(data).returning().get();
-      if (!product) throw new CRUDError("Failed to insert product");
+      let product = null,
+        stock = null;
+      try {
+        product = tx.insert(productTable).values(data).returning().get();
+      } catch (err) {
+        const error = new DBError(err.message);
+        error.stack = err.stack;
+        throw error;
+      }
 
       // Insert stock
-      const stock = tx
-        .insert(stockTable)
-        .values({
-          quantity: data.quantity,
-          lowStockThreshold: data.lowStockThreshold,
-          productID: product.id,
-          timestamp: new Date(),
-        } as NewStockDTO)
-        .returning()
-        .get();
-      if (!stock) throw new CRUDError("Failed to insert stock");
+      try {
+        stock = tx
+          .insert(stockTable)
+          .values({
+            quantity: data.quantity,
+            lowStockThreshold: data.lowStockThreshold,
+            productID: product.id,
+            timestamp: new Date(),
+          } as NewStockDTO)
+          .returning()
+          .get();
+      } catch (err) {
+        const error = new DBError(err.message);
+        error.stack = err.stack;
+        throw error;
+      }
 
       return {
         ...product,
@@ -57,23 +69,49 @@ export class ProductRepository
    * @returns The product if found, or null
    */
   async getById(productId: string): Promise<ProductDTO | null> {
-    const product = this.dbContext
-      .select()
-      .from(productTable)
-      .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .leftJoin(userTable, eq(productTable.addedBy, userTable.id))
-      .where(
-        and(eq(productTable.id, productId), ne(productTable.isDeleted, true))
-      )
-      .get();
+    let product = null;
+    try {
+      product = this.dbContext
+        .select()
+        .from(productTable)
+        .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
+        .leftJoin(userTable, eq(productTable.addedBy, userTable.id))
+        .where(
+          and(eq(productTable.id, productId), ne(productTable.isDeleted, true)),
+        )
+        .get();
 
-    if (!product) return null;
-    return {
-      ...product.product,
-      quantity: product.stock?.quantity,
-      lowStockThreshold: product.stock?.lowStockThreshold,
-      addedBy: product.user?.username,
-    } as ProductDTO;
+      if (product === undefined) return null;
+      return {
+        ...product.product,
+        quantity: product.stock?.quantity,
+        lowStockThreshold: product.stock?.lowStockThreshold,
+        addedBy: product.user?.username,
+      } as ProductDTO;
+    } catch (err) {
+      const error = new DBError(err.message);
+      error.stack = err.stack;
+      throw error;
+    }
+  }
+
+  /**
+   * Get product by name
+   * @param name The name of the product to retrieve
+   * @returns The product if found, or null
+   */
+  async getByName(name: string): Promise<ProductDTO | null> {
+    try {
+      return this.dbContext
+        .select()
+        .from(productTable)
+        .where(eq(productTable.name, name))
+        .get();
+    } catch (err) {
+      const error = new DBError(err.message);
+      error.stack = err.stack;
+      throw error;
+    }
   }
 
   /**
@@ -89,39 +127,47 @@ export class ProductRepository
         ? like(lower(productTable.name), `%${name.toLowerCase()}%`)
         : undefined,
       gt(stockTable.quantity, 0),
-      ne(productTable.isDeleted, true)
+      ne(productTable.isDeleted, true),
     );
 
-    const products = this.dbContext
-      .select()
-      .from(productTable)
-      .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .where(filters)
-      .limit(limit)
-      .offset(offset)
-      .all();
+    let products = null;
+    let total = 0;
+    try {
+      products = this.dbContext
+        .select()
+        .from(productTable)
+        .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
+        .where(filters)
+        .limit(limit)
+        .offset(offset)
+        .all();
 
-    const [{ total }] = await this.dbContext
-      .select({ total: count() })
-      .from(productTable)
-      .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
-      .where(filters);
+      [{ total }] = await this.dbContext
+        .select({ total: count() })
+        .from(productTable)
+        .leftJoin(stockTable, eq(productTable.id, stockTable.productID))
+        .where(filters);
 
-    if (!products) {
+      if (!products) {
+        return {
+          products: [],
+          total: 0,
+        };
+      }
+
       return {
-        products: [],
-        total: 0,
+        products: products.map((result) => ({
+          ...result.product,
+          quantity: result.stock?.quantity,
+          lowStockThreshold: result.stock?.lowStockThreshold,
+        })) as ProductDTO[],
+        total: total,
       };
+    } catch (err) {
+      const error = new DBError(err.message);
+      error.stack = err.stack;
+      throw error;
     }
-
-    return {
-      products: products.map((result) => ({
-        ...result.product,
-        quantity: result.stock?.quantity,
-        lowStockThreshold: result.stock?.lowStockThreshold,
-      })) as ProductDTO[],
-      total: total,
-    };
   }
 
   /**
@@ -132,25 +178,32 @@ export class ProductRepository
    */
   async update(
     productId: string,
-    product: UpdateProductDTO
+    product: UpdateProductDTO,
   ): Promise<ProductDTO | null> {
-    let updatedProduct;
+    let nameConflict;
 
     // Check for conflicts
     if (product.name !== undefined) {
-      const nameConflict = this.dbContext
-        .select()
-        .from(productTable)
-        .where(
-          and(
-            ne(productTable.id, productId),
-            eq(lower(productTable.name), product.name.toLowerCase())
+      try {
+        nameConflict = this.dbContext
+          .select()
+          .from(productTable)
+          .where(
+            and(
+              ne(productTable.id, productId),
+              eq(lower(productTable.name), product.name.toLowerCase()),
+            ),
           )
-        )
-        .get();
+          .get();
+      } catch (err) {
+        const error = new DBError(err.message);
+        error.stack = err.stack;
+        throw error;
+      }
+
       if (nameConflict)
-        throw new ConflictError(
-          `A product with this name: ${product.name} already exists.`
+        throw new UniqueConstraintError(
+          `A product with this name: ${product.name} already exists.`,
         );
     }
 
@@ -160,21 +213,27 @@ export class ProductRepository
       product.buyPrice !== undefined ||
       product.sellPrice !== undefined
     ) {
-      updatedProduct = this.dbContext
-        .update(productTable)
-        .set({
-          ...(product.name !== undefined && { name: product.name }),
-          ...(product.buyPrice !== undefined && { buyPrice: product.buyPrice }),
-          ...(product.sellPrice !== undefined && {
-            sellPrice: product.sellPrice,
-          }),
-        })
-        .where(eq(productTable.id, productId))
-        .returning()
-        .get();
+      try {
+        return this.dbContext
+          .update(productTable)
+          .set({
+            ...(product.name !== undefined && { name: product.name }),
+            ...(product.buyPrice !== undefined && {
+              buyPrice: product.buyPrice,
+            }),
+            ...(product.sellPrice !== undefined && {
+              sellPrice: product.sellPrice,
+            }),
+          })
+          .where(eq(productTable.id, productId))
+          .returning()
+          .get();
+      } catch (err) {
+        const error = new DBError(err.message);
+        error.stack = err.stack;
+        throw error;
+      }
     }
-
-    return updatedProduct;
   }
 
   /**
@@ -182,10 +241,16 @@ export class ProductRepository
    * @param productID The ID of the product to delete
    */
   async delete(productID: string): Promise<void> {
-    this.dbContext
-      .update(productTable)
-      .set({ isDeleted: true } as Partial<ProductDTO>)
-      .where(eq(productTable.id, productID))
-      .run();
+    try {
+      this.dbContext
+        .update(productTable)
+        .set({ isDeleted: true } as Partial<ProductDTO>)
+        .where(eq(productTable.id, productID))
+        .run();
+    } catch (err) {
+      const error = new DBError(err.message);
+      error.stack = err.stack;
+      throw error;
+    }
   }
 }

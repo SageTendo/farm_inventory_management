@@ -17,8 +17,24 @@ export class UnsafeMonetaryValueError extends Error {
 }
 
 /** Generic error for CRUD operations */
-export class CRUDError extends Error {
+export class DBError extends Error {
   public constructor(err: string) {
+    super(err);
+  }
+}
+
+/**
+ * Errors for conflicts
+ * e.g. user tries to add a product that already exists
+ */
+export class UniqueConstraintError extends DBError {
+  constructor(err: string) {
+    super(err);
+  }
+}
+
+export class BadRequestError extends Error {
+  constructor(err: string) {
     super(err);
   }
 }

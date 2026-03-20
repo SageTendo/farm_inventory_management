@@ -9,7 +9,12 @@ import { UserRoleType } from "../../shared/types";
 import { IAuthService } from "./interfaces/IAuthService";
 import { IProductService } from "./interfaces/IProductService";
 import { Money } from "../../shared/lib/money";
-import { ForbiddenError, NotFoundError } from "../error";
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+} from "../error";
 
 const PERMITTED_ROLES: UserRoleType[] = ["ADMIN", "OWNER"];
 
@@ -19,7 +24,7 @@ export class ProductService implements IProductService {
 
   constructor(
     authService: IAuthService,
-    productRepository: IProductRepository
+    productRepository: IProductRepository,
   ) {
     this.authService = authService;
     this.productRepository = productRepository;
@@ -28,11 +33,16 @@ export class ProductService implements IProductService {
   async create(product: NewProductDTO): Promise<ProductDTO> {
     const hasPermission = await this.authService.hasRequiredRole(
       product.addedBy,
-      PERMITTED_ROLES
+      PERMITTED_ROLES,
     );
 
     if (!hasPermission) {
       throw new ForbiddenError("You do not have permission to add products!");
+    }
+
+    const productExists = await this.productRepository.getByName(product.name);
+    if (productExists) {
+      throw new ConflictError(`A Product with the name: ${product.name} already exists!`);
     }
 
     return await this.productRepository.create({
@@ -55,12 +65,12 @@ export class ProductService implements IProductService {
   async getAll(
     name?: string,
     limit?: number,
-    offset?: number
+    offset?: number,
   ): Promise<ProductListDTO> {
     const productsList = await this.productRepository.getAll(
       name,
       limit,
-      offset
+      offset,
     );
 
     const products = productsList.products.map((product) =>
@@ -68,7 +78,7 @@ export class ProductService implements IProductService {
         ...product,
         buyPrice: Money.fromCents(product.buyPrice).toDollars,
         sellPrice: Money.fromCents(product.sellPrice).toDollars,
-      })
+      }),
     );
 
     return {
@@ -80,21 +90,41 @@ export class ProductService implements IProductService {
   async update(
     userId: string,
     productId: string,
-    entity: UpdateProductDTO
+    entity: UpdateProductDTO,
   ): Promise<ProductDTO | null> {
     const hasPermission = this.authService.hasRequiredRole(
       userId,
-      PERMITTED_ROLES
+      PERMITTED_ROLES,
     );
     if (!hasPermission)
       throw new ForbiddenError(
-        "You do not have permission to update products!"
+        "You do not have permission to update products!",
       );
 
-    const productExists = this.productRepository.getById(productId);
-    if (!productExists)
+    const product = await this.productRepository.getById(productId);
+    if (!product) {
       throw new NotFoundError(
-        "You cannot modify a product which does not exist!"
+        "You cannot modify a product which does not exist!",
+      );
+    }
+
+    const isValidProductName =
+      (await this.productRepository.getByName(entity.name))?.id === productId;
+    if (isValidProductName) {
+      throw new ConflictError(
+        `A Product with the name: ${entity.name} already exists!`,
+      );
+    }
+
+    if (entity.name !== undefined && entity.name.trim() === "")
+      throw new BadRequestError("Product name cannot be empty!");
+
+    if (entity.buyPrice !== undefined && entity.buyPrice <= 0)
+      throw new BadRequestError("Product buy price must be greater than zero!");
+
+    if (entity.sellPrice !== undefined && entity.sellPrice <= 0)
+      throw new BadRequestError(
+        "Product sell price must be greater than zero!",
       );
 
     const updatedProduct = await this.productRepository.update(productId, {
@@ -114,12 +144,12 @@ export class ProductService implements IProductService {
   async delete(userId: string, productId: string): Promise<void> {
     const hasPermission = this.authService.hasRequiredRole(
       userId,
-      PERMITTED_ROLES
+      PERMITTED_ROLES,
     );
 
     if (!hasPermission)
       throw new ForbiddenError(
-        "You do not have permission to delete products!"
+        "You do not have permission to delete products!",
       );
     return await this.productRepository.delete(productId);
   }

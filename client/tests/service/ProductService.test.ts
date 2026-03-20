@@ -33,6 +33,7 @@ describe("ProductService", () => {
     create: vi.fn(),
     getAll: vi.fn(),
     getById: vi.fn(),
+    getByName: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
   });

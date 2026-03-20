@@ -50,6 +50,25 @@ test("Get product by ID", async () => {
   expect(products).toBeDefined();
 });
 
+test("Get non-existent product by ID", async () => {
+  const product = await productRepository.getById("some non-existent ID");
+  expect(product).toBeNull();
+});
+
+test("Get product by name", async () => {
+  const product = await productRepository.create({
+    name: "Lays Chips",
+    buyPrice: 100,
+    sellPrice: 120,
+    quantity: 10,
+    lowStockThreshold: 5,
+    addedBy: "some user UUID",
+  });
+
+  const products = await productRepository.getByName(product.name);
+  expect(products).toBeDefined();
+});
+
 test("Get All products", async () => {
   await productRepository.create({
     name: "Lays Chips",
