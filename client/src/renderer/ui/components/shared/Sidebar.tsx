@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import { useState, Dispatch, SetStateAction } from "react";
 import { useAuth } from "../../../context/AuthProvider";
 import toast from "react-hot-toast";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 interface SidebarProps {
   isSidebarHidden: boolean;
@@ -31,6 +32,8 @@ const navItems = [
 function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { logout } = useAuth();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
   const doLogout = () => {
     logout();
     toast.success("You have been logged out!");
@@ -84,7 +87,7 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
           ))}
 
           <button
-            onClick={doLogout}
+            onClick={() => setShowLogoutDialog(true)}
             className={`flex items-center w-full px-4 py-3 text-sm font-bold
                text-white transition duration-300 hover:bg-red-600 mt-auto
                ${isSidebarHidden ? "justify-end" : "justify-start"}
@@ -149,6 +152,17 @@ function Sidebar({ isSidebarHidden, setSidebarHidden }: SidebarProps) {
             Logout
           </button>
         </nav>
+      )}
+
+      {showLogoutDialog && (
+        <ConfirmDialog
+          title="Logout"
+          message="Are you sure you want to logout?"
+          onConfirm={doLogout}
+          onCancel={() => setShowLogoutDialog(false)}
+          confirmText={"Logout"}
+          cancelText={"Cancel"}
+        />
       )}
     </>
   );
