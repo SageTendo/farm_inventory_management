@@ -15,10 +15,11 @@ export function ManageProduct() {
   const { user, logout } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState<ProductDTO>(null);
-  const [name, setName] = useState<string>(null);
-  const [buyPrice, setBuyPrice] = useState<number>(0);
-  const [sellPrice, setSellPrice] = useState<number>(null);
+  const [product, setProduct] = useState<ProductDTO | null>(null);
+
+  const [name, setName] = useState<string | null>(null);
+  const [buyPrice, setBuyPrice] = useState<string | null>(null);
+  const [sellPrice, setSellPrice] = useState<string | null>(null);
 
   const [showDeleteProductDialog, setShowDeleteProductDialog] = useState(false);
   const [showSaveChangesDialog, setShowSaveChangesDialog] = useState(false);
@@ -28,25 +29,50 @@ export function ManageProduct() {
   }, [productId]);
 
   const getProduct = async () => {
-    if (!productId) navigate("404");
+    if (!productId) return navigate("404");
 
-    await trpcClient.product.getById
-      .query({
+    try {
+      const fetchedProduct = await trpcClient.product.getById.query({
         id: productId,
-      })
-      .then((product) => {
-        setIsLoading(true);
-        if (!product) navigate("404");
-        setProduct(product);
-        setName(product.name);
-        setBuyPrice(product.buyPrice);
-        setSellPrice(product.sellPrice);
-        setIsLoading(false);
       });
+      if (!fetchedProduct) return navigate("404");
+
+      setProduct(fetchedProduct);
+      setName(fetchedProduct.name);
+      // Pre-format the initial numbers to 2 decimal places
+      setBuyPrice(fetchedProduct.buyPrice.toFixed(2));
+      setSellPrice(fetchedProduct.sellPrice.toFixed(2));
+    } catch (err) {
+      toast.error("Failed to load product");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Formats the string to 2 decimal places when the user clicks away.
+   * e.g., "1" becomes "1.00", "1.5" becomes "1.50"
+   */
+  const handlePriceBlur = (
+    value: string | null,
+    setter: (v: string) => void,
+  ) => {
+    if (value !== null && value !== "") {
+      const numeric = parseFloat(value);
+      if (!isNaN(numeric)) {
+        setter(numeric.toFixed(2));
+      }
+    }
   };
 
   const isFormChanged = () => {
-    return name || buyPrice || sellPrice;
+    const hasNameChanged = name !== null && name !== product?.name;
+    const hasBuyChanged =
+      buyPrice !== null && parseFloat(buyPrice) !== product?.buyPrice;
+    const hasSellChanged =
+      sellPrice !== null && parseFloat(sellPrice) !== product?.sellPrice;
+
+    return hasNameChanged || hasBuyChanged || hasSellChanged;
   };
 
   const formatDate = (date: Date) => {
@@ -60,79 +86,57 @@ export function ManageProduct() {
     });
   };
 
-  const clearForm = () => {
-    setName(null);
-    setBuyPrice(null);
-    setSellPrice(null);
-  };
-
   const doDeleteProduct = () => {
-    if (!user) {
-      toast.error("You must be logged in to delete a product!");
-      return logout();
-    }
-
-    if (!productId) {
-      return toast.error("Product ID not provided for deletion!");
-    }
+    if (!user) return logout();
+    if (!productId) return toast.error("Product ID missing");
 
     trpcClient.product.delete
-      .mutate({
-        userId: user.id,
-        id: productId,
-      })
+      .mutate({ userId: user.id, id: productId })
       .then(() => {
         toast.success("Product deleted successfully!");
         navigate("/products");
       })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.message);
-      });
+      .catch((err) => toast.error(err.message));
   };
 
   const doSaveProduct = async () => {
-    if (!productId) return toast.error("Product ID not provided for saving!");
-    if (name && name.length === 0)
-      return toast.error("Product name cannot be empty!");
-    if (buyPrice && buyPrice <= 0)
-      return toast.error("Buy price must be greater than zero!");
-    if (sellPrice && sellPrice <= 0)
-      return toast.error("Sell price must be greater than zero!");
+    if (!productId || !user) return;
+
+    if (name && name.trim().length === 0)
+      return toast.error("Name cannot be empty!");
+    const finalBuy = buyPrice ? parseFloat(buyPrice) : product?.buyPrice;
+    const finalSell = sellPrice ? parseFloat(sellPrice) : product?.sellPrice;
+
+    if (finalBuy !== undefined && finalBuy <= 0)
+      return toast.error("Buy price must be > 0");
+    if (finalSell !== undefined && finalSell <= 0)
+      return toast.error("Sell price must be > 0");
 
     await trpcClient.product.update
       .mutate({
         userId: user.id,
         id: productId,
         entity: {
-          name: name.trim() ?? product?.name,
-          buyPrice: buyPrice ?? product?.buyPrice,
-          sellPrice: sellPrice ?? product?.sellPrice,
+          name: name?.trim() ?? product?.name,
+          buyPrice: finalBuy,
+          sellPrice: finalSell,
         },
       })
       .then(() => {
         toast.success("Product saved successfully!");
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(err.shape);
-        toast.error(err.message);
-      })
-      .finally(() => {
         setShowSaveChangesDialog(false);
-        clearForm();
-        getProduct();
-      });
+        getProduct(); // Refresh data
+      })
+      .catch((err) => toast.error(err.message));
   };
 
   return isLoading ? (
     <Spinner />
   ) : (
     <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700 transition">
+      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
         <Link to="/products">
-          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm sm:text-base">
+          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
             <FontAwesomeIcon icon={faArrowLeft} />
             <span>Products</span>
           </button>
@@ -140,7 +144,6 @@ export function ManageProduct() {
         <h1 className="text-xl md:text-3xl font-bold">Manage Product</h1>
       </div>
 
-      {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pt-6 pb-12 sm:px-10">
         <div className="space-y-6 max-w-4xl mx-auto">
           {/* Product Name */}
@@ -149,9 +152,8 @@ export function ManageProduct() {
             <input
               type="text"
               value={name ?? ""}
-              className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-              placeholder={product.name}
-              onChange={(e) => setName(e.target.value.trim())}
+              className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:ring focus:ring-blue-500"
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
@@ -161,94 +163,90 @@ export function ManageProduct() {
               <label className="block mb-1 font-medium">Buy Price (USD)</label>
               <input
                 type="number"
+                step="0.01"
                 value={buyPrice ?? ""}
-                className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-                placeholder={product.buyPrice.toFixed(2)}
-                onChange={(e) => setBuyPrice(parseFloat(e.target.value))}
+                className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
+                onChange={(e) => setBuyPrice(e.target.value)}
+                onBlur={() => handlePriceBlur(buyPrice, setBuyPrice)}
               />
             </div>
             <div>
               <label className="block mb-1 font-medium">Sell Price (USD)</label>
               <input
                 type="number"
+                step="0.01"
                 value={sellPrice ?? ""}
-                className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-                placeholder={product.sellPrice.toFixed(2)}
-                onChange={(e) => setSellPrice(parseFloat(e.target.value))}
+                className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
+                onChange={(e) => setSellPrice(e.target.value)}
+                onBlur={() => handlePriceBlur(sellPrice, setSellPrice)}
               />
             </div>
           </div>
 
-          {/* Immutable Fields */}
+          {/* Read-only Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="block text-sm text-gray-400 mb-1">
                 Added At:
               </label>
               <input
-                type="text"
                 readOnly
-                value={formatDate(product.createdAt)}
-                className="w-full p-3 rounded bg-gray-950 text-gray-400 border border-gray-700"
+                type="text"
+                value={product ? formatDate(product.createdAt) : ""}
+                className="w-full p-3 rounded bg-gray-950 text-gray-500 border border-gray-700"
               />
             </div>
-            <div className="sm:col-span-2">
+            <div>
               <label className="block text-sm text-gray-400 mb-1">
                 Added By:
               </label>
               <input
-                type="text"
                 readOnly
-                value={product.addedBy}
-                className="w-full p-3 rounded bg-gray-950 text-gray-400 border border-gray-700"
+                type="text"
+                value={product?.addedBy ?? ""}
+                className="w-full p-3 rounded bg-gray-950 text-gray-500 border border-gray-700"
               />
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <button
-              type="button"
               onClick={() => setShowDeleteProductDialog(true)}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition"
+              className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-bold transition"
             >
               Remove Product
             </button>
-            {showDeleteProductDialog && (
-              <ConfirmDialog
-                title="Remove Product"
-                message="Are you sure you want to remove this product?"
-                confirmText="Remove"
-                cancelText="Cancel"
-                onConfirm={doDeleteProduct}
-                onCancel={() => setShowDeleteProductDialog(false)}
-              />
-            )}
             <button
-              type="button"
               onClick={() => setShowSaveChangesDialog(true)}
               disabled={!isFormChanged()}
-              className={`w-full py-3 rounded-lg font-bold transition ${
-                isFormChanged()
-                  ? "bg-blue-600 hover:bg-blue-700 text-white"
-                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
-              }`}
+              className={`w-full py-3 rounded-lg font-bold transition ${isFormChanged() ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-700 text-gray-500 cursor-not-allowed"}`}
             >
               Save Changes
             </button>
-            {showSaveChangesDialog && (
-              <ConfirmDialog
-                title="Save Changes"
-                message="Are you sure you want to save these changes?"
-                confirmText="Save"
-                cancelText="Cancel"
-                onConfirm={doSaveProduct}
-                onCancel={() => setShowSaveChangesDialog(false)}
-              />
-            )}
           </div>
         </div>
       </div>
+
+      {showDeleteProductDialog && (
+        <ConfirmDialog
+          title="Remove Product"
+          message="Permanent action. Continue?"
+          onConfirm={doDeleteProduct}
+          onCancel={() => setShowDeleteProductDialog(false)}
+          confirmText={"Delete"}
+          cancelText={"Cancel"}
+        />
+      )}
+      {showSaveChangesDialog && (
+        <ConfirmDialog
+          title="Save Changes"
+          message="Update product details?"
+          onConfirm={doSaveProduct}
+          onCancel={() => setShowSaveChangesDialog(false)}
+          confirmText={"Save"}
+          cancelText={"Cancel"}
+        />
+      )}
     </div>
   );
 }
