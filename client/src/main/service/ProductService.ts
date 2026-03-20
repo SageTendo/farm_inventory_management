@@ -42,7 +42,9 @@ export class ProductService implements IProductService {
 
     const productExists = await this.productRepository.getByName(product.name);
     if (productExists) {
-      throw new ConflictError(`A Product with the name: ${product.name} already exists!`);
+      throw new ConflictError(
+        `A Product with the name: ${product.name} already exists!`,
+      );
     }
 
     return await this.productRepository.create({
@@ -108,12 +110,14 @@ export class ProductService implements IProductService {
       );
     }
 
-    const isValidProductName =
-      (await this.productRepository.getByName(entity.name))?.id === productId;
-    if (isValidProductName) {
-      throw new ConflictError(
-        `A Product with the name: ${entity.name} already exists!`,
-      );
+    const productExists = await this.productRepository.getByName(entity.name);
+    if (productExists) {
+      const isValidProductName = productExists.id === productId;
+      if (!isValidProductName) {
+        throw new ConflictError(
+          `A Product with the name: ${entity.name} already exists!`,
+        );
+      }
     }
 
     if (entity.name !== undefined && entity.name.trim() === "")

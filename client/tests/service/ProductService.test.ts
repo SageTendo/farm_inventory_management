@@ -50,7 +50,7 @@ describe("ProductService", () => {
 
   const productService = new ProductService(
     mockAuthService,
-    mockProductRepository
+    mockProductRepository,
   );
 
   test("Create a new product", async () => {
@@ -91,6 +91,30 @@ describe("ProductService", () => {
       quantity: 10,
       lowStockThreshold: 5,
     });
+  });
+
+  test("Fail to create product with invalid name", async () => {
+    mockAuthService.hasRequiredRole.mockResolvedValue(true);
+    mockProductRepository.getByName.mockResolvedValue({
+      id: "UUID",
+      name: "Lays Chips",
+      buyPrice: 100,
+      sellPrice: 120,
+      addedBy: "user UUID",
+      isDeleted: false,
+      createdAt: new Date(),
+    });
+
+    await expect(
+      productService.create({
+        name: "Lays Chips",
+        buyPrice: 100,
+        sellPrice: 120,
+        quantity: 10,
+        lowStockThreshold: 5,
+        addedBy: "user UUID",
+      }),
+    ).rejects.toThrowError();
   });
 
   test("Get product by ID", async () => {
@@ -213,6 +237,38 @@ describe("ProductService", () => {
     expect(product?.name).toBe("Lays Salted Chips");
     expect(product?.buyPrice).toBe(1);
     expect(product?.sellPrice).toBe(1.3);
+  });
+
+  test("Fail to update product with existing name", async () => {
+    mockAuthService.hasRequiredRole.mockResolvedValue(true);
+    mockProductRepository.getById.mockResolvedValue({
+      id: "UUID1",
+      name: "Lays Salted Chips",
+      buyPrice: 100,
+      sellPrice: 130,
+      addedBy: "user UUID1",
+      isDeleted: false,
+      createdAt: new Date(2023, 1, 1),
+      quantity: 10,
+      lowStockThreshold: 5,
+    });
+    mockProductRepository.getByName.mockResolvedValue({
+      id: "UUID2",
+      name: "Lays Chips",
+      buyPrice: 100,
+      sellPrice: 130,
+      addedBy: "user UUID1",
+      isDeleted: false,
+      createdAt: new Date(2023, 1, 1),
+    });
+
+    await expect(
+      productService.update("user UUID1", "UUID1", {
+        name: "Lays Chips",
+        buyPrice: 100,
+        sellPrice: 130,
+      }),
+    ).rejects.toThrowError();
   });
 
   test("Delete product", async () => {
