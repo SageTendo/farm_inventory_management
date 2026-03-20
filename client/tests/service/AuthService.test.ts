@@ -16,11 +16,13 @@ import bcrypt from "bcrypt";
 import { IUserRepository } from "../../src/main/database/interfaces/IUserRepository";
 import { IRoleRepository } from "../../src/main/database/interfaces/IRoleRepository";
 import { AuthDataDTO } from "../../src/shared/dto/auth";
+import { env } from "../../src/config";
 
 let db: BetterSQLite3Database<Record<string, never>>;
 
 beforeAll(async () => {
   db = setupDb();
+  env.SECRET_KEY = "secretKey";
 });
 
 beforeEach(() => {
@@ -79,7 +81,7 @@ describe("AuthService", () => {
     const result = await authService.register(registeringUserId, newUser);
     expect(result.success).toBe(true);
     expect(mockUserRepository.create).toHaveBeenCalledWith(
-      expect.objectContaining({ username: "naruto" })
+      expect.objectContaining({ username: "naruto" }),
     );
   });
 
@@ -255,12 +257,12 @@ describe("AuthService", () => {
     };
 
     const result = await authService.signSession(authData);
-    expect(result).toBe("f9688edfa3774233b2abae7bffea2e428b5964b87c7509dba90ba15020078194");
+    expect(result).toBe(
+      "b4e69fe759a080d94e7f3ed60b51f3f28a1beefd48a75b07aabdc89e628082d8",
+    );
   });
 
   test("Validates session token", async () => {
-    vi.spyOn(authService, "signSession").mockResolvedValue("sessionToken");
-
     const authData: AuthDataDTO = {
       id: "user UUID",
       username: "test",
@@ -268,8 +270,8 @@ describe("AuthService", () => {
     };
 
     const result = await authService.validateSession(
-      "sessionToken",
-      authData
+      "b4e69fe759a080d94e7f3ed60b51f3f28a1beefd48a75b07aabdc89e628082d8",
+      authData,
     );
     expect(result).toBe(true);
   });
