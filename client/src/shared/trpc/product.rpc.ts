@@ -18,17 +18,31 @@ export const productRouter = (productService: IProductService) =>
             limit: z.number().min(1).max(100).optional(),
             offset: z.number().min(0).optional(),
           })
-          .optional()
+          .optional(),
       )
       .output(ProductListDTO)
-      .query(({ input }) =>
-        productService.getAll(input?.searchTerm, input?.limit, input?.offset)
-      ),
+      .query(async ({ input }) => {
+        try {
+          return await productService.getAll(
+            input?.searchTerm,
+            input?.limit,
+            input?.offset,
+          );
+        } catch (err) {
+          handleError(err);
+        }
+      }),
 
     getById: publicProcedure
       .input(z.object({ id: z.string() }))
       .output(ProductDTO.nullable())
-      .query(({ input }) => productService.getById(input?.id)),
+      .query(async ({ input }) => {
+        try {
+          return await productService.getById(input?.id);
+        } catch (err) {
+          handleError(err);
+        }
+      }),
 
     create: publicProcedure
       .input(NewProductDTO)
@@ -47,12 +61,16 @@ export const productRouter = (productService: IProductService) =>
           userId: z.string(),
           id: z.string(),
           entity: UpdateProductDTO,
-        })
+        }),
       )
       .output(ProductDTO.nullable())
-      .mutation(({ input }) => {
+      .mutation(async ({ input }) => {
         try {
-          return productService.update(input.userId, input.id, input.entity);
+          return await productService.update(
+            input.userId,
+            input.id,
+            input.entity,
+          );
         } catch (err) {
           handleError(err);
         }
@@ -63,11 +81,13 @@ export const productRouter = (productService: IProductService) =>
         z.object({
           userId: z.string(),
           id: z.string(),
-        })
+        }),
       )
-      .mutation(({ input }) => {
+      .output(z.object({ success: z.boolean() }))
+      .mutation(async ({ input }) => {
         try {
-          return productService.delete(input.userId, input.id);
+          await productService.delete(input.userId, input.id);
+          return { success: true } as const;
         } catch (err) {
           handleError(err);
         }

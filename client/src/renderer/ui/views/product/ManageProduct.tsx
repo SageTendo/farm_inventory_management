@@ -6,45 +6,47 @@ import { trpcClient } from "../../../../shared/trpc/client";
 import { ProductDTO } from "../../../../shared/dto/product";
 import { ConfirmDialog } from "../../components/shared/ConfirmDialog";
 import { Spinner } from "../../components/shared/Spinner";
+import { useAuth } from "../../../context/AuthProvider";
+import toast from "react-hot-toast";
 
-// TODO: Do I need to include the details about who added the product?
-// TODO: Need user id to be able to delete and update products
-// TODO: Handle deletion and updates
 export function ManageProduct() {
   const navigate = useNavigate();
   const { productId } = useParams();
+  const { user, logout } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState<ProductDTO>(null);
   const [name, setName] = useState<string>(null);
-  const [buyPrice, setBuyPrice] = useState<number>(null);
+  const [buyPrice, setBuyPrice] = useState<number>(0);
   const [sellPrice, setSellPrice] = useState<number>(null);
-  const [quantity, setQuantity] = useState<number>(null);
 
   const [showDeleteProductDialog, setShowDeleteProductDialog] = useState(false);
   const [showSaveChangesDialog, setShowSaveChangesDialog] = useState(false);
 
   useEffect(() => {
-    const getProduct = async () => {
-      if (!productId) navigate("404");
-
-      await trpcClient.product.getById
-        .query({
-          id: productId,
-        })
-        .then((product) => {
-          setIsLoading(true);
-          if (!product) navigate("404");
-          setProduct(product);
-          setIsLoading(false);
-        });
-    };
-
     getProduct();
   }, [productId]);
 
+  const getProduct = async () => {
+    if (!productId) navigate("404");
+
+    await trpcClient.product.getById
+      .query({
+        id: productId,
+      })
+      .then((product) => {
+        setIsLoading(true);
+        if (!product) navigate("404");
+        setProduct(product);
+        setName(product.name);
+        setBuyPrice(product.buyPrice);
+        setSellPrice(product.sellPrice);
+        setIsLoading(false);
+      });
+  };
+
   const isFormChanged = () => {
-    return name || buyPrice || sellPrice || quantity;
+    return name || buyPrice || sellPrice;
   };
 
   const formatDate = (date: Date) => {
@@ -58,12 +60,69 @@ export function ManageProduct() {
     });
   };
 
-  const doDeleteProduct = () => {
-    console.log("Deleting product...");
+  const clearForm = () => {
+    setName(null);
+    setBuyPrice(null);
+    setSellPrice(null);
   };
 
-  const doSaveProduct = () => {
-    console.log("Saving product...", product);
+  const doDeleteProduct = () => {
+    if (!user) {
+      toast.error("You must be logged in to delete a product!");
+      return logout();
+    }
+
+    if (!productId) {
+      return toast.error("Product ID not provided for deletion!");
+    }
+
+    trpcClient.product.delete
+      .mutate({
+        userId: user.id,
+        id: productId,
+      })
+      .then(() => {
+        toast.success("Product deleted successfully!");
+        navigate("/products");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.message);
+      });
+  };
+
+  const doSaveProduct = async () => {
+    if (!productId) return toast.error("Product ID not provided for saving!");
+    if (name && name.length === 0)
+      return toast.error("Product name cannot be empty!");
+    if (buyPrice && buyPrice <= 0)
+      return toast.error("Buy price must be greater than zero!");
+    if (sellPrice && sellPrice <= 0)
+      return toast.error("Sell price must be greater than zero!");
+
+    await trpcClient.product.update
+      .mutate({
+        userId: user.id,
+        id: productId,
+        entity: {
+          name: name.trim() ?? product?.name,
+          buyPrice: buyPrice ?? product?.buyPrice,
+          sellPrice: sellPrice ?? product?.sellPrice,
+        },
+      })
+      .then(() => {
+        toast.success("Product saved successfully!");
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.shape);
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setShowSaveChangesDialog(false);
+        clearForm();
+        getProduct();
+      });
   };
 
   return isLoading ? (
@@ -71,7 +130,7 @@ export function ManageProduct() {
   ) : (
     <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
+      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700 transition">
         <Link to="/products">
           <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm sm:text-base">
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -92,7 +151,7 @@ export function ManageProduct() {
               value={name ?? ""}
               className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
               placeholder={product.name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.trim())}
             />
           </div>
 
@@ -118,18 +177,6 @@ export function ManageProduct() {
                 onChange={(e) => setSellPrice(parseFloat(e.target.value))}
               />
             </div>
-          </div>
-
-          {/* Quantity */}
-          <div>
-            <label className="block mb-1 font-medium">Quantity</label>
-            <input
-              type="number"
-              value={quantity ?? ""}
-              className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
-              placeholder={product.quantity.toString()}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-            />
           </div>
 
           {/* Immutable Fields */}
