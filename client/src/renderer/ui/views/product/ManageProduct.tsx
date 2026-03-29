@@ -134,14 +134,24 @@ export function ManageProduct() {
     <Spinner />
   ) : (
     <div className="h-full w-full flex flex-col overflow-hidden text-white bg-gray-950">
-      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex justify-between items-center border-b border-gray-700">
+      <div className="sticky top-0 z-60 px-4 py-4 bg-gray-900 flex flex-wrap gap-3 justify-between items-center border-b border-gray-700">
         <Link to="/products">
           <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
             <FontAwesomeIcon icon={faArrowLeft} />
             <span>Products</span>
           </button>
         </Link>
-        <h1 className="text-xl md:text-3xl font-bold">Manage Product</h1>
+        <h1 className="text-xl md:text-3xl w-full font-bold order-last sm:order-none sm:w-auto text-center sm:text-left">
+          Manage Product
+        </h1>
+        {productId && (
+          <Link
+            to={`/products/${productId}/stock`}
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-semibold no-underline inline-flex items-center"
+          >
+            Manage Stock
+          </Link>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pt-6 pb-12 sm:px-10">
@@ -185,6 +195,17 @@ export function ManageProduct() {
 
           {/* Read-only Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">
+                Product ID:
+              </label>
+              <input
+                readOnly
+                type="text"
+                value={product?.id ?? ""}
+                className="w-full p-3 rounded bg-gray-950 text-gray-500 border border-gray-700"
+              />
+            </div>
             <div>
               <label className="block text-sm text-gray-400 mb-1">
                 Added At:

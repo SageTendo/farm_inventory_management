@@ -1,30 +1,19 @@
-import { eq } from "drizzle-orm";
+import { eq, lte } from "drizzle-orm";
 import { BaseRepository } from ".";
 import { stockTable } from "..";
 import { IStockRepository } from "../interfaces/IStockRepository";
-import { StockDTO, UpdateStockDTO } from "../../../shared/dto/stock";
+import {
+  StockDTO,
+  StockListDTO,
+  UpdateStockDTO,
+} from "../../../shared/dto/stock";
 
 /**
  * Repository class to handle CRUD operations for stock entities.
  */
 export class StockRepository
   extends BaseRepository
-  implements IStockRepository
-{
-  /**
-   * Retrieves all stock entries with optional pagination
-   * @param limit limit Max number of entries to retrieve (default 10)
-   * @param offset offset Number of entries to skip (default 0)
-   * @returns An array of stock entries
-   */
-  async getAll(limit = 10, offset = 0): Promise<StockDTO[]> {
-    return this.dbContext
-      .select()
-      .from(stockTable)
-      .limit(limit)
-      .offset(offset)
-      .all();
-  }
+  implements IStockRepository {
 
   /**
    * Finds a specific stock entry by ID
@@ -32,12 +21,51 @@ export class StockRepository
    * @returns The stock entry or null if not found
    */
   async getById(stockId: string): Promise<StockDTO | null> {
-    const stock = await this.dbContext
+    const stock = this.dbContext
       .select()
       .from(stockTable)
       .where(eq(stockTable.id, stockId))
       .get();
     return stock || null;
+  }
+
+  async getByProductId(productId: string): Promise<StockDTO | null> {
+    const stock = this.dbContext
+      .select()
+      .from(stockTable)
+      .where(eq(stockTable.productID, productId))
+      .get();
+    return stock || null;
+  }
+
+  async getLowStock(limit = 10, offset = 0): Promise<StockListDTO> {
+    const stocks = this.dbContext
+      .select()
+      .from(stockTable)
+      .where(lte(stockTable.quantity, stockTable.lowStockThreshold))
+      .limit(limit)
+      .offset(offset)
+      .all();
+
+    return {
+      stocks: stocks,
+      total: stocks.length,
+    };
+  }
+
+  async getOutOfStock(limit = 10, offset = 0): Promise<StockListDTO> {
+    const stocks = this.dbContext
+      .select()
+      .from(stockTable)
+      .where(eq(stockTable.quantity, 0))
+      .limit(limit)
+      .offset(offset)
+      .all();
+
+    return {
+      stocks: stocks,
+      total: stocks.length,
+    };
   }
 
   /**

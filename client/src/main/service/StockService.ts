@@ -16,12 +16,12 @@ export class StockService implements IStockService {
     this.stockRepository = stockRepository;
   }
 
-  async getAll(limit?: number, offset?: number): Promise<StockDTO[]> {
-    return this.stockRepository.getAll(limit, offset);
-  }
-
   async getById(stockId: string): Promise<StockDTO | null> {
     return this.stockRepository.getById(stockId);
+  }
+
+  async getByProductId(productId: string): Promise<StockDTO | null> {
+    return this.stockRepository.getByProductId(productId);
   }
 
   async setQuantity(

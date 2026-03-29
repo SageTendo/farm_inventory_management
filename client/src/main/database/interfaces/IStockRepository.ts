@@ -1,23 +1,36 @@
-import { StockDTO, UpdateStockDTO } from "../../../shared/dto/stock";
+import {
+  StockDTO,
+  StockListDTO,
+  UpdateStockDTO,
+} from "../../../shared/dto/stock";
 
 /**
  * Interface for stock repository
  */
 export interface IStockRepository {
   /**
-   * Retrieves all stock entries
-   * @param limit The maximum number of stock entries to retrieve (optional)
-   * @param offset The number of stock entries to skip before retrieving (optional)
-   * @returns A promise that resolves to an array of stock entries
-   */
-  getAll(limit?: number, offset?: number): Promise<StockDTO[]>;
-
-  /**
    * Retrieves a single stock entry by ID
    * @param stockId The ID of the stock entry to retrieve
    * @returns A promise that resolves to the stock entry if found, otherwise null
    */
   getById(stockId: string): Promise<StockDTO | null>;
+
+  /**
+   * Retrieves the stock entry for a product (one row per product)
+   */
+  getByProductId(productId: string): Promise<StockDTO | null>;
+
+  /**
+   * Retrieves all stock entries with low stock
+   * @returns A promise that resolves to an array of stock entries
+   */
+  getLowStock(limit?: number, offset?: number): Promise<StockListDTO>;
+
+  /**
+   * Retrieves all stock entries with no stock
+   * @returns A promise that resolves to an array of stock entries
+   */
+  getOutOfStock(limit?: number, offset?: number): Promise<StockListDTO>;
 
   /**
    * Updates a stock entry by ID

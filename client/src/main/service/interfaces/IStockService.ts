@@ -5,19 +5,16 @@ import { StockDTO, UpdateStockDTO } from "../../../shared/dto/stock";
  */
 export interface IStockService {
   /**
-   * Retrieves all stock entries with optional pagination
-   * @param limit The maximum number of entries to retrieve
-   * @param offset The number of entries to skip
-   * @returns An array of stock entries
-   */
-  getAll(limit?: number, offset?: number): Promise<StockDTO[]>;
-
-  /**
    * Retrieves a single stock entry by ID
    * @param id The ID of the stock entry to retrieve
    * @returns A promise that resolves to the stock entry if found, otherwise null
    */
   getById(stockId: string): Promise<StockDTO | null>;
+
+  /**
+   * Retrieves the stock entry for a product
+   */
+  getByProductId(productId: string): Promise<StockDTO | null>;
 
   /**
    * Updates the quantity of a stock entry

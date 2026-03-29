@@ -3,6 +3,7 @@ import Dashboard from "../ui/views/Dashboard";
 import { Products } from "../ui/views/product/Products";
 import { NewProduct } from "../ui/views/product/NewProduct";
 import { ManageProduct } from "../ui/views/product/ManageProduct";
+import { ManageStock } from "../ui/views/product/ManageStock";
 import { Users } from "../ui/views/user/Users";
 import { NewUser } from "../ui/views/user/NewUser";
 import { ManageUser } from "../ui/views/user/ManageUser";
@@ -44,8 +45,7 @@ const protectedRoutes: RouteObject[] = [
           { path: paths.products, element: <Products /> },
           { path: paths.newProduct, element: <NewProduct /> },
           { path: paths.manageProduct, element: <ManageProduct /> },
-          // TODO: Implement stock management
-          { path: paths.manageStock, element: <div>Stock</div> },
+          { path: paths.manageStock, element: <ManageStock /> },
           { path: paths.sales, element: <div>Sales</div> },
           { path: paths.users, element: <Users /> },
           { path: paths.newUser, element: <NewUser /> },

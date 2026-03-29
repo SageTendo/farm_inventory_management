@@ -3,6 +3,7 @@ import { ServiceRegistry } from "../../main/service";
 import { authRouter } from "./auth.rpc";
 import { userRouter } from "./user.rpc";
 import { productRouter } from "./product.rpc";
+import { stockRouter } from "./stock.rpc";
 import {
   ForbiddenError,
   NotFoundError,
@@ -27,6 +28,7 @@ export const appRouter = router({
   auth: authRouter(serviceRegistry.resolve("authService")),
   user: userRouter(serviceRegistry.resolve("userService")),
   product: productRouter(serviceRegistry.resolve("productService")),
+  stock: stockRouter(serviceRegistry.resolve("stockService")),
 });
 
 export type AppRouter = typeof appRouter;

@@ -8,7 +8,7 @@ export function useProducts() {
   const isMobile = useAtomValue(isMobileAtom);
   const setIsFetchingProducts = useSetAtom(isFetchingProductsAtom);
   const [products, setProducts] = useAtom<ProductDTO[]>(productsAtom);
-  const [_totalProducts, setTotalProducts] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [_searchQuery, setSearchQuery] = useState("");
   const [queryLimit, _setQueryLimit] = useState(isMobile ? 25 : 10);
   const [currentPage, _setCurrentPage] = useState(1);
@@ -47,7 +47,7 @@ export function useProducts() {
   function setQueryLimit(limit: number, limitOptions: number[]) {
     let validLimit = 10;
     if (limitOptions.includes(limit)) {
-      validLimit = Math.min(limit, _totalProducts);
+      validLimit = Math.min(limit, totalProducts);
     }
     _setQueryLimit(validLimit);
   }
@@ -63,6 +63,7 @@ export function useProducts() {
     queryLimit,
     currentPage,
     totalPages,
+    totalProducts,
     handleSearch,
     setQueryLimit,
     setCurrentPage,

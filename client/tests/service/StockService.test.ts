@@ -30,8 +30,10 @@ afterEach(() => {
 
 describe("StockService", () => {
   const mockStockRepository = vi.mocked<IStockRepository>({
-    getAll: vi.fn(),
     getById: vi.fn(),
+    getByProductId: vi.fn(),
+    getLowStock: vi.fn(),
+    getOutOfStock: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
   });
@@ -48,7 +50,7 @@ describe("StockService", () => {
 
   const stockService = new StockService(mockAuthService, mockStockRepository);
 
-  test("Get product by ID", async () => {
+  test("Get stock by ID", async () => {
     mockStockRepository.getById.mockResolvedValue({
       id: "stock UUID",
       productID: "product UUID",
@@ -57,15 +59,23 @@ describe("StockService", () => {
       timestamp: new Date(),
     });
 
-    const products = await stockService.getById("product UUID");
-    expect(products).toBeDefined();
+    const stock = await stockService.getById("stock UUID");
+    expect(stock).toBeDefined();
   });
 
-  test("Get All products", async () => {
-    mockStockRepository.getAll.mockResolvedValue([]);
-    const stocks = await stockService.getAll();
-    expect(stocks).toBeDefined();
+  test("Get stock by product ID", async () => {
+    mockStockRepository.getByProductId.mockResolvedValue({
+      id: "stock UUID",
+      productID: "product UUID",
+      quantity: 10,
+      lowStockThreshold: 5,
+      timestamp: new Date(),
+    });
+
+    const stock = await stockService.getByProductId("product UUID");
+    expect(stock?.productID).toBe("product UUID");
   });
+
 
   test("Set Quantity", async () => {
     mockStockRepository.getById.mockImplementation(async (id) => {

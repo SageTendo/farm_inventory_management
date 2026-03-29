@@ -5,7 +5,7 @@ export const StockDTO = z.object({
   productID: z.string(),
   quantity: z.number(),
   lowStockThreshold: z.number(),
-  timestamp: z.date(),
+  timestamp: z.coerce.date(),
 });
 export const NewStockDTO = StockDTO.omit({ id: true, timestamp: true });
 
@@ -21,7 +21,13 @@ export const UserStockDTO = z.object({
   quantity: z.number(),
 });
 
+export const StockListDTO = z.object({
+  stocks: StockDTO.array(),
+  total: z.number(),
+});
+
 export type StockDTO = z.infer<typeof StockDTO>;
+export type StockListDTO = z.infer<typeof StockListDTO>;
 export type NewStockDTO = z.infer<typeof NewStockDTO>;
 export type UpdateStockDTO = z.infer<typeof UpdateStockDTO>;
 export type UserStockDTO = z.infer<typeof UserStockDTO>;
