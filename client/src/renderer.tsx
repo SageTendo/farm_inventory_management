@@ -12,7 +12,9 @@ const Main = () => {
       <AuthProvider>
         <BrowserRouter>
           <App />
-          <Toaster position="top-right" reverseOrder={false} />
+          <Toaster position="bottom-right" reverseOrder={false} toastOptions={{
+            duration: 3000
+          }} />
         </BrowserRouter>
       </AuthProvider>
     </React.StrictMode>
